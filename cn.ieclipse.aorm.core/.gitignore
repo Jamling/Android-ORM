@@ -1,0 +1,22 @@
+
+# generated files
+bin/
+build/
+aorm*.jar
+docs/
+report/
+xml/
+test/
+dist/
+
+# Local configuration file (sdk path, etc)
+project.properties
+local.properties
+*.DS_Store
+
+# IDE
+
+## eclipse
+*.metadata
+*.settings
+

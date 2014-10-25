@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     2011-7-26 下午05:32:42                                                        
+
+     project    
+     description
+                   
+     melord                                                                
+     ====================================================================== -->
+<project name="aorm" default="jar">
+	<description>
+            description
+    </description>
+	<property name="version" value="1.0" />
+	<property name="source.src" value="src" />
+	<property name="source.test" value="test" />
+	<property name="bin.dir" value="bin" />
+
+	<property name="dist.dir" value="dist" />
+	<property name="doc.dir" value="docs" />
+	<property name="junit.report.dir" value="report" />
+	<property name="junit.xml.dir" value="xml" />
+
+	<tstamp>
+		<format property="TODAY" locale="zh" pattern="yyyyMMdd" />
+	</tstamp>
+
+	<property name="dist.lib" value="${ant.project.name}_${version}_${TODAY}.jar" />
+	<property name="dist.lib.doc" value="${ant.project.name}.doc_${version}_${TODAY}.jar" />
+	<property name="dist.lib.source" value="${ant.project.name}.source_${version}_${TODAY}.jar" />
+
+	<!-- ================================= 
+          target: jar              
+         ================================= -->
+	<target name="jar" depends="compile,source" description="description">
+		<jar destfile="${dist.dir}/${dist.lib}" basedir="bin">
+			<manifest>
+				<attribute name="Author" value="Jamling" />
+				<attribute name="Email" value="li.jamling@gmail.com;li_jaming@163.com" />
+				<attribute name="Version" value="${version}_${TODAY}" />
+			</manifest>
+		</jar>
+		<copy todir="../">
+			<fileset dir="${dist.dir}">
+				<include name="${dist.lib}" />
+				<include name="${dist.lib.source}" />
+				<include name="${dist.lib.doc}" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: for_test                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="for_test">
+		<jar destfile="${ant.project.name}_latest.jar" basedir="${bin.dir}">
+		</jar>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: clean                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="clean">
+		<delete dir="${bin.dir}">
+		</delete>
+		<mkdir dir="${bin.dir}" />
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: compile                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="compile" depends="clean">
+		<javac target="1.5" destdir="${bin.dir}" srcdir="src" includeantruntime="false" debug="on" optimize="true" verbose="false" debuglevel="lines,vars,source">
+			<classpath path="D:\\Android\\android-sdk\\platforms\\android-19\\android.jar">
+			</classpath>
+		</javac>
+	</target>
+
+	<path id="test.path">
+		<pathelement path="${bin.dir}" />
+		<pathelement location="D:\Android\eclipse\plugins\org.junit_4.11.0.v201303080030\junit.jar" />
+		<pathelement location="D:/Android/eclipse/plugins/org.hamcrest.core.source_1.3.0.v201303031735.jar" />
+		<pathelement location="D:\Android\android-sdk\platforms\android-19\android.jar" />
+	</path>
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: test                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="test">
+		<mkdir dir="xml" />
+		<delete dir="${junit.report.dir}" />
+		<junit printsummary="true">
+			<classpath refid="test.path" />
+			<batchtest todir="${junit.xml.dir}">
+				<fileset dir="${bin.dir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+			<formatter type="xml" />
+		</junit>
+		<junitreport todir="${junit.xml.dir}">
+			<fileset dir="${junit.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+	</target>
+
+
+	<!-- ================================= 
+          target: doc              
+         ================================= -->
+	<target name="doc" description="java doc">
+		<javadoc destdir="${doc.dir}/api" docencoding="utf-8" charset="utf-8" windowtitle="Android ORM API documents">
+			<sourcepath path="${source.src}">
+
+			</sourcepath>
+		</javadoc>
+		<jar destfile="${dist.dir}/${dist.lib.doc}" basedir="${doc.dir}/api">
+			<manifest>
+				<attribute name="Author" value="Jamling" />
+				<attribute name="Email" value="li.jamling@gmail.com;li_jaming@163.com" />
+				<attribute name="Version" value="${version}_${TODAY}" />
+			</manifest>
+		</jar>
+	</target>
+
+
+	<!-- ================================= 
+          target: source              
+         ================================= -->
+	<target name="source" description="description">
+		<!--
+		<available file="${dist.lib.source}">
+			<delete file="${dist.lib.source}">
+			</delete>
+		</available>
+		-->
+		<jar destfile="${dist.dir}/${dist.lib.source}" basedir="${source.src}">
+			<manifest>
+				<attribute name="Author" value="Jamling" />
+				<attribute name="Email" value="li.jamling@gmail.com;li_jaming@163.com" />
+				<attribute name="Version" value="${version}_${TODAY}" />
+			</manifest>
+		</jar>
+	</target>
+
+</project>
