@@ -30,7 +30,7 @@ public class Criteria {
     public static final String LEFT_OUTER_JOIN = "LEFT OUTER JOIN";
     public static final String INNER_JOIN = "INNER JOIN";
     public static final String CROSS_JOIN = "CROSS JOIN";
-
+    
     private Class<?> clazz;
     private String table;
     private String alias;
@@ -38,16 +38,16 @@ public class Criteria {
     // private List<Restrictions> restrictionList = new
     // ArrayList<Restrictions>();
     private List<Order> orders = new ArrayList<Order>();
-
+    
     private Criteria parent;
     private Criteria child;
     // why root? to improve performance
     private Criteria root;
-
+    
     private Restrictions on;
-    private String join = LEFT_JOIN;
+    private String join = null;
     private boolean resultColumn = false;
-
+    
     // root
     private boolean distinct = false;
     // private List<Restrictions> propRestrictionList = new
@@ -57,10 +57,10 @@ public class Criteria {
     private String where;
     // private boolean hasJoin = false;
     private boolean hasLimit = false;
-
+    
     private int pageSize;
     private int offest;
-
+    
     /**
      * Create a criteria as base. If there was no mapping. an ORMException would
      * be throwed.
@@ -72,7 +72,7 @@ public class Criteria {
     public static Criteria create(Class<?> clazz) {
         return create(clazz, null);
     }
-
+    
     /**
      * Create a root criteria.
      * 
@@ -90,7 +90,7 @@ public class Criteria {
         criteria.alias = alias;
         return criteria;
     }
-
+    
     /**
      * Create a root criteria.
      * 
@@ -103,13 +103,9 @@ public class Criteria {
      * @return created criteria
      */
     public Criteria addChild(Class<?> clazz, String alias) {
-        return addChild(clazz, alias, LEFT_JOIN, null);
+        return addChild(clazz, alias, null, null);
     }
-
-    public Criteria addChild(Class<?> clazz, String alias, Restrictions on) {
-        return addChild(clazz, alias, LEFT_JOIN, on);
-    }
-
+    
     /**
      * Add a child criteria to current criteria
      * 
@@ -120,8 +116,8 @@ public class Criteria {
      *            &lt;alias.&gt prefix. Recommended to set alias when
      *            multi-criteria exists.
      * @param join
-     *            join type, use {@link Criteria#LEFT_JOIN Criteria.LEFT_JOIN}
-     *            (default), {@link Criteria#INNER_JOIN Criteria.INNER_JOIN},
+     *            join type, use {@link Criteria#LEFT_JOIN Criteria.LEFT_JOIN} ,
+     *            {@link Criteria#INNER_JOIN Criteria.INNER_JOIN},
      *            {@link Criteria#CROSS_JOIN Criteria.CROSS_JOIN},
      *            {@link Criteria#LEFT_OUTER_JOIN Criteria.LEFT_OUTER_JOIN}
      * @param on
@@ -144,11 +140,11 @@ public class Criteria {
         if (CROSS_JOIN.equals(join)) {
             criteria.resultColumn = true;
         }
-
+        
         this.child = criteria;
         return criteria;
     }
-
+    
     /**
      * set criteria alias.if set, projection item and result column would with a
      * &lt;alias.&gt prefix. Recommended to set alias when multi-criteria
@@ -163,13 +159,13 @@ public class Criteria {
         this.alias = alias.trim();
         return this;
     }
-
+    
     public Criteria addOrder(Order order) {
         // this.orders.add(order);
         root.orders.add(order);
         return this;
     }
-
+    
     /**
      * Add a restriction to root criteria. If any restrictions set to root
      * criteria, will add "AND" parameter restriction to root restriction.
@@ -181,18 +177,19 @@ public class Criteria {
     public Criteria add(Restrictions restrictions) {
         if (root.rootRestrictions == null) {
             root.rootRestrictions = restrictions;
-        } else {
+        }
+        else {
             root.rootRestrictions = Restrictions.and(root.rootRestrictions,
                     restrictions);
         }
         root.rootRestrictions.criteria = this;
         return this;
     }
-
+    
     public void setDistinct(boolean distinct) {
         root.distinct = distinct;
     }
-
+    
     /**
      * set query result column projections. if you set alias before, the
      * projections item would add &gt;alias.&lt; as prefix.But you set alias
@@ -220,13 +217,14 @@ public class Criteria {
             }
             if (alias != null) {
                 this.projections.add(alias + "." + colName);
-            } else {
+            }
+            else {
                 this.projections.add(colName);
             }
         }
         return this;
     }
-
+    
     /**
      * Set projection columns, the column is the column name of table in
      * database.
@@ -241,19 +239,19 @@ public class Criteria {
         }
         return this;
     }
-
+    
     public Criteria setProjection(boolean projection) {
         this.resultColumn = projection;
         return this;
     }
-
+    
     public Criteria setLimit(int start, int size) {
         root.hasLimit = true;
         root.offest = start;
         root.pageSize = size;
         return this;
     }
-
+    
     public String toSQL() {
         Criteria root = getRoot();
         StringBuilder sb = new StringBuilder();
@@ -274,11 +272,11 @@ public class Criteria {
         concatLimit(sb, root);
         return sb.toString();
     }
-
+    
     public List<Object> getArgs() {
         return root.args;
     }
-
+    
     public String[] getStringArgs() {
         String[] temp = new String[root.args.size()];
         for (int i = 0; i < temp.length; i++) {
@@ -286,11 +284,11 @@ public class Criteria {
         }
         return temp;
     }
-
+    
     public String getWhere() {
         return root.where;
     }
-
+    
     public String[] getProjections() {
         List<String> list = new ArrayList<String>();
         Criteria current = root;
@@ -306,7 +304,7 @@ public class Criteria {
         }
         return list.toArray(new String[] {});
     }
-
+    
     Criteria getRoot() {
         Criteria root = this;
         while (root.parent != null) {
@@ -314,15 +312,15 @@ public class Criteria {
         }
         return root;
     }
-
+    
     Class<?> getClazz() {
         return clazz;
     }
-
+    
     String getAlias() {
         return alias;
     }
-
+    
     private void concatResultColumn(StringBuilder sb, Criteria root) {
         Criteria current = root;
         while (current != null) {
@@ -340,31 +338,34 @@ public class Criteria {
         }
         sb.delete(sb.length() - 2, sb.length());
     }
-
+    
     private void concatJoin(StringBuilder sb, Criteria root) {
         Criteria current = root.child;
-        if (root.child != null) {
-            while (current != null) {
+        while (current != null) {
+            if (current.join == null) {
+                sb.append(",");
+            }
+            else {
                 sb.append(" ");
                 sb.append(current.join);
-                sb.append(" ");
-                // TODO TABLE NAME
-                // sb.append(Cache.getInstance().getTableName(current.clazz));
-                sb.append(current.table);
-                if (current.alias != null) {
-                    sb.append(" AS ");
-                    sb.append(current.alias);
-                }
-                if (current.on != null) {
-                    sb.append(" ON ");
-                    // sb.append(on.toString());
-                    sb.append(current.on.getWhere(null));
-                }
-                current = current.child;
             }
+            sb.append(" ");
+            // TODO TABLE NAME
+            // sb.append(Cache.getInstance().getTableName(current.clazz));
+            sb.append(current.table);
+            if (current.alias != null) {
+                sb.append(" AS ");
+                sb.append(current.alias);
+            }
+            if (current.on != null) {
+                sb.append(" ON ");
+                // sb.append(on.toString());
+                sb.append(current.on.getWhere(null));
+            }
+            current = current.child;
         }
     }
-
+    
     private void concatWhere(StringBuilder sb, Criteria root) {
         // boolean appendWhere = false;
         root.args.clear();
@@ -402,9 +403,9 @@ public class Criteria {
         // }
         // current = current.child;
         // }
-
+        
     }
-
+    
     private void concatOrder(StringBuilder sb, Criteria root) {
         if (!root.orders.isEmpty()) {
             sb.append(" ORDER BY ");
@@ -419,7 +420,7 @@ public class Criteria {
             }
         }
     }
-
+    
     private void concatLimit(StringBuilder sb, Criteria root) {
         if (hasLimit) {
             sb.append(" LIMIT ");
@@ -428,7 +429,7 @@ public class Criteria {
             sb.append(root.offest);
         }
     }
-
+    
     String property2Column(String property) {
         Criteria current = root;
         String ret = null;
@@ -436,11 +437,11 @@ public class Criteria {
         String str2 = property;
         int pos = property.indexOf('.');
         // exist alias
-
+        
         if (pos >= 0 && pos + 1 < str2.length()) {
             str1 = property.substring(0, pos);
             str2 = property.substring(pos + 1);
-
+            
             while (current != null) {
                 if (str1.equals(current.alias)) {
                     String colName = Mapping.getInstance().getColumnName(str2,
@@ -459,7 +460,8 @@ public class Criteria {
                 current = current.child;
             }
             ret = str1 + "." + str2;
-        } else {
+        }
+        else {
             boolean map = false;
             for (; current != null; current = current.child) {
                 String colName = Mapping.getInstance().getColumnName(str2,
@@ -480,10 +482,10 @@ public class Criteria {
             }
             ret = str2;
         }
-
+        
         return ret;
     }
-
+    
     // String column2Property(String column) {
     // Criteria current = root;
     // String ret = null;
@@ -491,7 +493,7 @@ public class Criteria {
     // String str2 = column;
     // int pos = column.indexOf('.');
     // exist alias
-
+    
     // if (pos >= 0 && pos + 1 < str2.length()) {
     // str1 = column.substring(0, pos);
     // str2 = column.substring(pos + 1);
@@ -505,7 +507,7 @@ public class Criteria {
     // }
     // return ret;
     // }
-
+    
     /**
      * get criteria projection classes.
      * 
@@ -522,7 +524,7 @@ public class Criteria {
         }
         return list.toArray(new Class[list.size()]);
     }
-
+    
     /**
      * get projection class separator array.
      * 
@@ -544,7 +546,7 @@ public class Criteria {
         System.arraycopy(src, 0, dst, 0, i);
         return dst;
     }
-
+    
     /**
      * get property ' column name, may with a alias.
      * 
@@ -559,7 +561,7 @@ public class Criteria {
         }
         return dst;
     }
-
+    
     private String getProjectionColumn(String property) {
         String column = property;
         int pos = property.indexOf('.');
@@ -575,7 +577,8 @@ public class Criteria {
                 }
                 current = current.child;
             }
-        } else {
+        }
+        else {
             column = Mapping.getInstance().getColumnName(property, root.clazz);
         }
         if (column == null) {
