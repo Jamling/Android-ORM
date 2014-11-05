@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.ieclipse.aorm.annotation.ColumnWrap;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import cn.ieclipse.aorm.annotation.ColumnWrap;
 
 /**
  * The session of communication with database. Provided all the GRUD operation
@@ -37,15 +37,15 @@ import android.net.Uri;
 public class Session {
     private SQLiteOpenHelper mHelper;
     private ContentResolver mResolver;
-
+    
     private void log(String msg) {
         Aorm.logv(msg);
     }
-
+    
     public Session(SQLiteOpenHelper helper) {
         mHelper = helper;
     }
-
+    
     /**
      * Initialize the session.
      * 
@@ -62,7 +62,7 @@ public class Session {
         mHelper = helper;
         mResolver = resolver;
     }
-
+    
     protected long insert(String table, String nullColumnHack,
             ContentValues values) {
         long id = mHelper.getWritableDatabase().insert(table, nullColumnHack,
@@ -70,7 +70,7 @@ public class Session {
         log("insert rowID : " + id);
         return id;
     }
-
+    
     protected int update(String table, ContentValues values, String where,
             String[] args) {
         int count = mHelper.getWritableDatabase().update(table, values, where,
@@ -78,39 +78,39 @@ public class Session {
         log("update counts : " + count);
         return count;
     }
-
+    
     protected int delete(String table, String where, String[] args) {
         int count = mHelper.getWritableDatabase().delete(table, where, args);
         log("delete counts : " + count);
         return count;
     }
-
+    
     protected Cursor rawQuery(String sql, String[] args) {
         return mHelper.getReadableDatabase().rawQuery(sql, args);
     }
-
+    
     protected Cursor query(String table, String[] columns, String where,
             int limit) {
         return mHelper.getReadableDatabase().query(table, columns, where, null,
                 null, null, null, String.valueOf(limit));
     }
-
+    
     protected void execSQL(String sql) {
         mHelper.getWritableDatabase().execSQL(sql);
     }
-
+    
     protected void execSQL(String sql, Object[] args) {
         mHelper.getWritableDatabase().execSQL(sql, args);
     }
-
+    
     public void beginTransaction() {
         mHelper.getWritableDatabase().beginTransaction();
     }
-
+    
     public void endTransaction() {
         mHelper.getWritableDatabase().endTransaction();
     }
-
+    
     /**
      * Insert the object as a row into your database
      * 
@@ -132,11 +132,11 @@ public class Session {
         ContentValues values = row.getContentValues();
         log("insert " + row.table + " values: " + values);
         long id = insert(row.table, nullColumnHack, values);
-
+        
         notifySessionListener(obj.getClass());
         return id;
     }
-
+    
     /**
      * Insert the object as a row into your database
      * 
@@ -148,7 +148,7 @@ public class Session {
     public long insert(Object obj) {
         return insert(obj, null);
     }
-
+    
     /**
      * Insert the object as a row into your database with a native SQL.
      * 
@@ -157,12 +157,12 @@ public class Session {
      */
     public void insertNative(Object obj) {
         Row row = new Row(obj);
-
+        
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ");
         sb.append(row.table);
         sb.append(" (");
-
+        
         StringBuilder sb2 = new StringBuilder();
         int size = row.colNames.size();
         String colName;
@@ -175,7 +175,7 @@ public class Session {
                 sb2.append(',');
             }
         }
-
+        
         sb.append(") VALUES (");
         sb.append(sb2);
         sb.append(")");
@@ -184,7 +184,7 @@ public class Session {
         execSQL(sql, row.getArgsArray());
         notifySessionListener(obj.getClass());
     }
-
+    
     /**
      * Insert or update the object to database. If your object PK value more
      * than 0, will execute the update, otherwise insert the object to database.
@@ -198,7 +198,7 @@ public class Session {
     public long insertOrUpdate(Object obj) {
         return insert(obj, null);
     }
-
+    
     /**
      * Insert or update the object to database. If your object PK value more
      * than 0, will execute the update, otherwise insert the object to database.
@@ -215,7 +215,7 @@ public class Session {
         long ret = -1;
         Row row = new Row(obj);
         ContentValues values = row.getContentValues();
-
+        
         long pkLong = row.getId();
         boolean update = Aorm.getExactInsertOrUpdate() ? get(obj) != null
                 : pkLong > 0;
@@ -224,13 +224,14 @@ public class Session {
         if (update) {
             ret = update(row.table, values, row.pk + "=?",
                     new String[] { String.valueOf(row.pkValue) });
-        } else {
+        }
+        else {
             ret = insert(row.table, nullColumnHack, values);
         }
         notifySessionListener(obj.getClass());
         return ret;
     }
-
+    
     /**
      * Update the object to database.
      * 
@@ -247,7 +248,7 @@ public class Session {
         notifySessionListener(obj.getClass());
         return count;
     }
-
+    
     /**
      * Update from database with criteria.
      * 
@@ -276,7 +277,7 @@ public class Session {
         notifySessionListener(criteria.getRoot().getClazz());
         return count;
     }
-
+    
     @Deprecated
     public void updateNative(Object obj) {
         Row row = new Row(obj);
@@ -290,7 +291,7 @@ public class Session {
             // throw new ORMException("ORM Error: no primary key found in "
             // + obj.getClass());
         }
-
+        
         int size = row.colNames.size();
         String current;
         for (int i = 0; i < size; i++) {
@@ -308,13 +309,13 @@ public class Session {
             sb.append('=');
             sb.append(pkValue);
         }
-
+        
         String sql = sb.toString();
         log("updateNative sql: " + sql + " ,args:" + row.args);
         execSQL(sql, row.getArgsArray());
         notifySessionListener(obj.getClass());
     }
-
+    
     /**
      * Delete the object from database
      * 
@@ -328,7 +329,7 @@ public class Session {
         int count = deleteById(obj.getClass(), id);
         return count;
     }
-
+    
     /**
      * Delete a row from database by PK
      * 
@@ -347,7 +348,7 @@ public class Session {
         notifySessionListener(clazz);
         return count;
     }
-
+    
     /**
      * Delete a row from database by PK with native SQL.
      * 
@@ -371,7 +372,7 @@ public class Session {
         execSQL(sql);
         notifySessionListener(clazz);
     }
-
+    
     /**
      * Delete all rows of database
      * 
@@ -390,7 +391,7 @@ public class Session {
             notifySessionListener(clazz);
         }
     }
-
+    
     /**
      * Update from database with criteria.
      * 
@@ -408,7 +409,7 @@ public class Session {
         notifySessionListener(criteria.getRoot().getClass());
         return count;
     }
-
+    
     /**
      * Query from database with criteria. with not notify a change to URI. Same
      * as query(Criteria, null)
@@ -421,7 +422,7 @@ public class Session {
     public Cursor query(Criteria criteria) {
         return query(criteria, null);
     }
-
+    
     /**
      * Query from database with criteria. with a change notify to URI.
      * 
@@ -440,7 +441,7 @@ public class Session {
         }
         return c;
     }
-
+    
     /**
      * Count the {@link Criteria} query number.
      * 
@@ -462,7 +463,7 @@ public class Session {
         }
         return 0;
     }
-
+    
     /**
      * Use sum() function of database
      * 
@@ -488,7 +489,7 @@ public class Session {
         }
         return 0;
     }
-
+    
     /**
      * Query all records of a table in database, and convert to objects list.
      * 
@@ -500,7 +501,7 @@ public class Session {
         Cursor c = query(Criteria.create(clazz));
         return CursorUtils.getFromCursor(c, clazz, null);
     }
-
+    
     /**
      * Query with a {@link Criteria} and convert to objects list.
      * 
@@ -522,7 +523,7 @@ public class Session {
         Cursor c = query(criteria);
         return CursorUtils.getFromCursor(c, criteria);
     }
-
+    
     /**
      * Query with a {@link Criteria} and convert to objects list. All the query
      * projections will mapping to root or child {@link Criteria}, example:
@@ -548,7 +549,7 @@ public class Session {
         return CursorUtils.getFromCursor(c, criteria.getProjectionClass(),
                 criteria.getProjectionSeparators());
     }
-
+    
     /**
      * Query with a {@link Criteria} and convert the first result record to
      * object.
@@ -564,7 +565,7 @@ public class Session {
         }
         return null;
     }
-
+    
     /**
      * Query the database by primary key, and convert the result to object.
      * 
@@ -586,15 +587,15 @@ public class Session {
         // Criteria criteria = Criteria.create(clazz).add(Restrictions.eq(pk,
         // id));
         Cursor c = query(table, columns, pk + "=" + id, 1);// query(criteria);
-
+        
         List<T> list = CursorUtils.getFromCursor(c, clazz, null);
         if (!list.isEmpty()) {
             return list.get(0);
         }
-
+        
         return null;
     }
-
+    
     /**
      * Query the database by primary key, and convert the result to object.
      * 
@@ -618,7 +619,7 @@ public class Session {
         }
         return null;
     }
-
+    
     private long getPkValue(Object obj) {
         String pk = Mapping.getInstance().getPK(obj.getClass());
         long id = 0;
@@ -633,7 +634,7 @@ public class Session {
         }
         return id;
     }
-
+    
     private static class Row {
         String table;
         String pk;
@@ -641,7 +642,7 @@ public class Session {
         Class<?> clz;
         ArrayList<Object> args = new ArrayList<Object>();
         ArrayList<String> colNames = new ArrayList<String>();
-
+        
         public Row(Object obj) {
             clz = obj.getClass();
             table = Mapping.getInstance().getTableName(clz);
@@ -664,7 +665,8 @@ public class Session {
                     if (colValue != null) {
                         if (pk.equals(colName)) {
                             pkValue = colValue;
-                        } else {
+                        }
+                        else {
                             args.add(colValue);
                             colNames.add(colName);
                         }
@@ -675,16 +677,16 @@ public class Session {
                 }
             }
         }
-
+        
         Object[] getArgsArray() {
             return args.toArray(new Object[args.size()]);
         }
-
+        
         private Method getMethod(Class<?> clz, ColumnWrap col) throws Exception {
             String getter = col.getGetter();
             return clz.getDeclaredMethod(getter, (Class<?>[]) null);
         }
-
+        
         long getId() {
             long id = 0;
             try {
@@ -694,7 +696,7 @@ public class Session {
             }
             return id;
         }
-
+        
         ContentValues getContentValues() {
             ContentValues values = new ContentValues();
             int size = colNames.size();
@@ -707,51 +709,58 @@ public class Session {
             }
             return values;
         }
-
+        
         static void putColumnValues(ContentValues colValues, String colName,
                 Object colValue) {
             Class<?> colClass = colValue.getClass();
             if (int.class == colClass || Integer.class == colClass) {
                 colValues.put(colName, (Integer) colValue);
-            } else if (short.class == colClass || Short.class == colClass) {
+            }
+            else if (short.class == colClass || Short.class == colClass) {
                 colValues.put(colName, (Short) colValue);
-            } else if (long.class == colClass || Long.class == colClass) {
+            }
+            else if (long.class == colClass || Long.class == colClass) {
                 colValues.put(colName, (Long) colValue);
-            } else if (byte.class == colClass || Byte.class == colClass) {
+            }
+            else if (byte.class == colClass || Byte.class == colClass) {
                 colValues.put(colName, (Byte) colValue);
-            } else if (float.class == colClass || Float.class == colClass) {
+            }
+            else if (float.class == colClass || Float.class == colClass) {
                 colValues.put(colName, (Float) colValue);
-            } else if (double.class == colClass || Double.class == colClass) {
+            }
+            else if (double.class == colClass || Double.class == colClass) {
                 colValues.put(colName, (Double) colValue);
-            } else if (byte[].class == colClass || Byte[].class == colClass) {
+            }
+            else if (byte[].class == colClass || Byte[].class == colClass) {
                 colValues.put(colName, (byte[]) colValue);
-            } else if (String.class == colClass) {
+            }
+            else if (String.class == colClass) {
                 colValues.put(colName, (String) colValue);
             }
         }
     }
-
+    
     private SessionObserver observer;
-
+    
     public void registerObserver(Uri uri) {
         if (observer == null) {
             observer = new SessionObserver(null, this);
         }
         mResolver.registerContentObserver(uri, true, observer);
     }
-
+    
     public void unregisterObserver() {
         if (observer != null) {
             mResolver.unregisterContentObserver(observer);
         }
     }
-
+    
     public void onChange(boolean selfChange) {
         notifySessionListener(null);
     }
-
+    
     private Set<SessionListener> listeners = null;
-
+    
     public void addSessionListener(SessionListener listener) {
         if (listeners == null) {
             listeners = new HashSet<SessionListener>();
@@ -760,7 +769,7 @@ public class Session {
             listeners.add(listener);
         }
     }
-
+    
     public void removeSessionListener(SessionListener listener) {
         if (listeners != null) {
             synchronized (listeners) {
@@ -768,7 +777,7 @@ public class Session {
             }
         }
     }
-
+    
     private void notifySessionListener(Class<?> clazz) {
         if (listeners != null) {
             synchronized (listeners) {
@@ -778,7 +787,7 @@ public class Session {
             }
         }
     }
-
+    
     public static interface SessionListener {
         void onChange(Class<?> clazz);
     }

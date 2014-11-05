@@ -37,13 +37,13 @@ public @interface Column {
      * @return name
      */
     public String name();
-
+    
     public String type() default "java.lang.String";
-
+    
     public String defaultValue() default "";
-
+    
     public boolean notNull() default false;
-
+    
     public boolean id() default false;
-
+    
 }

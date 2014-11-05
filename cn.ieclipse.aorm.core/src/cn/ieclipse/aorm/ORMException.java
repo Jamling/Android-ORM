@@ -20,24 +20,24 @@ package cn.ieclipse.aorm;
  * 
  */
 public class ORMException extends RuntimeException {
-
+    
     /**
 	 * 
 	 */
     private static final long serialVersionUID = -2824839292758533657L;
-
+    
     public ORMException() {
         super();
     }
-
+    
     public ORMException(String message) {
         super(message);
     }
-
+    
     public ORMException(Throwable t) {
         super(t);
     }
-
+    
     public ORMException(String message, Throwable t) {
         super(message, t);
     }

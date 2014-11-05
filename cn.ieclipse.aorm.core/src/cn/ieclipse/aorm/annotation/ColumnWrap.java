@@ -27,66 +27,67 @@ public class ColumnWrap {
     private String getter;
     private String setter;
     private Class<?> fieldType;
-
+    
     public ColumnWrap(Column column, Field field) {
         this.column = column;
         this.field = field;
         fieldType = (Class<?>) field.getGenericType();
-
+        
         String fieldName = field.getName();
         if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) {
             if (fieldName.startsWith("is") && fieldName.length() > 2) {
                 fieldName = fieldName.substring(2);
             }
             getter = "is" + capitalize(fieldName);
-        } else {
+        }
+        else {
             getter = "get" + capitalize(fieldName);
         }
-
+        
         setter = "set" + capitalize(fieldName);
     }
-
+    
     public String getPropertyName() {
         return field.getName();
     }
-
+    
     public String getColumnName() {
         return column.name();
     }
-
+    
     public Field getField() {
         return field;
     }
-
+    
     public Column getColumn() {
         return column;
     }
-
+    
     // public void setSetter(String setter) {
     // this.setter = setter;
     // }
-
+    
     public String getSetter() {
         return setter;
     }
-
+    
     // public void setGetter(String getter) {
     // this.getter = getter;
     // }
-
+    
     public String getGetter() {
         return getter;
     }
-
+    
     public Class<?> getFieldType() {
         return fieldType;
     }
-
+    
     @Override
     public String toString() {
         return "Column(" + column.name() + ")";
     }
-
+    
     static String capitalize(String str) {
         String ret = str;
         char c0 = str.charAt(0);

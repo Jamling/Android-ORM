@@ -23,14 +23,14 @@ import android.os.Handler;
  * 
  */
 class SessionObserver extends ContentObserver {
-
+    
     private Session session;
-
+    
     public SessionObserver(Handler handler, Session session) {
         super(handler);
         this.session = session;
     }
-
+    
     @Override
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);

@@ -24,16 +24,16 @@ import android.util.Log;
  * 
  */
 public final class Aorm {
-
+    
     private static boolean debug = false;
     private static boolean supportExtend = false;
     private static boolean exactInsertOrUpdate = false;
     private static final String TAG = "AORM";
-
+    
     private Aorm() {
         //
     }
-
+    
     /**
      * Enable/Disable debug to print SQL.
      * 
@@ -43,11 +43,11 @@ public final class Aorm {
     public static void enableDebug(boolean enable) {
         debug = enable;
     }
-
+    
     public static void allowExtend(boolean allow) {
         supportExtend = allow;
     }
-
+    
     /**
      * Set use actuarial insertOrUpdate
      * 
@@ -59,7 +59,7 @@ public final class Aorm {
     public static void setExactInsertOrUpdate(boolean exactInsertOrUpdate) {
         Aorm.exactInsertOrUpdate = exactInsertOrUpdate;
     }
-
+    
     /**
      * Get exactInsertOrUpdat
      * 
@@ -68,7 +68,7 @@ public final class Aorm {
     static boolean getExactInsertOrUpdate() {
         return Aorm.exactInsertOrUpdate;
     }
-
+    
     /**
      * Print log message on Android using {@link Log android.util.Log}
      * 

@@ -22,23 +22,23 @@ package cn.ieclipse.aorm;
 public class Order {
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
-
+    
     String property;
     String order;
-
+    
     private Order(String property) {
         this(property, ASC);
     }
-
+    
     private Order(String property, String order) {
         this.property = property;
         this.order = order;
     }
-
+    
     public static Order asc(String property) {
         return new Order(property);
     }
-
+    
     public static Order desc(String property) {
         return new Order(property, DESC);
     }

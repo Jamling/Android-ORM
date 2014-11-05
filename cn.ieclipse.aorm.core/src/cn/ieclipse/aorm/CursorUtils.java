@@ -30,9 +30,9 @@ import android.database.Cursor;
  */
 public final class CursorUtils {
     private CursorUtils() {
-
+        
     }
-
+    
     public static <T> List<T> getFromCursor(Cursor c, Class<T> objClass,
             String alias) {
         ArrayList<T> list = new ArrayList<T>();
@@ -68,7 +68,7 @@ public final class CursorUtils {
         }
         return list;
     }
-
+    
     public static List getFromCursor(Cursor c, Criteria criteria) {
         ArrayList list = new ArrayList();
         if (c == null) {
@@ -79,7 +79,7 @@ public final class CursorUtils {
         Method[] objMethod = new Method[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
-
+        
         Class<?> objClass = criteria.getRoot().getClazz();
         String objAlias = criteria.getRoot().getAlias();
         Object obj = null;
@@ -108,10 +108,10 @@ public final class CursorUtils {
         c.close();
         return list;
     }
-
+    
     public static List<Object[]> getFromCursor(Cursor c,
             Class<?>[] objClassArray, String[] aliasArray) {
-
+        
         ArrayList<Object[]> list = new ArrayList<Object[]>();
         if (c == null) {
             return list;
@@ -157,10 +157,10 @@ public final class CursorUtils {
         }
         return list;
     }
-
+    
     public static List<Object[]> getFromCursor(Cursor c,
             Class<?>[] objClassArray, int[] separatorArray) {
-
+        
         ArrayList<Object[]> list = new ArrayList<Object[]>();
         if (c == null) {
             return list;
@@ -173,7 +173,9 @@ public final class CursorUtils {
         int[] objIdxs = new int[colNames.length];
         try {
             for (int i = 0; i < colNames.length; i++) {
-                indcies[i] = c.getColumnIndex(colNames[i]);
+                // Jamling: SQLite3 will not contains table alias in projection
+                // column
+                indcies[i] = i;// c.getColumnIndex(colNames[i]);
                 for (int k = 0; k < objClassArray.length; k++) {
                     if (i < separatorArray[k]) {
                         objMethod[i] = getObjSetter(colNames[i],
@@ -207,7 +209,7 @@ public final class CursorUtils {
         }
         return list;
     }
-
+    
     private static Method getObjSetter(String column, Class<?>[] objClassArray,
             String[] aliasArray) {
         Method method = null;
@@ -221,7 +223,8 @@ public final class CursorUtils {
                     break;
                 }
             }
-        } else {
+        }
+        else {
             for (int i = 0; i < objClassArray.length; i++) {
                 try {
                     method = Mapping.getInstance().getSetterByColumn(column,
@@ -236,7 +239,7 @@ public final class CursorUtils {
         }
         return method;
     }
-
+    
     private static Method getObjSetter(String column, Class<?> objClass,
             String alias) /*
                            * throws SecurityException, NoSuchFieldException,
@@ -252,12 +255,13 @@ public final class CursorUtils {
                 method = Mapping.getInstance().getSetterByColumn(
                         column.substring(pos + 1), objClass);
             }
-        } else {
+        }
+        else {
             method = Mapping.getInstance().getSetterByColumn(column, objClass);
         }
         return method;
     }
-
+    
     private static Method getObjSetter(String column, Class<?> objClass) /*
                                                                           * throws
                                                                           * SecurityException
@@ -274,12 +278,13 @@ public final class CursorUtils {
             // not match
             method = Mapping.getInstance().getSetterByColumn(
                     column.substring(pos + 1), objClass);
-        } else {
+        }
+        else {
             method = Mapping.getInstance().getSetterByColumn(column, objClass);
         }
         return method;
     }
-
+    
     // static Method getObjGetter(String column, Class<?> objClass, String
     // alias) {
     // String prop = Cache.getInstance().getPropertyName(column, objClass);
@@ -295,7 +300,7 @@ public final class CursorUtils {
     // }
     // return method;
     // }
-
+    
     static String capitalize(String str) {
         String ret = str;
         char c0 = str.charAt(0);
@@ -309,42 +314,48 @@ public final class CursorUtils {
         }
         return ret;
     }
-
+    
     private static Object getColumnValue(Cursor c, int index,
             Class<?> paramClass) {
         Object paramValue = null;
         if (paramClass == int.class || paramClass == Integer.class) {
             paramValue = c.getInt(index);
-        } else if (paramClass == byte[].class || paramClass == Byte[].class) {
+        }
+        else if (paramClass == byte[].class || paramClass == Byte[].class) {
             paramValue = c.getBlob(index);
-        } else if (paramClass == short.class || paramClass == Short.class) {
+        }
+        else if (paramClass == short.class || paramClass == Short.class) {
             paramValue = c.getShort(index);
-        } else if (paramClass == long.class || paramClass == Long.class) {
+        }
+        else if (paramClass == long.class || paramClass == Long.class) {
             paramValue = c.getLong(index);
-        } else if (paramClass == float.class || paramClass == Float.class) {
+        }
+        else if (paramClass == float.class || paramClass == Float.class) {
             paramValue = c.getFloat(index);
-        } else if (paramClass == double.class || paramClass == Double.class) {
+        }
+        else if (paramClass == double.class || paramClass == Double.class) {
             paramValue = c.getDouble(index);
-        } else if (paramClass == String.class) {
+        }
+        else if (paramClass == String.class) {
             paramValue = c.getString(index);
         }
         return paramValue;
     }
-
+    
     // ///////////////
-
+    
     private static class CursorReflect {
         static Class<?> cursorClass;
         static Method moveToFirst;
         static Method isAfterLast;
         static Method moveToNext;
-
+        
         static Method getColumnNames;
         static Method getColumnIndex;
         static Method close;
-
+        
         static HashMap<String, Method> maps = new HashMap<String, Method>();
-
+        
         static {
             try {
                 cursorClass = Class.forName("android.database.Cursor");
@@ -360,7 +371,7 @@ public final class CursorUtils {
                         "getColumnIndex", String.class);
                 close = cursorClass.getDeclaredMethod("close",
                         (Class<?>[]) null);
-
+                
                 maps.put("byte[]",
                         cursorClass.getDeclaredMethod("getBlob", int.class));
                 maps.put("int",
@@ -392,18 +403,20 @@ public final class CursorUtils {
                 throw new ORMException(e.toString());
             }
         }
-
+        
         static Method getMapping(String type) {
             if ("Integer".equals(type)) {
                 return maps.get("int");
-            } else if ("String".equals(type)) {
+            }
+            else if ("String".equals(type)) {
                 return maps.get("String");
-            } else {
+            }
+            else {
                 return maps.get(type.toLowerCase());
             }
         }
     }
-
+    
     public static List<Object[]> getFromCursorReflect(Object cursor,
             Class<?>[] objClassArray, String[] aliasArray) {
         ArrayList<Object[]> list = new ArrayList<Object[]>();
@@ -413,9 +426,9 @@ public final class CursorUtils {
             int[] indcies = new int[colNames.length];
             Method[] cursorMethods = new Method[colNames.length];
             Method[] objMethod = new Method[colNames.length];
-
+            
             int[] objIdxs = new int[colNames.length];
-
+            
             for (int i = 0; i < colNames.length; i++) {
                 indcies[i] = (Integer) CursorReflect.getColumnIndex.invoke(
                         cursor, colNames[i]);
@@ -455,13 +468,13 @@ public final class CursorUtils {
                 list.add(objArray);
             }
             CursorReflect.close.invoke(cursor, (Object[]) null);
-
+            
         } catch (Exception e) {
             throw new ORMException(e);
         }
         return list;
     }
-
+    
     public static <T> List<T> getFromCursorReflect(Object cursor,
             Class<T> objClass, String alias) {
         ArrayList<T> list = new ArrayList<T>();
@@ -471,7 +484,7 @@ public final class CursorUtils {
             int[] indcies = new int[colNames.length];
             Method[] cursorMethods = new Method[colNames.length];
             Method[] objMethod = new Method[colNames.length];
-
+            
             for (int i = 0; i < colNames.length; i++) {
                 indcies[i] = (Integer) CursorReflect.getColumnIndex.invoke(
                         cursor, colNames[i]);
@@ -482,7 +495,7 @@ public final class CursorUtils {
                             .getParameterTypes()[0].getSimpleName());
                 }
             }
-
+            
             for (CursorReflect.moveToFirst.invoke(cursor, (Object[]) null); !(Boolean) CursorReflect.isAfterLast
                     .invoke(cursor, (Object[]) null); CursorReflect.moveToNext
                     .invoke(cursor, (Object[]) null)) {
@@ -496,7 +509,7 @@ public final class CursorUtils {
                 list.add(obj);
             }
             CursorReflect.close.invoke(cursor, (Object[]) null);
-
+            
         } catch (Exception e) {
             throw new ORMException(e);
         }

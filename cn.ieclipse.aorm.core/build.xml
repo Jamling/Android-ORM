@@ -32,7 +32,7 @@
 	<!-- ================================= 
           target: jar              
          ================================= -->
-	<target name="jar" depends="compile,source" description="description">
+	<target name="jar" depends="compile,source,doc" description="description">
 		<jar destfile="${dist.dir}/${dist.lib}" basedir="bin">
 			<manifest>
 				<attribute name="Author" value="Jamling" />

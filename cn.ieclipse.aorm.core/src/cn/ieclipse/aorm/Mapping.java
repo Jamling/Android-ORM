@@ -28,7 +28,7 @@ import cn.ieclipse.aorm.annotation.TableWrap;
  */
 public class Mapping {
     private static Mapping instance = null;
-
+    
     public static Mapping getInstance() {
         if (instance == null) {
             synchronized (Mapping.class) {
@@ -37,9 +37,9 @@ public class Mapping {
         }
         return instance;
     }
-
+    
     private HashMap<Class<?>, TableWrap> tables = new HashMap<Class<?>, TableWrap>();
-
+    
     private TableWrap getTableWrap(Class<?> clazz) {
         TableWrap wrap = tables.get(clazz);
         if (wrap == null) {
@@ -48,11 +48,11 @@ public class Mapping {
         }
         return wrap;
     }
-
+    
     public String getTableName(Class<?> clazz) {
         return getTableWrap(clazz).getTableName();
     }
-
+    
     /**
      * Get mapping table class by specified table name.<br />
      * <strong>Warning:</strong> If class not in mapping table, will return
@@ -70,39 +70,39 @@ public class Mapping {
         }
         return null;
     }
-
+    
     public List<String> getColumns(String alias, Class<?> clazz) {
         return getTableWrap(clazz).getColumnProjection(alias, clazz);
     }
-
+    
     public String getColumnName(String property, Class<?> clazz) {
         return getTableWrap(clazz).getColumn(property);
     }
-
+    
     public String getPropertyName(String column, Class<?> clazz) {
         return getTableWrap(clazz).getProperty(column);
     }
-
+    
     public String getPK(Class<?> clazz) {
         return getTableWrap(clazz).getPK();
     }
-
+    
     public String getPKProperty(Class<?> clazz) {
         return getTableWrap(clazz).getPKProperty();
     }
-
+    
     /* package */ColumnWrap getColumn(String property, Class<?> clazz) {
         return getTableWrap(clazz).getColumnWrap(property);
     }
-
+    
     /* package */List<ColumnWrap> getColumns(Class<?> clazz) {
         return getTableWrap(clazz).getColumnWraps();
     }
-
+    
     /* package */Method getGetterByColumn(String column, Class<?> clazz) {
         return getTableWrap(clazz).getGetterByColumn(column);
     }
-
+    
     /* package */Method getSetterByColumn(String column, Class<?> clazz) {
         return getTableWrap(clazz).getSetterByColumn(column);
     }

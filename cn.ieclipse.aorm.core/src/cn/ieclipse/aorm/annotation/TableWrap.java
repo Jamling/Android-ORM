@@ -32,7 +32,7 @@ public class TableWrap {
     private String pkColName;
     private String pkProName;
     private ArrayList<ColumnWrap> columns = new ArrayList<ColumnWrap>();
-
+    
     public TableWrap(Class<? extends Object> clazz) {
         Table t = clazz.getAnnotation(Table.class);
         if (t != null) {
@@ -52,14 +52,15 @@ public class TableWrap {
                     }
                 }
             }
-        } else {
+        }
+        else {
             throw new ORMException(
                     "No mapping for "
                             + clazz.getName()
                             + ", did you written Table annotation before class declaration?");
         }
     }
-
+    
     public String getColumn(String property) {
         if (property == null) {
             throw new NullPointerException();
@@ -76,7 +77,7 @@ public class TableWrap {
         // you should check null return value manually.
         return colName;
     }
-
+    
     public Method getGetterByColumn(String column) {
         Method getter = null;
         for (ColumnWrap col : columns) {
@@ -96,7 +97,7 @@ public class TableWrap {
         }
         return getter;
     }
-
+    
     public Method getSetterByColumn(String column) {
         Method getter = null;
         for (ColumnWrap col : columns) {
@@ -116,7 +117,7 @@ public class TableWrap {
         }
         return getter;
     }
-
+    
     public String getPK() {
         // String colName = null;
         // for (ColumnWrap col : columns) {
@@ -129,11 +130,11 @@ public class TableWrap {
         // return colName;
         return pkColName;
     }
-
+    
     public String getPKProperty() {
         return pkProName;
     }
-
+    
     public ColumnWrap getColumnWrap(String property) {
         if (property == null) {
             throw new NullPointerException();
@@ -147,11 +148,11 @@ public class TableWrap {
         }
         return colName;
     }
-
+    
     public List<ColumnWrap> getColumnWraps() {
         return columns;
     }
-
+    
     public String getProperty(String column) {
         String propName = null;
         for (ColumnWrap col : columns) {
@@ -162,49 +163,51 @@ public class TableWrap {
         }
         return propName;
     }
-
+    
     public ArrayList<String> getColumnProjection(String alias, Class<?> clazz) {
         ArrayList<String> cols = new ArrayList<String>(columns.size());
         boolean hasAlias = alias != null && !"".equals(alias.trim());
-
+        
         if (hasAlias) {
             String preffix = alias + ".";
             for (ColumnWrap col : columns) {
                 cols.add(preffix + col.getColumnName());
             }
-        } else {
+        }
+        else {
             for (ColumnWrap col : columns) {
                 cols.add(col.getColumnName());
             }
         }
         return cols;
     }
-
+    
     public ArrayList<String> getPropertyProjection(String alias, Class<?> clazz) {
         ArrayList<String> cols = new ArrayList<String>(columns.size());
         boolean hasAlias = alias != null && !"".equals(alias.trim());
-
+        
         if (hasAlias) {
             String preffix = alias + ".";
             for (ColumnWrap col : columns) {
                 cols.add(preffix + col.getPropertyName());
             }
-        } else {
+        }
+        else {
             for (ColumnWrap col : columns) {
                 cols.add(col.getPropertyName());
             }
         }
         return cols;
     }
-
+    
     public String getTableName() {
         return table.name();
     }
-
+    
     public Class<?> getTableClass() {
         return clazz;
     }
-
+    
     @Override
     public String toString() {
         return "Table(" + table.name() + ")";
