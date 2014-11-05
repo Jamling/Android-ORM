@@ -1,13 +1,13 @@
 # Introduction
 
-Did you used sqlite to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
+Did you use SQLite to save your data on Android? If you did, you might be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) is coming to make it simple for developers. If you have the interesting, please join us.
 
 # Features
 * Brief ORM mapping, just write an annotation for the field of Java beans. e.g. @Column(name="_name") to mapping _name columnn of database to name property.
-* Powerful Forward Engineering supporting, generating DDL and ContentProvider automaticlly.
+* Powerful Forward Engineering support, generating DDL and ContentProvider automaticlly.
 * Useful Assist feature, create your Activity/Service/BroadcastReceiver with a wizard and configurat them in AndroidManifest.xml automatically.
 * ...
-More feature, please experience it for your self.
+and more features, please try it yourself.
 
 # Projects
 ## cn.ieclipse.aorm.core
