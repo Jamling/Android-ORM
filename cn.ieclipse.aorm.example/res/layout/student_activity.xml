@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp" >
+
+        <Button
+            android:id="@+id/btn_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/btn_prev"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingLeft="4dp"
+            android:text="@string/page_info"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/btn_next"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp" >
+
+        <TextView
+            android:id="@+id/tv_index"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:text="@string/label_index" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:ellipsize="end"
+            android:paddingLeft="4dp"
+            android:singleLine="true"
+            android:text="@string/label_name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:ellipsize="end"
+            android:paddingLeft="4dp"
+            android:singleLine="true"
+            android:text="@string/label_phone"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv_age"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:paddingLeft="4dp"
+            android:singleLine="true"
+            android:text="@string/label_age"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView
+            android:id="@+id/btn_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="4dp"
+            android:src="@android:drawable/ic_input_get" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" >
+    </ListView>
+
+</LinearLayout>

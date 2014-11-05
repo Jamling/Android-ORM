@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest android:versionCode="1" android:versionName="1.0"
+    package="cn.ieclipse.aorm.example" xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
+    <application android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:name=".ExampleApplication" android:theme="@style/AppTheme">
+        <activity android:label="@string/app_name" android:name="cn.ieclipse.aorm.example.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- created by AORM plugin at 2014-10-27 17:17:24 -->
+        <activity android:name=".StudentListActivity">
+            <intent-filter>
+                <action android:name="aorm.intent.action.student.list"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!-- created by AORM plugin at 2014-10-27 17:59:08 -->
+        <activity android:name=".StudentDetailActivity">
+            <intent-filter>
+                <action android:name="aorm.intent.action.student.detail"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!--created by AORM plugin at 2014-10-31 13:57:51-->
+        <activity android:name=".CourseListActivity">
+            <intent-filter>
+                <action android:name="aorm.intent.action.course.list"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!--created by AORM plugin at 2014-10-31 15:47:48-->
+        <activity android:name=".CourseDetailActivity">
+            <intent-filter>
+                <action android:name="aorm.intent.action.course.view"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!--created by AORM plugin at 2014-10-31 18:02:40-->
+        <activity android:name=".StudentGradeActivity">
+            <intent-filter>
+                <action android:name="aorm.intent.action.student.score"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!--created by AORM plugin at 2014-10-31 19:36:06-->
+        <activity android:name=".StudentGradeDetailActivity">
+            <intent-filter>
+                <action android:name="aorm.intent.action.student.grade.detail"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!-- created by AORM plugin at 2014-10-27 17:48:42 -->
+        <provider
+            android:authorities="cn.ieclipse.aorm.example.provider"
+            android:exported="false" android:name=".ExampleContentProvider"/>
+    </application>
+</manifest>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="4dp" >
+
+    <TextView
+        android:id="@+id/tv_index"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:paddingLeft="4dp"
+        android:text="@string/label_index" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:ellipsize="end"
+        android:paddingLeft="4dp"
+        android:singleLine="true"
+        android:text="@string/label_name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:ellipsize="end"
+        android:paddingLeft="4dp"
+        android:singleLine="true"
+        android:text="@string/label_phone"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tv_age"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:paddingLeft="4dp"
+        android:singleLine="true"
+        android:text="@string/label_age"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <ImageView
+        android:id="@+id/btn_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="4dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_input_get" />
+
+</LinearLayout>

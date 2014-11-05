@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="6dp"
+    tools:context="${packageName}.${activityClass}" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="all"
+        android:text="Wecome to Android ORM (Aorm)!\n This is an example of Aorm. You can visit https://github.com/Jamling/Android-ORM for more infomcation" />
+
+    <Button
+        android:id="@+id/btn_student_mgr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Student Managment" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student Managment:\n View add, edit, delete student info and query course grade." />
+
+    <Button
+        android:id="@+id/btn_course_mgr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Course Managment" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Course managment:\n View, add, edit, delete course info." />
+
+</LinearLayout>

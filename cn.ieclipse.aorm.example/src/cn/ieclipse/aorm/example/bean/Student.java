@@ -1,0 +1,74 @@
+/**
+ * 
+ */
+package cn.ieclipse.aorm.example.bean;
+
+import java.io.Serializable;
+
+import cn.ieclipse.aorm.annotation.Column;
+import cn.ieclipse.aorm.annotation.Table;
+
+/**
+ * @author Jamling
+ * 
+ */
+@Table(name = "student")
+public class Student implements Serializable {
+
+    private static final long serialVersionUID = 8010508999597447226L;
+
+    @Column(name = "_id", id = true)
+    private long id;
+
+    @Column(name = "_name")
+    private String name;
+
+    @Column(name = "_age")
+    private int age;
+
+    @Column(name = "_phone")
+    private String phone;
+
+    private String address;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+}
