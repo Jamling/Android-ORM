@@ -15,6 +15,8 @@
 	<property name="source.src" value="src" />
 	<property name="source.test" value="test" />
 	<property name="bin.dir" value="bin" />
+	<property name="libs.dir" value="libs" />
+	<property name="compile.debug.level" value="lines" />
 
 	<property name="dist.dir" value="dist" />
 	<property name="doc.dir" value="docs" />
@@ -50,14 +52,6 @@
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
-          target: for_test                      
-         - - - - - - - - - - - - - - - - - -->
-	<target name="for_test">
-		<jar destfile="${ant.project.name}_latest.jar" basedir="${bin.dir}">
-		</jar>
-	</target>
-
-	<!-- - - - - - - - - - - - - - - - - - 
           target: clean                      
          - - - - - - - - - - - - - - - - - -->
 	<target name="clean">
@@ -70,22 +64,28 @@
           target: compile                      
          - - - - - - - - - - - - - - - - - -->
 	<target name="compile" depends="clean">
-		<javac target="1.5" destdir="${bin.dir}" srcdir="src" includeantruntime="false" debug="on" optimize="true" verbose="false" debuglevel="lines,vars,source">
-			<classpath path="D:\\Android\\android-sdk\\platforms\\android-19\\android.jar">
+		<javac target="1.5" destdir="${bin.dir}" srcdir="src" includeantruntime="false" debug="on" optimize="true" verbose="false" debuglevel="${compile.debug.level}">
+			<classpath refid="compile.path">
 			</classpath>
 		</javac>
 	</target>
+
+	<path id="compile.path">
+		<pathelement location="D:\Android\android-sdk\platforms\android-19\android.jar" />
+	</path>
 
 	<path id="test.path">
 		<pathelement path="${bin.dir}" />
 		<pathelement location="D:\Android\eclipse\plugins\org.junit_4.11.0.v201303080030\junit.jar" />
 		<pathelement location="D:/Android/eclipse/plugins/org.hamcrest.core.source_1.3.0.v201303031735.jar" />
-		<pathelement location="D:\Android\android-sdk\platforms\android-19\android.jar" />
+		<pathelement location="${libs.dir}/aorm.mock.jar" />
 	</path>
 	<!-- - - - - - - - - - - - - - - - - - 
           target: test                      
          - - - - - - - - - - - - - - - - - -->
 	<target name="test">
+		<delete dir="xml">
+		</delete>
 		<mkdir dir="xml" />
 		<delete dir="${junit.report.dir}" />
 		<junit printsummary="true">
