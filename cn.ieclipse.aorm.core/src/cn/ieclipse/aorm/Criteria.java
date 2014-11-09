@@ -107,7 +107,12 @@ public class Criteria {
     }
     
     /**
-     * Add a child criteria to current criteria
+     * Add a child criteria to current criteria <br />
+     * <strong>Note1:</strong> If null join assigned, will use parent_table as
+     * pt, child_table as ct sql;<br />
+     * <strong>Note2:</strong> {@link Criteria#LEFT_JOIN Criteria.LEFT_JOIN} ,
+     * {@link Criteria#INNER_JOIN Criteria.INNER_JOIN} will not return child
+     * table projection unless call {@link #setProjection(boolean)} to true;
      * 
      * @param clazz
      *            The persist object class
@@ -116,10 +121,12 @@ public class Criteria {
      *            &lt;alias.&gt prefix. Recommended to set alias when
      *            multi-criteria exists.
      * @param join
-     *            join type, use {@link Criteria#LEFT_JOIN Criteria.LEFT_JOIN} ,
-     *            {@link Criteria#INNER_JOIN Criteria.INNER_JOIN},
-     *            {@link Criteria#CROSS_JOIN Criteria.CROSS_JOIN},
-     *            {@link Criteria#LEFT_OUTER_JOIN Criteria.LEFT_OUTER_JOIN}
+     *            join type, use null, {@link Criteria#LEFT_JOIN
+     *            Criteria.LEFT_JOIN} , {@link Criteria#INNER_JOIN
+     *            Criteria.INNER_JOIN}, {@link Criteria#CROSS_JOIN
+     *            Criteria.CROSS_JOIN}, {@link Criteria#LEFT_OUTER_JOIN
+     *            Criteria.LEFT_OUTER_JOIN}.
+     * 
      * @param on
      *            restriction to join parent criteria
      * @return child criteria
@@ -137,9 +144,8 @@ public class Criteria {
             criteria.on.criteria = criteria;
         }
         criteria.table = Mapping.getInstance().getTableName(clazz);
-        if (CROSS_JOIN.equals(join)) {
-            criteria.resultColumn = true;
-        }
+        criteria.resultColumn = join == null || CROSS_JOIN.equals(join)
+                || LEFT_OUTER_JOIN.equals(join);
         
         this.child = criteria;
         return criteria;
@@ -204,6 +210,7 @@ public class Criteria {
      * @return current criteria
      */
     public Criteria setProjections(String[] projections) {
+        this.projections.clear();
         for (String property : projections) {
             String sub = property;
             if (alias != null && property.startsWith(alias)
@@ -234,6 +241,7 @@ public class Criteria {
      * @return current criteria
      */
     public Criteria setColumns(String[] columns) {
+        this.projections.clear();
         for (int i = 0; i < columns.length; i++) {
             this.projections.add(columns[i]);
         }
@@ -256,8 +264,8 @@ public class Criteria {
         Criteria root = getRoot();
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ");
-        if (distinct) {
-            sb.append("DISTINC");
+        if (root.distinct) {
+            sb.append("DISTINCT ");
         }
         concatResultColumn(sb, root);
         sb.append(" FROM ");
@@ -585,5 +593,11 @@ public class Criteria {
             column = property;
         }
         return column;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getName() + "(" + getClazz() + ", alias "
+                + getAlias() + ")";
     }
 }

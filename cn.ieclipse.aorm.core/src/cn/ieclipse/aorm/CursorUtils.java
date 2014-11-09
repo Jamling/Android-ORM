@@ -336,6 +336,10 @@ public final class CursorUtils {
         else if (paramClass == double.class || paramClass == Double.class) {
             paramValue = c.getDouble(index);
         }
+        else if (paramClass == boolean.class || paramClass == Boolean.class) {
+            int temp = c.getInt(index);
+            paramValue = temp == 0 ? false : true;
+        }
         else if (paramClass == String.class) {
             paramValue = c.getString(index);
         }
