@@ -1,0 +1,19 @@
+<project name="aorm.mock" basedir="." default="jar">
+
+	<property name="aorm.libs" location="../cn.ieclipse.aorm.core/libs" />
+
+
+	<!-- ================================= 
+          target: jar              
+         ================================= -->
+	<target name="jar" description="description">
+		<jar destfile="${aorm.libs}/${ant.project.name}.jar" basedir="bin">
+			<manifest>
+				<attribute name="Author" value="Jamling" />
+				<attribute name="Email" value="li.jamling@gmail.com;li_jaming@163.com" />
+				<attribute name="Version" value="${version}_${TODAY}" />
+			</manifest>
+		</jar>
+	</target>
+
+</project>
