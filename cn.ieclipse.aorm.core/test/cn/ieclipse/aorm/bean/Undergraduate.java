@@ -15,9 +15,74 @@
  */
 package cn.ieclipse.aorm.bean;
 
+import cn.ieclipse.aorm.annotation.Column;
 import cn.ieclipse.aorm.annotation.Table;
 
 @Table(name = "undergraduate")
 public class Undergraduate extends Student {
     
+    private static final long serialVersionUID = 7214955858913570025L;
+    
+    @Column(name = "_weight")
+    private float weight;
+    
+    private Float oweight;
+    
+    private double balance;
+    
+    private Double obalance;
+    
+    @Column(name = "_photo")
+    private byte[] photo;
+    
+    @Column(name = "_age")
+    private int age;
+    
+    public float getWeight() {
+        return weight;
+    }
+    
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+    
+    public Float getOweight() {
+        return oweight;
+    }
+    
+    public void setOweight(Float oweight) {
+        this.oweight = oweight;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+    
+    public Double getObalance() {
+        return obalance;
+    }
+    
+    public void setObalance(Double obalance) {
+        this.obalance = obalance;
+    }
+    
+    public byte[] getPhoto() {
+        return photo;
+    }
+    
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    public void setAge(int age) {
+        this.age = age;
+    }
 }

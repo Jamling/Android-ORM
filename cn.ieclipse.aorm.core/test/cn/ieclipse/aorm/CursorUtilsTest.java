@@ -23,6 +23,7 @@ import org.junit.Assert;
 
 import cn.ieclipse.aorm.bean.Grade;
 import cn.ieclipse.aorm.bean.Student;
+import cn.ieclipse.aorm.bean.Undergraduate;
 import cn.ieclipse.aorm.test.MockCursor;
 
 /**
@@ -43,6 +44,18 @@ public class CursorUtilsTest extends TestCase {
         list = CursorUtils.getFromCursorReflect(cursor, Student.class, null);
         s = (Student) list.get(0);
         Assert.assertEquals("lijm", s.getName());
+        
+        // sub class
+        cursor = new MockCursor(new String[] { "_id", "_name", "_age",
+                "_phone", "_weight", "_photo" });
+        cursor.addRow(new Object[] { 1, "lijm", 30, "139", "1", null });
+        list = CursorUtils.getFromCursor(cursor,
+                Criteria.create(Undergraduate.class));
+        Assert.assertEquals(1, list.size());
+        Undergraduate u = (Undergraduate) list.get(0);
+        Assert.assertEquals("lijm", u.getName());
+        Assert.assertEquals(1f, u.getWeight(), 0f);
+        Assert.assertEquals(30, u.getAge());
         
     }
     

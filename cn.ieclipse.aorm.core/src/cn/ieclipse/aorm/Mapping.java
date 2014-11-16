@@ -72,7 +72,7 @@ public class Mapping {
     }
     
     public List<String> getColumns(String alias, Class<?> clazz) {
-        return getTableWrap(clazz).getColumnProjection(alias, clazz);
+        return getTableWrap(clazz).getColumnProjection(alias);
     }
     
     public String getColumnName(String property, Class<?> clazz) {

@@ -26,7 +26,7 @@ import android.util.Log;
 public final class Aorm {
     
     private static boolean debug = false;
-    private static boolean supportExtend = false;
+    private static boolean supportExtend = true;
     private static boolean exactInsertOrUpdate = false;
     private static final String TAG = "AORM";
     
@@ -46,6 +46,10 @@ public final class Aorm {
     
     public static void allowExtend(boolean allow) {
         supportExtend = allow;
+    }
+    
+    public static boolean allowExtend() {
+        return supportExtend;
     }
     
     /**

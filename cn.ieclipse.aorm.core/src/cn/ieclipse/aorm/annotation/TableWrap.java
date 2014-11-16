@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.ieclipse.aorm.Aorm;
 import cn.ieclipse.aorm.ORMException;
 
 /**
@@ -38,7 +39,7 @@ public class TableWrap {
         if (t != null) {
             table = t;
             this.clazz = clazz;
-            Field[] fields = clazz.getDeclaredFields();
+            List<Field> fields = getClassField(this.clazz);
             if (fields != null) {
                 for (Field field : fields) {
                     if (field.isAnnotationPresent(Column.class)) {
@@ -58,6 +59,26 @@ public class TableWrap {
                     "No mapping for "
                             + clazz.getName()
                             + ", did you written Table annotation before class declaration?");
+        }
+    }
+    
+    private List<Field> getClassField(Class<?> clazz) {
+        List<Field> list = new ArrayList<Field>();
+        getParentClassField(clazz, list);
+        return list;
+    }
+    
+    private void getParentClassField(Class<?> clazz, List<Field> list) {
+        if (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            if (fields != null) {
+                for (Field field : fields) {
+                    list.add(field);
+                }
+            }
+            if (Aorm.allowExtend()) {
+                getParentClassField(clazz.getSuperclass(), list);
+            }
         }
     }
     
@@ -83,8 +104,8 @@ public class TableWrap {
         for (ColumnWrap col : columns) {
             if (col.getColumnName().equals(column)) {
                 try {
-                    getter = clazz.getDeclaredMethod(col.getGetter(),
-                            (Class<?>[]) null);
+                    getter = clazz
+                            .getMethod(col.getGetter(), (Class<?>[]) null);
                 } catch (SecurityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -103,7 +124,7 @@ public class TableWrap {
         for (ColumnWrap col : columns) {
             if (col.getColumnName().equals(column)) {
                 try {
-                    getter = clazz.getDeclaredMethod(col.getSetter(),
+                    getter = clazz.getMethod(col.getSetter(),
                             col.getFieldType());
                 } catch (SecurityException e) {
                     // TODO Auto-generated catch block
@@ -164,7 +185,7 @@ public class TableWrap {
         return propName;
     }
     
-    public ArrayList<String> getColumnProjection(String alias, Class<?> clazz) {
+    public ArrayList<String> getColumnProjection(String alias) {
         ArrayList<String> cols = new ArrayList<String>(columns.size());
         boolean hasAlias = alias != null && !"".equals(alias.trim());
         
@@ -182,7 +203,7 @@ public class TableWrap {
         return cols;
     }
     
-    public ArrayList<String> getPropertyProjection(String alias, Class<?> clazz) {
+    public ArrayList<String> getPropertyProjection(String alias) {
         ArrayList<String> cols = new ArrayList<String>(columns.size());
         boolean hasAlias = alias != null && !"".equals(alias.trim());
         
