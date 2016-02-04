@@ -15,13 +15,18 @@
  */
 package cn.ieclipse.aorm;
 
+import java.util.List;
+
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import cn.ieclipse.aorm.annotation.ColumnWrap;
+import cn.ieclipse.aorm.annotation.Table;
 
 /**
  * Aorm settings
  * 
  * @author Jamling
- * 
+ *         
  */
 public final class Aorm {
     
@@ -83,5 +88,51 @@ public final class Aorm {
         if (debug) {
             android.util.Log.v(TAG, msg);
         }
+    }
+    
+    public static final String LF = System.getProperty("line.separator");
+    
+    public static String generateDropDDL(Class<?> tableClass) {
+        Table t = tableClass.getAnnotation(Table.class);
+        if (t == null) {
+            throw new ORMException("No mapping to " + tableClass
+                    + ", did you forget add @Table to your class?");
+        }
+        return "DROP TABLE " + t.name() + " IF EXISTS";
+    }
+    
+    public static String generateCreateDDL(Class<?> tableClass) {
+        Table t = tableClass.getAnnotation(Table.class);
+        if (t == null) {
+            throw new ORMException("No mapping to " + tableClass
+                    + ", did you forget add @Table to your class?");
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE ");
+        sb.append(t.name());
+        sb.append(" IF NOT EXISTS (");
+        sb.append(LF);
+        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
+        for (ColumnWrap cw : list) {
+            sb.append(new ColumnMeta(cw.getColumn()).toSQL()).toString();
+            sb.append(", ");
+            sb.append(LF);
+        }
+        int len = sb.length() - 2;
+        len = len - LF.length();
+        sb.delete(len, sb.length());
+        sb.append(")");
+        sb.append(LF);
+        return (sb.toString());
+    }
+    
+    public static void createTable(SQLiteDatabase db, Class<?> tableClass) {
+        String sql = generateCreateDDL(tableClass);
+        db.execSQL(sql);
+    }
+    
+    public static void dropTable(SQLiteDatabase db, Class<?> tableClass) {
+        String sql = generateDropDDL(tableClass);
+        db.execSQL(sql);
     }
 }

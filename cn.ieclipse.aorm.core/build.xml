@@ -64,14 +64,15 @@
           target: compile                      
          - - - - - - - - - - - - - - - - - -->
 	<target name="compile" depends="clean">
-		<javac target="1.5" destdir="${bin.dir}" srcdir="src" includeantruntime="false" debug="on" optimize="true" verbose="false" debuglevel="${compile.debug.level}">
+		<javac target="1.5" source="1.5" encoding="utf-8" destdir="${bin.dir}" srcdir="src" includeantruntime="false" debug="on" optimize="true" verbose="false" debuglevel="${compile.debug.level}">
 			<classpath refid="compile.path">
 			</classpath>
 		</javac>
 	</target>
 
 	<path id="compile.path">
-		<pathelement location="D:\Android\android-sdk\platforms\android-19\android.jar" />
+<!-- 		<pathelement location="D:\Android\android-sdk\platforms\android-22\android.jar" /> -->
+		<pathelement location="${libs.dir}/aorm.mock.jar" />
 	</path>
 
 	<path id="test.path">
@@ -110,7 +111,7 @@
           target: doc              
          ================================= -->
 	<target name="doc" description="java doc">
-		<javadoc destdir="${doc.dir}/api" docencoding="utf-8" charset="utf-8" windowtitle="Android ORM API documents">
+		<javadoc destdir="${doc.dir}/api" encoding="utf-8" docencoding="utf-8" charset="utf-8" windowtitle="Android ORM API documents">
 			<sourcepath path="${source.src}">
 
 			</sourcepath>
