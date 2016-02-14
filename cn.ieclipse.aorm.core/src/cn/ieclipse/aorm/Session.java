@@ -56,7 +56,7 @@ public class Session {
      * @param resolver
      *            The {@linkplain android.content.ContentResolver
      *            ContentResolver} instance for your application's package.
-     * 
+     *            
      */
     public Session(SQLiteOpenHelper helper, ContentResolver resolver) {
         mHelper = helper;
@@ -124,7 +124,7 @@ public class Session {
      *            nullColumnHack parameter provides the name of nullable column
      *            name to explicitly insert a NULL into in the case where your
      *            values is empty.
-     * 
+     *            
      * @return the row ID of the newly inserted row, or -1 if an error occurred
      */
     public long insert(Object obj, String nullColumnHack) {
@@ -142,7 +142,7 @@ public class Session {
      * 
      * @param obj
      *            the object instance
-     * 
+     *            
      * @return the row ID of the newly inserted row, or -1 if an error occurred
      */
     public long insert(Object obj) {
@@ -208,6 +208,7 @@ public class Session {
      * @param obj
      *            the object instance
      * @param nullColumnHack
+     *            nullColumnHack
      * @return the row ID of the newly inserted row or the number of rows
      *         affected when updated
      */
@@ -261,8 +262,8 @@ public class Session {
      * @return the number of rows affected
      */
     public int update(Criteria criteria, ContentValues values) {
-        String table = Mapping.getInstance().getTableName(
-                criteria.getRoot().getClazz());
+        String table = Mapping.getInstance()
+                .getTableName(criteria.getRoot().getClazz());
         String sql = criteria.toSQL();
         String where = criteria.getWhere();
         String[] args = criteria.getStringArgs();
@@ -397,15 +398,16 @@ public class Session {
      * 
      * @param criteria
      *            the criteria query instance.
-     * 
+     *            
      * @return the number of rows deleted
      */
     public int delete(Criteria criteria) {
         String sql = criteria.toSQL();
-        String table = Mapping.getInstance().getTableName(
-                criteria.getRoot().getClazz());
+        String table = Mapping.getInstance()
+                .getTableName(criteria.getRoot().getClazz());
         log("delete " + table + " where: " + criteria.getWhere());
-        int count = delete(table, criteria.getWhere(), criteria.getStringArgs());
+        int count = delete(table, criteria.getWhere(),
+                criteria.getStringArgs());
         notifySessionListener(criteria.getRoot().getClass());
         return count;
     }
@@ -447,7 +449,7 @@ public class Session {
      * 
      * @param criteria
      *            the criteria query instance.
-     * 
+     *            
      * @return the number of rows deleted
      */
     public int count(Criteria criteria) {
@@ -469,7 +471,7 @@ public class Session {
      * 
      * @param criteria
      *            the criteria query instance.
-     * 
+     *            
      * @param property
      *            the java property to calculate sum.
      * @return the result of sum() function in database.
@@ -495,6 +497,8 @@ public class Session {
      * 
      * @param clazz
      *            the mapping table class
+     * @param <T>
+     *            the class type parameter
      * @return converted objects list
      */
     public <T> List<T> list(Class<T> clazz) {
@@ -573,6 +577,8 @@ public class Session {
      *            the mapping table class
      * @param id
      *            the value of primary key
+     * @param <T>
+     *            the class type parameter
      * @return clazz instance or null if the record not exists
      */
     public <T> T get(Class<T> clazz, long id) {
@@ -601,15 +607,17 @@ public class Session {
      * 
      * @param obj
      *            the object has been set the primary key value.
-     * 
+     * @param <T>
+     *            the class type parameter
+     *            
      * @return the full object or null if the record not exists
      */
     public <T> T get(T obj) {
         // String table = Cache.getInstance().getTableName(obj.getClass());
         String pk = Mapping.getInstance().getPKProperty(obj.getClass());
         long id = getPkValue(obj);
-        Criteria criteria = Criteria.create(obj.getClass()).add(
-                Restrictions.eq(pk, id));
+        Criteria criteria = Criteria.create(obj.getClass())
+                .add(Restrictions.eq(pk, id));
         Cursor c = query(criteria);
         @SuppressWarnings("unchecked")
         List<T> list = CursorUtils.getFromCursor(c, (Class<T>) obj.getClass(),
@@ -682,7 +690,8 @@ public class Session {
             return args.toArray(new Object[args.size()]);
         }
         
-        private Method getMethod(Class<?> clz, ColumnWrap col) throws Exception {
+        private Method getMethod(Class<?> clz, ColumnWrap col)
+                throws Exception {
             String getter = col.getGetter();
             return clz.getDeclaredMethod(getter, (Class<?>[]) null);
         }

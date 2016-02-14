@@ -7,7 +7,7 @@
                    
      melord                                                                
      ====================================================================== -->
-<project name="aorm" default="jar">
+<project name="aorm-core" default="jar">
 	<description>
             description
     </description>
@@ -27,9 +27,9 @@
 		<format property="TODAY" locale="zh" pattern="yyyyMMdd" />
 	</tstamp>
 
-	<property name="dist.lib" value="${ant.project.name}_${version}_${TODAY}.jar" />
-	<property name="dist.lib.doc" value="${ant.project.name}.doc_${version}_${TODAY}.jar" />
-	<property name="dist.lib.source" value="${ant.project.name}.source_${version}_${TODAY}.jar" />
+	<property name="dist.lib" value="${ant.project.name}-${version}.jar" />
+	<property name="dist.lib.doc" value="${ant.project.name}-${version}-javadoc.jar" />
+	<property name="dist.lib.source" value="${ant.project.name}-${version}-sources.jar" />
 
 	<!-- ================================= 
           target: jar              

@@ -24,7 +24,6 @@ import cn.ieclipse.aorm.annotation.TableWrap;
 
 /**
  * @author Jamling
- * @hide
  */
 public class Mapping {
     private static Mapping instance = null;
@@ -54,7 +53,9 @@ public class Mapping {
     }
     
     /**
-     * Get mapping table class by specified table name.<br />
+     * <p>
+     * Get mapping table class by specified table name.
+     * </p>
      * <strong>Warning:</strong> If class not in mapping table, will return
      * null.
      * 

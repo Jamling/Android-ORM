@@ -23,7 +23,7 @@ import java.util.List;
  * criteria to current criteria.
  * 
  * @author melord
- * 
+ *         
  */
 public class Criteria {
     public static final String LEFT_JOIN = "LEFT JOIN";
@@ -79,6 +79,10 @@ public class Criteria {
      * 
      * @param clazz
      *            POJO class mapping to table exists.
+     * @param alias
+     *            if set, projection item and result column would with a
+     *            &lt;alias.&gt; prefix. Recommended to set alias when
+     *            multi-criteria exists.
      * @return created criteria
      */
     public static Criteria create(Class<?> clazz, String alias) {
@@ -98,7 +102,7 @@ public class Criteria {
      *            POJO class mapping to table
      * @param alias
      *            if set, projection item and result column would with a
-     *            &lt;alias.&gt prefix. Recommended to set alias when
+     *            &lt;alias.&gt; prefix. Recommended to set alias when
      *            multi-criteria exists.
      * @return created criteria
      */
@@ -107,9 +111,13 @@ public class Criteria {
     }
     
     /**
-     * Add a child criteria to current criteria <br />
+     * <p>
+     * Add a child criteria to current criteria
+     * </p>
+     * <p>
      * <strong>Note1:</strong> If null join assigned, will use parent_table as
-     * pt, child_table as ct sql;<br />
+     * pt, child_table as ct sql;
+     * </p>
      * <strong>Note2:</strong> {@link Criteria#LEFT_JOIN Criteria.LEFT_JOIN} ,
      * {@link Criteria#INNER_JOIN Criteria.INNER_JOIN} will not return child
      * table projection unless call {@link #setProjection(boolean)} to true;
@@ -118,7 +126,7 @@ public class Criteria {
      *            The persist object class
      * @param alias
      *            if set, projection item and result column would with a
-     *            &lt;alias.&gt prefix. Recommended to set alias when
+     *            &lt;alias.&gt; prefix. Recommended to set alias when
      *            multi-criteria exists.
      * @param join
      *            join type, use null, {@link Criteria#LEFT_JOIN
@@ -126,7 +134,7 @@ public class Criteria {
      *            Criteria.INNER_JOIN}, {@link Criteria#CROSS_JOIN
      *            Criteria.CROSS_JOIN}, {@link Criteria#LEFT_OUTER_JOIN
      *            Criteria.LEFT_OUTER_JOIN}.
-     * 
+     *            
      * @param on
      *            restriction to join parent criteria
      * @return child criteria
@@ -146,14 +154,14 @@ public class Criteria {
         criteria.table = Mapping.getInstance().getTableName(clazz);
         criteria.resultColumn = join == null || CROSS_JOIN.equals(join)
                 || LEFT_OUTER_JOIN.equals(join);
-        
+                
         this.child = criteria;
         return criteria;
     }
     
     /**
      * set criteria alias.if set, projection item and result column would with a
-     * &lt;alias.&gt prefix. Recommended to set alias when multi-criteria
+     * &lt;alias.&gt; prefix. Recommended to set alias when multi-criteria
      * exists.
      * 
      * @param alias
@@ -178,7 +186,8 @@ public class Criteria {
      * otherwise, use parameter restriction as root restriction.
      * 
      * @param restrictions
-     * @return
+     *            query restrictions
+     * @return current criteria
      */
     public Criteria add(Restrictions restrictions) {
         if (root.rootRestrictions == null) {
@@ -197,9 +206,11 @@ public class Criteria {
     }
     
     /**
+     * <p>
      * set query result column projections. if you set alias before, the
      * projections item would add &gt;alias.&lt; as prefix.But you set alias
-     * after this, you might can't get expected result. <br />
+     * after this, you might can't get expected result.
+     * </p>
      * <strong>Note:</strong> the projection is java bean properties array.
      * 
      * 
@@ -219,8 +230,8 @@ public class Criteria {
             }
             String colName = Mapping.getInstance().getColumnName(sub, clazz);
             if (colName == null) {
-                throw new ORMException("Mapping Error: no column mapping to "
-                        + property);
+                throw new ORMException(
+                        "Mapping Error: no column mapping to " + property);
             }
             if (alias != null) {
                 this.projections.add(alias + "." + colName);
@@ -303,8 +314,8 @@ public class Criteria {
         while (current != null) {
             if (current.resultColumn) {
                 if (current.projections.isEmpty()) {
-                    current.projections = Mapping.getInstance().getColumns(
-                            current.alias, current.clazz);
+                    current.projections = Mapping.getInstance()
+                            .getColumns(current.alias, current.clazz);
                 }
                 list.addAll(current.projections);
             }
@@ -334,8 +345,8 @@ public class Criteria {
         while (current != null) {
             if (current.resultColumn) {
                 if (current.projections.isEmpty()) {
-                    current.projections = Mapping.getInstance().getColumns(
-                            current.alias, current.clazz);
+                    current.projections = Mapping.getInstance()
+                            .getColumns(current.alias, current.clazz);
                 }
                 for (String col : current.projections) {
                     sb.append(col);
@@ -456,8 +467,7 @@ public class Criteria {
                             current.clazz);
                     if (colName == null) {
                         throw new ORMException(
-                                "Mapping Error: No such maping for "
-                                        + property
+                                "Mapping Error: No such maping for " + property
                                         + ", did you written Column annotation before "
                                         + str2 + " in "
                                         + current.clazz.getName());
@@ -485,8 +495,8 @@ public class Criteria {
                 break;
             }
             if (!map) {
-                throw new ORMException("Mapping Error: No such maping for "
-                        + property);
+                throw new ORMException(
+                        "Mapping Error: No such maping for " + property);
             }
             ret = str2;
         }
@@ -561,7 +571,7 @@ public class Criteria {
      * @param properties
      * @return
      */
-    public String[] getColumns(String[] properties) {
+    private String[] getColumns(String[] properties) {
         String[] dst = new String[properties.length];
         int i = 0;
         for (String string : properties) {
@@ -597,7 +607,7 @@ public class Criteria {
     
     @Override
     public String toString() {
-        return getClass().getName() + "(" + getClazz() + ", alias "
-                + getAlias() + ")";
+        return getClass().getName() + "(" + getClazz() + ", alias " + getAlias()
+                + ")";
     }
 }

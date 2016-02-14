@@ -18,11 +18,9 @@ package cn.ieclipse.aorm;
 import cn.ieclipse.aorm.annotation.Column;
 
 /**
- * 类/接口描述
+ * Column annotation meta-data
  * 
  * @author Jamling
- * @date 2016年1月18日
- *
  */
 public class ColumnMeta {
     String name;
@@ -38,15 +36,16 @@ public class ColumnMeta {
     boolean id;
     
     public ColumnMeta() {
-        
+    
     }
+    
     public ColumnMeta(Column c) {
         id = c.id();
         notNull = c.notNull();
         defaultValue = c.defaultValue();
         type = c.type();
         name = c.name();
-        if (type.startsWith("java.lang.")){
+        if (type.startsWith("java.lang.")) {
             type = type.substring("java.lang.".length());
         }
     }
@@ -65,11 +64,11 @@ public class ColumnMeta {
             sb.append(type);
         }
         sb.append(notNull ? " NOT NULL " : "");
-//        if (defaultValue != null) {
-//            sb.append("Default '");
-//            sb.append(defaultValue == null ? "" : defaultValue);
-//            sb.append("'");
-//        }
+        // if (defaultValue != null) {
+        // sb.append("Default '");
+        // sb.append(defaultValue == null ? "" : defaultValue);
+        // sb.append("'");
+        // }
         return sb.toString();
     }
 }

@@ -9,7 +9,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import cn.ieclipse.aorm.Aorm;
 import cn.ieclipse.aorm.Session;
+import cn.ieclipse.aorm.example.bean.Course;
+import cn.ieclipse.aorm.example.bean.Grade;
+import cn.ieclipse.aorm.example.bean.Student;
 
 /**
  * @author Jamling
@@ -98,22 +102,32 @@ public class ExampleContentProvider extends ContentProvider {
                 null, 1) {
             public void onCreate(SQLiteDatabase db) {
                 String sql = "";
-                sql = "create TABLE grade (  ";
-                sql += "_id Integer Primary key autoincrement, ";
-                sql += "_sid Integer, ";
-                sql += "_cid Integer, ";
-                sql += "_score Float)";
-                db.execSQL(sql);
-                sql = "create TABLE student (  ";
-                sql += "_id Integer Primary key autoincrement, ";
-                sql += "_name String, ";
-                sql += "_age Integer, ";
-                sql += "_phone String)";
-                db.execSQL(sql);
-                sql = "create TABLE course (  ";
-                sql += "_id Integer Primary key autoincrement, ";
-                sql += "_name String)";
-                db.execSQL(sql);
+                // method 1: define DDL sql
+//                sql = "create TABLE grade (  ";
+//                sql += "_id Integer Primary key autoincrement, ";
+//                sql += "_sid Integer, ";
+//                sql += "_cid Integer, ";
+//                sql += "_score Float)";
+//                db.execSQL(sql);
+//                sql = "create TABLE student (  ";
+//                sql += "_id Integer Primary key autoincrement, ";
+//                sql += "_name String, ";
+//                sql += "_age Integer, ";
+//                sql += "_phone String)";
+//                db.execSQL(sql);
+//                sql = "create TABLE course (  ";
+//                sql += "_id Integer Primary key autoincrement, ";
+//                sql += "_name String)";
+//                db.execSQL(sql);
+                
+                // method 2: use AORM to generate DDL sql
+                // sql = Aorm.generateCreateDDL(Grade.class);
+                // db.execSQL(sql);
+                
+                // method 3: use AORM to create table
+                Aorm.createTable(db, Grade.class);
+                Aorm.createTable(db, Student.class);
+                Aorm.createTable(db, Course.class);
             }
             
             public void onUpgrade(SQLiteDatabase db, int oldVersion,

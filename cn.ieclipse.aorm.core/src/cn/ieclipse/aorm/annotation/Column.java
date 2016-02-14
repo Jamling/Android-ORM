@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Column {
     /**
-     * column name.<br />
+     * column name.
      * 
      * @return name
      */
