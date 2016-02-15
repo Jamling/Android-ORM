@@ -16,6 +16,7 @@
 package cn.ieclipse.aorm;
 
 import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Handler;
 
 /**
@@ -33,7 +34,11 @@ class SessionObserver extends ContentObserver {
     
     @Override
     public void onChange(boolean selfChange) {
-        super.onChange(selfChange);
-        session.onChange(selfChange);
+        session.onChange(selfChange, null);
+    }
+    
+    @Override
+    public void onChange(boolean selfChange, Uri uri) {
+        session.onChange(selfChange, uri);
     }
 }

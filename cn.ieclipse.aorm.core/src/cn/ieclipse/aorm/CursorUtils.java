@@ -40,12 +40,12 @@ public final class CursorUtils {
             return list;
         }
         String[] colNames = c.getColumnNames();
-        int[] indcies = new int[colNames.length];
+        int[] indices = new int[colNames.length];
         Method[] objMethod = new Method[colNames.length];
         Class<?>[] fieldClass = new Class<?>[colNames.length];
         try {
             for (int i = 0; i < colNames.length; i++) {
-                indcies[i] = c.getColumnIndex(colNames[i]);
+                indices[i] = c.getColumnIndex(colNames[i]);
                 Method m = getObjSetter(colNames[i], objClass, alias);
                 if (m != null) {
                     objMethod[i] = m;
@@ -57,7 +57,7 @@ public final class CursorUtils {
                 for (int i = 0; i < colNames.length; i++) {
                     if (objMethod[i] != null) {
                         objMethod[i].invoke(obj,
-                                getColumnValue(c, indcies[i], fieldClass[i]));
+                                getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
                 list.add(obj);
@@ -75,7 +75,7 @@ public final class CursorUtils {
             return list;
         }
         String[] colNames = c.getColumnNames();
-        int[] indcies = new int[colNames.length];
+        int[] indices = new int[colNames.length];
         Method[] objMethod = new Method[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
@@ -85,7 +85,7 @@ public final class CursorUtils {
         Object obj = null;
         try {
             for (int i = 0; i < colNames.length; i++) {
-                indcies[i] = c.getColumnIndex(colNames[i]);
+                indices[i] = c.getColumnIndex(colNames[i]);
                 Method m = getObjSetter(colNames[i], objClass, objAlias);
                 if (m != null) {
                     objMethod[i] = m;
@@ -94,10 +94,10 @@ public final class CursorUtils {
             }
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 obj = objClass.newInstance();
-                for (int i = 0; i < indcies.length; i++) {
+                for (int i = 0; i < indices.length; i++) {
                     if (objMethod[i] != null) {
                         objMethod[i].invoke(obj,
-                                getColumnValue(c, indcies[i], fieldClass[i]));
+                                getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
                 list.add(obj);
@@ -117,36 +117,36 @@ public final class CursorUtils {
             return list;
         }
         String[] colNames = c.getColumnNames();
-        int[] indcies = new int[colNames.length];
+        int[] indices = new int[colNames.length];
         Method[] objMethod = new Method[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
-        int[] objIdxs = new int[colNames.length];
+        int[] objIds = new int[colNames.length];
         try {
             for (int i = 0; i < colNames.length; i++) {
-                indcies[i] = c.getColumnIndex(colNames[i]);
+                indices[i] = c.getColumnIndex(colNames[i]);
                 for (int j = 0; j < objClassArray.length; j++) {
                     Method m = getObjSetter(colNames[i], objClassArray[j],
                             aliasArray[j]);
                     if (m != null) {
                         objMethod[i] = m;
                         fieldClass[i] = objMethod[i].getParameterTypes()[0];
-                        objIdxs[i] = j;
+                        objIds[i] = j;
                         break;
                     }
                 }
             }
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 Object[] objArray = new Object[objClassArray.length];
-                for (int i = 0; i < indcies.length; i++) {
-                    Object obj = objArray[objIdxs[i]];
+                for (int i = 0; i < indices.length; i++) {
+                    Object obj = objArray[objIds[i]];
                     if (obj == null) {
-                        obj = objClassArray[objIdxs[i]].newInstance();
-                        objArray[objIdxs[i]] = obj;
+                        obj = objClassArray[objIds[i]].newInstance();
+                        objArray[objIds[i]] = obj;
                     }
                     if (objMethod[i] != null) {
                         objMethod[i].invoke(obj,
-                                getColumnValue(c, indcies[i], fieldClass[i]));
+                                getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
                 list.add(objArray);
@@ -166,7 +166,7 @@ public final class CursorUtils {
             return list;
         }
         String[] colNames = c.getColumnNames();
-        int[] indcies = new int[colNames.length];
+        int[] indices = new int[colNames.length];
         Method[] objMethod = new Method[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
@@ -175,7 +175,7 @@ public final class CursorUtils {
             for (int i = 0; i < colNames.length; i++) {
                 // Jamling: SQLite3 will not contains table alias in projection
                 // column
-                indcies[i] = i;// c.getColumnIndex(colNames[i]);
+                indices[i] = i;// c.getColumnIndex(colNames[i]);
                 for (int k = 0; k < objClassArray.length; k++) {
                     if (i < separatorArray[k]) {
                         objMethod[i] = getObjSetter(colNames[i],
@@ -190,7 +190,7 @@ public final class CursorUtils {
             }
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 Object[] objArray = new Object[objClassArray.length];
-                for (int i = 0; i < indcies.length; i++) {
+                for (int i = 0; i < indices.length; i++) {
                     Object obj = objArray[objIdxs[i]];
                     if (obj == null) {
                         obj = objClassArray[objIdxs[i]].newInstance();
@@ -198,7 +198,7 @@ public final class CursorUtils {
                     }
                     if (objMethod[i] != null) {
                         objMethod[i].invoke(obj,
-                                getColumnValue(c, indcies[i], fieldClass[i]));
+                                getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
                 list.add(objArray);
@@ -485,12 +485,12 @@ public final class CursorUtils {
         try {
             String[] colNames = (String[]) CursorReflect.getColumnNames.invoke(
                     cursor, (Object[]) null);
-            int[] indcies = new int[colNames.length];
+            int[] indices = new int[colNames.length];
             Method[] cursorMethods = new Method[colNames.length];
             Method[] objMethod = new Method[colNames.length];
             
             for (int i = 0; i < colNames.length; i++) {
-                indcies[i] = (Integer) CursorReflect.getColumnIndex.invoke(
+                indices[i] = (Integer) CursorReflect.getColumnIndex.invoke(
                         cursor, colNames[i]);
                 Method m = getObjSetter(colNames[i], objClass, alias);
                 if (m != null) {
@@ -504,10 +504,10 @@ public final class CursorUtils {
                     .invoke(cursor, (Object[]) null); CursorReflect.moveToNext
                     .invoke(cursor, (Object[]) null)) {
                 T obj = objClass.newInstance();
-                for (int i = 0; i < indcies.length; i++) {
+                for (int i = 0; i < indices.length; i++) {
                     if (objMethod[i] != null) {
                         objMethod[i].invoke(obj,
-                                cursorMethods[i].invoke(cursor, indcies[i]));
+                                cursorMethods[i].invoke(cursor, indices[i]));
                     }
                 }
                 list.add(obj);

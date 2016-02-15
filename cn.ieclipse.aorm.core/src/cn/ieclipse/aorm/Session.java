@@ -68,6 +68,7 @@ public class Session {
         long id = mHelper.getWritableDatabase().insert(table, nullColumnHack,
                 values);
         log("insert rowID : " + id);
+        notifyChange(table);
         return id;
     }
     
@@ -76,12 +77,14 @@ public class Session {
         int count = mHelper.getWritableDatabase().update(table, values, where,
                 args);
         log("update counts : " + count);
+        notifyChange(table);
         return count;
     }
     
     protected int delete(String table, String where, String[] args) {
         int count = mHelper.getWritableDatabase().delete(table, where, args);
         log("delete counts : " + count);
+        notifyChange(table);
         return count;
     }
     
@@ -756,19 +759,31 @@ public class Session {
             observer = new SessionObserver(null, this);
         }
         mResolver.registerContentObserver(uri, true, observer);
+        observableUris.add(uri);
     }
     
     public void unregisterObserver() {
         if (observer != null) {
             mResolver.unregisterContentObserver(observer);
         }
+        observableUris.clear();
     }
     
-    public void onChange(boolean selfChange) {
+    public void onChange(boolean selfChange, Uri uri) {
         notifySessionListener(null);
     }
     
+    private void notifyChange(String table) {
+        if (observer == null) {
+            return;
+        }
+        for (Uri uri : observableUris) {
+            mResolver.notifyChange(uri, observer);
+        }
+    }
+    
     private Set<SessionListener> listeners = null;
+    private Set<Uri> observableUris = new HashSet<Uri>();
     
     public void addSessionListener(SessionListener listener) {
         if (listeners == null) {
