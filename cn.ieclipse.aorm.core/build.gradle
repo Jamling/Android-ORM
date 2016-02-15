@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'java'
+// apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 	
@@ -71,6 +72,12 @@ install {
             }
         }
     }
+    repositories.mavenDeployer() {
+        repository(url: ART_LOCAL_URL)
+        pom.groupId = ART_GROUP
+        pom.artifactId = ART_ARTIFACT
+        pom.version = ART_VER
+    }
 }
 
 bintray {	
@@ -90,8 +97,17 @@ bintray {
 			desc = project.property('PKG_VER_DESC')
 			vcsTag = project.property('SCM_TAG')
 			//attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
-		}	
-	}
+		}
+        /*
+        mavenCentralSync {
+            sync = true //Optional (true by default). Determines whether to sync the version to Maven Central.
+            user = 'userToken' //OSS user token
+            password = 'paasword' //OSS user password
+            close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+        }
+       */
+        // full config please visit https://github.com/bintray/gradle-bintray-plugin
+    }
 }
 sourceSets {
     main {
@@ -105,20 +121,23 @@ sourceSets {
 }
 
 tasks.withType(JavaCompile) { 
-    sourceCompatibility = "1.5"
-    targetCompatibility = "1.5" //JavaVersion.VERSION_1_5
+    sourceCompatibility = "1.6"
+    targetCompatibility = "1.6" //JavaVersion.VERSION_1_5
 }
 
 tasks.withType(Jar) {
-	baseName project.property('ART_ARTIFACT')	
+	baseName project.property('ART_ARTIFACT')
+    manifest {
+        attributes 'Author': 'Jamling',
+                'Email': 'li.jamling@gmail.com',
+                'Version': ART_VER,
+                'Build-Date': new Date().dateString
+    }
 }
 
-jar {
-	baseName project.property('ART_ARTIFACT')
-}
 javadoc {
 	// destinationDir = new File('docs/api')
-	title project.property('PRJ_NAME') + ' ' + project.property('ART_VER') + ' API'
+	title PRJ_NAME + " " + ART_VER + " API"
 }
 
 task sourcesJar(type: Jar) {
