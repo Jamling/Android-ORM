@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autoLink="all"
-        android:text="Wecome to Android ORM (Aorm)!\n This is an example of Aorm. You can visit https://github.com/Jamling/Android-ORM for more infomcation" />
+        android:text="Welcome to Android ORM (Aorm)!\n This is an example of Aorm. You can visit https://github.com/Jamling/Android-ORM for more information" />
 
     <Button
         android:id="@+id/btn_student_mgr"

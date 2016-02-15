@@ -1,7 +1,10 @@
-<project name="aorm.mock" basedir="." default="jar">
+<project name="aorm-mock" basedir="." default="jar">
 
 	<property name="aorm.libs" location="../cn.ieclipse.aorm.core/libs" />
-
+	<property name="version" value="1.0" />
+	<tstamp>
+		<format property="TODAY" locale="zh" pattern="yyyyMMdd" />
+	</tstamp>
 
 	<!-- ================================= 
           target: jar              
@@ -10,8 +13,8 @@
 		<jar destfile="${aorm.libs}/${ant.project.name}.jar" basedir="bin">
 			<manifest>
 				<attribute name="Author" value="Jamling" />
-				<attribute name="Email" value="li.jamling@gmail.com;li_jaming@163.com" />
-				<attribute name="Version" value="${version}_${TODAY}" />
+				<attribute name="Email" value="li.jamling@gmail.com;li_jamling@163.com" />
+				<attribute name="Version" value="${version}-${TODAY}" />
 			</manifest>
 		</jar>
 	</target>
