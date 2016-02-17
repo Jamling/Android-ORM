@@ -45,7 +45,7 @@ install {
         pom {
             project {
             	// artifactId project.property('ART_ARTIFACT')
-                packaging 'jar'
+                packaging ART_PKG
                 // Add your description here
                 name project.property('PRJ_NAME')
                 url project.property('PRJ_URL')
@@ -91,7 +91,7 @@ bintray {
 		licenses = ['Apache-2.0']
 		websiteUrl = project.property('PRJ_URL')
 		vcsUrl = project.property('SCM_URL')
-		publish = false
+		publish = true
 		version {
 			name = project.property('ART_VER')
 			desc = project.property('PKG_VER_DESC')

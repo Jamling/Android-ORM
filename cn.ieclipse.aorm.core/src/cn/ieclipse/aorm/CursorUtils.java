@@ -69,6 +69,7 @@ public final class CursorUtils {
         return list;
     }
     
+    @SuppressWarnings("unchecked")
     public static List getFromCursor(Cursor c, Criteria criteria) {
         ArrayList list = new ArrayList();
         if (c == null) {

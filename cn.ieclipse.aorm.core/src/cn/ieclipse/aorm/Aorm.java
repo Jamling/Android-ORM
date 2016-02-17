@@ -110,7 +110,7 @@ public final class Aorm {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
         sb.append(t.name());
-        sb.append(" IF NOT EXISTS (");
+        sb.append("(");
         sb.append(LF);
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
         for (ColumnWrap cw : list) {
