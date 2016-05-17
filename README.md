@@ -37,7 +37,7 @@ Criteria criteria = Criteria.create(Student.class);
 criteria.add(Restrictions.eq("id", 1));
 // add restriction: name like Jamling
 criteria.add(Restrictions.like("name", "Jaming"));
-// add restriction: age > 30
+// add restriction: age < 30
 criteria.add(Restrictions.lt("age", 30));
 // add order
 criteria.addOrder(Order.asc("age"));
