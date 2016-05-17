@@ -1,42 +1,42 @@
-# ¼ò½é
+# ç®€ä»‹
 
-ÄúÊÇ·ñÔÚAndroidÉÏÊ¹ÓÃsqliteÀ´´æ´¢ÄúµÄÓ¦ÓÃÊı¾İÄØ£¿Èç¹ûÊÇ£¬»òĞíÄú»á¶ÔAndroid´æÈ¡sqliteÊı¾İ¸Ğ¾õÓĞµãĞ¡¸´ÔÓ¡£±¾ÈË´Ó2010Äê¿ªÊ¼´ÓÊÂAndroid¿ª·¢£¬¶ÔÓÚAndroidµÄÊı¾İ¿â²Ù×İÕâÒ»¿é£¬¸Ğ¾õ»¹ÊÇ±È½Ï¸´ÔÓµÄ£¬ÓÈÆäÊÇ¿ÉÎ¬»¤ĞÔ¼°»ò¿ÉÀ©Õ¹ĞÔ·½Ãæ£¬¶¼ÊÇ±È½Ï²îµÄ¡£
-Ò²ÕıÊÇ´ÓÕâÊ±¿ªÊ¼£¬ÎÒ¾ö¶¨ÔÚAndroidÆ½Ì¨ÉÏÊµÏÖÏñHibernateÄÇÑùµÄORM¿ò¼Ü£¬À´¼ò»¯¿ª·¢¹¤×÷¡£Ê¹µÃ¿ª·¢ÕßÔÚÊ¹ÓÃsqliteÊı¾İ¿âÊ±£¬ÎŞĞè¹Ø×¢µ×²ãÊı¾İ¿âÊµÏÖ£¬¸ü¶àµÄÊÇ¹Ø×¢ÉÏ²ãÒµÎñÂß¼­ÊµÏÖ¡£
-Èç¹ûÄú¶Ô´ËÏîÄ¿¸ĞĞËÈ¤£¬»¶Ó­ÄúµÄ¼ÓÈë£¡
+æ‚¨æ˜¯å¦åœ¨Androidä¸Šä½¿ç”¨sqliteæ¥å­˜å‚¨æ‚¨çš„åº”ç”¨æ•°æ®å‘¢ï¼Ÿå¦‚æœæ˜¯ï¼Œæˆ–è®¸æ‚¨ä¼šå¯¹Androidå­˜å–sqliteæ•°æ®æ„Ÿè§‰æœ‰ç‚¹å°å¤æ‚ã€‚æœ¬äººä»2010å¹´å¼€å§‹ä»äº‹Androidå¼€å‘ï¼Œå¯¹äºAndroidçš„æ•°æ®åº“æ“çºµè¿™ä¸€å—ï¼Œæ„Ÿè§‰è¿˜æ˜¯æ¯”è¾ƒå¤æ‚çš„ï¼Œå°¤å…¶æ˜¯å¯ç»´æŠ¤æ€§åŠæˆ–å¯æ‰©å±•æ€§æ–¹é¢ï¼Œéƒ½æ˜¯æ¯”è¾ƒå·®çš„ã€‚
+ä¹Ÿæ­£æ˜¯ä»è¿™æ—¶å¼€å§‹ï¼Œæˆ‘å†³å®šåœ¨Androidå¹³å°ä¸Šå®ç°åƒHibernateé‚£æ ·çš„ORMæ¡†æ¶ï¼Œæ¥ç®€åŒ–å¼€å‘å·¥ä½œã€‚ä½¿å¾—å¼€å‘è€…åœ¨ä½¿ç”¨sqliteæ•°æ®åº“æ—¶ï¼Œæ— éœ€å…³æ³¨åº•å±‚æ•°æ®åº“å®ç°ï¼Œæ›´å¤šçš„æ˜¯å…³æ³¨ä¸Šå±‚ä¸šåŠ¡é€»è¾‘å®ç°ã€‚
+å¦‚æœæ‚¨å¯¹æ­¤é¡¹ç›®æ„Ÿå…´è¶£ï¼Œæ¬¢è¿æ‚¨çš„åŠ å…¥ï¼
 
-# ÌØĞÔ
-* ¼ò½àµÄORMÓ³ÉäÅäÖÃ, Ö»ĞèÔÚJava BeanµÄÊôĞÔÖĞÌí¼ÓÀàËÆ@Column(name="_name")µÄ×¢½â¼´¿ÉÍê³Éµ½Êı¾İ¿â×Ö¶ÎµÄÓ³ÉäÅäÖÃ.
-* Ç¿´óµÄÕıÏò¹¤³ÌÖ§³Ö, ×Ô¶¯Éú³ÉDDLºÍContentProvider.
-* ¸øÁ¦µÄ¸¨Öú¹¤¾ß, Ïòµ¼Ê½ĞÂ½¨Activity/Service/BroadcastReceiver²¢ÇÒ×Ô¶¯ÅäÖÃµ½AndroidManifest.xml.
+# ç‰¹æ€§
+* ç®€æ´çš„ORMæ˜ å°„é…ç½®, åªéœ€åœ¨Java Beançš„å±æ€§ä¸­æ·»åŠ ç±»ä¼¼@Column(name="_name")çš„æ³¨è§£å³å¯å®Œæˆåˆ°æ•°æ®åº“å­—æ®µçš„æ˜ å°„é…ç½®.
+* å¼ºå¤§çš„æ­£å‘å·¥ç¨‹æ”¯æŒ, è‡ªåŠ¨ç”ŸæˆDDLå’ŒContentProvider.
+* ç»™åŠ›çš„è¾…åŠ©å·¥å…·, å‘å¯¼å¼æ–°å»ºActivity/Service/BroadcastReceiverå¹¶ä¸”è‡ªåŠ¨é…ç½®åˆ°AndroidManifest.xml.
 * ...
-¸ü¶àÌØĞÔ£¬Çë×ÔĞĞÌåÑé.
+æ›´å¤šç‰¹æ€§ï¼Œè¯·è‡ªè¡Œä½“éªŒ.
 
-# ¹¤³Ì
+# å·¥ç¨‹
 ## cn.ieclipse.aorm.core
-Android ORMºËĞÄ¹¤³Ì, Ìá¹©ORM×¢½â½âÎöµÈºËĞÄ¹¦ÄÜ.
+Android ORMæ ¸å¿ƒå·¥ç¨‹, æä¾›ORMæ³¨è§£è§£æç­‰æ ¸å¿ƒåŠŸèƒ½.
 ## cn.ieclipse.aorm.eclipse
-¸¨ÖúµÄeclipse²å¼ş¹¤³Ì,Ìá¹©´úÂë×Ô¶¯Éú³É£¬DDLÉú³ÉµÈ¸¨Öú¹¦ÄÜ.
+è¾…åŠ©çš„eclipseæ’ä»¶å·¥ç¨‹,æä¾›ä»£ç è‡ªåŠ¨ç”Ÿæˆï¼ŒDDLç”Ÿæˆç­‰è¾…åŠ©åŠŸèƒ½.
 ## cn.ieclipse.aorm.example
-Ê¹ÓÃAORMµÄÊ¾ÀıAndroidÓ¦ÓÃ¹¤³Ì.
+ä½¿ç”¨AORMçš„ç¤ºä¾‹Androidåº”ç”¨å·¥ç¨‹.
 
-# °²×°¼°Ê¹ÓÃ
-## ÏÂÔØ¼°°²×°Android ORM²å¼ş
-Eclipse 3.6ÒÔÉÏ¿ÉÒÔÍ¨¹ıHelp->Marketplace´ò¿ª²å¼şÊĞ³¡£¬Í¨¹ıËÑË÷¹Ø¼ü×ÖÕÒµ½²å¼ş²¢ÏÂÔØ£¬Ò²¿ÉÒÔÏÂÔØ²å¼ş±¾µØ°²×°°ü°²×°²å¼ş
+# å®‰è£…åŠä½¿ç”¨
+## ä¸‹è½½åŠå®‰è£…Android ORMæ’ä»¶
+Eclipse 3.6ä»¥ä¸Šå¯ä»¥é€šè¿‡Help->Marketplaceæ‰“å¼€æ’ä»¶å¸‚åœºï¼Œé€šè¿‡æœç´¢å…³é”®å­—æ‰¾åˆ°æ’ä»¶å¹¶ä¸‹è½½ï¼Œä¹Ÿå¯ä»¥ä¸‹è½½æ’ä»¶æœ¬åœ°å®‰è£…åŒ…å®‰è£…æ’ä»¶
 
 ## 
 
-# Ê¾Àı´úÂë
+# ç¤ºä¾‹ä»£ç 
 
-## ²éÑ¯
-
+## æŸ¥è¯¢
+```java
         Session session = ExampleContentProvider.getSession();
-        // ×î¼òµ¥µÄ²éÑ¯£º²éÑ¯ËùÓĞµÄÑ§ÉúĞÅÏ¢.
+        // æœ€ç®€å•çš„æŸ¥è¯¢ï¼šæŸ¥è¯¢æ‰€æœ‰çš„å­¦ç”Ÿä¿¡æ¯.
         Criteria criteria = Criteria.create(Student.class);
-        // Ìí¼ÓÌõ¼ş: idÏàµÈ
+        // æ·»åŠ æ¡ä»¶: idç›¸ç­‰
         criteria.add(Restrictions.eq("id", 1));
-        // Ìí¼ÓÌõ¼ş: name like Jamling
+        // æ·»åŠ æ¡ä»¶: name like Jamling
         criteria.add(Restrictions.like("name", "Jaming"));
-        // add restriction: age > 30
+        // add restriction: age < 30
         criteria.add(Restrictions.lt("age", 30));
         // add order
         criteria.addOrder(Order.asc("age"));
@@ -65,8 +65,9 @@ Eclipse 3.6ÒÔÉÏ¿ÉÒÔÍ¨¹ıHelp->Marketplace´ò¿ª²å¼şÊĞ³¡£¬Í¨¹ıËÑË÷¹Ø¼ü×ÖÕÒµ½²å¼ş²¢ÏÂ
         Student s = (Student) item[0];
         StudentMore m = (StudentMore) item[1];
         //
-
-## ÆäËü²Ù×÷
+```
+## å…¶å®ƒæ“ä½œ
+```java
         Session session = ExampleContentProvider.getSession();
         // insert
         Student s = new Student();
@@ -80,8 +81,8 @@ Eclipse 3.6ÒÔÉÏ¿ÉÒÔÍ¨¹ıHelp->Marketplace´ò¿ª²å¼şÊĞ³¡£¬Í¨¹ıËÑË÷¹Ø¼ü×ÖÕÒµ½²å¼ş²¢ÏÂ
         session.deleteById(Student.class, 2);
         // query student whose id is 4
         s = session.get(Student.class, 4);
-
-## ×÷Õß
+```
+## ä½œè€…
 Jamling 
 
 ## Contact 
