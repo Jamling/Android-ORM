@@ -1,3 +1,6 @@
+# 1.0 /2016-02-17
+- 1.0 released to jcenter
+ 
 # 1.0	/2014-11-16
 - Add inherit feature
 
