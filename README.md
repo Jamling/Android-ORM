@@ -83,12 +83,9 @@ session.deleteById(Student.class, 2);
 s = session.get(Student.class, 4);
 ```
 
-# Doc
+# Docs
 
 Refer: http://ieclipse.cn/p/Android-ORM/userguide.html
 
 # Author
-Jamling 
-
-# Contact 
-li.jamling@gmail.com
+Jamling Jamling (li.jamling@gmail.com)
