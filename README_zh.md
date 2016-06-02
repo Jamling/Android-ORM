@@ -11,19 +11,21 @@
 * ...
 更多特性，请自行体验.
 
-# 工程
-## cn.ieclipse.aorm.core
-Android ORM核心工程, 提供ORM注解解析等核心功能.
-## cn.ieclipse.aorm.eclipse
-辅助的eclipse插件工程,提供代码自动生成，DDL生成等辅助功能.
-## cn.ieclipse.aorm.example
-使用AORM的示例Android应用工程.
+# 使用
+## Eclipse
 
-# 安装及使用
-## 下载及安装Android ORM插件
-Eclipse 3.6以上可以通过Help->Marketplace打开插件市场，通过搜索关键字找到插件并下载，也可以下载插件本地安装包安装插件
+下载aorm-core-1.0.jar并放入libs/目录下
 
-## 
+推荐安装[Android ADT-extensions](https://github.com/Jamling/adt-extensions/)插件
+
+## Android Studio
+Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
+
+```gradle
+dependencies {
+    compile 'cn.ieclipse.aorm:aorm-core:1.0'
+}
+```
 
 # 示例代码
 
@@ -82,10 +84,9 @@ Eclipse 3.6以上可以通过Help->Marketplace打开插件市场，通过搜索�
         // query student whose id is 4
         s = session.get(Student.class, 4);
 ```
-## 作者
-Jamling 
 
-## Contact 
-li.jamling@gmail.com (Always block)
+# 文档
+请参考http://ieclipse.cn/p/Android-ORM/userguide.html
 
-li_jamling@163.com
+# 作者
+Jamling (li.jamling@gmail.com)
