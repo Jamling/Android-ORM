@@ -9,16 +9,15 @@ Did you used sqlite to save your data on Android? If you did, you may be puzzled
 * ...
 More feature, please experience it for your self.
 
-# Projects
-## cn.ieclipse.aorm.core
-The core project of Android ORM, providing ORM annotation parsing, orm core feature.
-## cn.ieclipse.aorm.eclipse
-The eclipse plug-in project, provider code generating, DDL generating assist feature. you can found it at https://github.com/Jamling/Aorm-Eclipse-Plugin
+# Usage
+## Use in Eclipse
 
-## cn.ieclipse.aorm.example
-The example Android project using Android ORM.
+Put aorm-core-1.0.jar to libs/
 
-# Use in Android Studio
+Recommended to install [Android ADT-extensions](https://github.com/Jamling/adt-extensions/) plugin, and add ORM capapility to enable Aorm.
+
+## Use in Android Studio
+Aorm has been published to jcenter, so you can just add dependence of aorm in your build.gradle.
 
 ```gradle
 dependencies {
@@ -83,10 +82,13 @@ session.deleteById(Student.class, 2);
 // query student whose id is 4
 s = session.get(Student.class, 4);
 ```
-## Author
+
+# Doc
+
+Refer: http://ieclipse.cn/p/Android-ORM/userguide.html
+
+# Author
 Jamling 
 
-## Contact 
-li.jamling@gmail.com (Always block)
-
-li_jamling@163.com
+# Contact 
+li.jamling@gmail.com
