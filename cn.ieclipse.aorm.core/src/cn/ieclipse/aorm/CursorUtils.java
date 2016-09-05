@@ -15,6 +15,7 @@
  */
 package cn.ieclipse.aorm;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,22 +42,23 @@ public final class CursorUtils {
         }
         String[] colNames = c.getColumnNames();
         int[] indices = new int[colNames.length];
-        Method[] objMethod = new Method[colNames.length];
+        Field[] objMethod = new Field[colNames.length];
         Class<?>[] fieldClass = new Class<?>[colNames.length];
         try {
             for (int i = 0; i < colNames.length; i++) {
                 indices[i] = c.getColumnIndex(colNames[i]);
-                Method m = getObjSetter(colNames[i], objClass, alias);
+                Field m = getObjField(colNames[i], objClass, alias);
                 if (m != null) {
                     objMethod[i] = m;
-                    fieldClass[i] = m.getParameterTypes()[0];
+                    fieldClass[i] = m.getType();
                 }
             }
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 T obj = objClass.newInstance();
                 for (int i = 0; i < colNames.length; i++) {
                     if (objMethod[i] != null) {
-                        objMethod[i].invoke(obj,
+                        objMethod[i].setAccessible(true);
+                        objMethod[i].set(obj,
                                 getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
@@ -77,7 +79,7 @@ public final class CursorUtils {
         }
         String[] colNames = c.getColumnNames();
         int[] indices = new int[colNames.length];
-        Method[] objMethod = new Method[colNames.length];
+        Field[] objMethod = new Field[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
         
@@ -87,17 +89,18 @@ public final class CursorUtils {
         try {
             for (int i = 0; i < colNames.length; i++) {
                 indices[i] = c.getColumnIndex(colNames[i]);
-                Method m = getObjSetter(colNames[i], objClass, objAlias);
+                Field m = getObjField(colNames[i], objClass, objAlias);
                 if (m != null) {
                     objMethod[i] = m;
-                    fieldClass[i] = objMethod[i].getParameterTypes()[0];
+                    fieldClass[i] = objMethod[i].getType();
                 }
             }
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 obj = objClass.newInstance();
                 for (int i = 0; i < indices.length; i++) {
                     if (objMethod[i] != null) {
-                        objMethod[i].invoke(obj,
+                        objMethod[i].setAccessible(true);
+                        objMethod[i].set(obj,
                                 getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
@@ -120,6 +123,7 @@ public final class CursorUtils {
         String[] colNames = c.getColumnNames();
         int[] indices = new int[colNames.length];
         Method[] objMethod = new Method[colNames.length];
+        Field[] objField = new Field[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
         int[] objIds = new int[colNames.length];
@@ -127,11 +131,18 @@ public final class CursorUtils {
             for (int i = 0; i < colNames.length; i++) {
                 indices[i] = c.getColumnIndex(colNames[i]);
                 for (int j = 0; j < objClassArray.length; j++) {
-                    Method m = getObjSetter(colNames[i], objClassArray[j],
-                            aliasArray[j]);
-                    if (m != null) {
-                        objMethod[i] = m;
-                        fieldClass[i] = objMethod[i].getParameterTypes()[0];
+//                    Method m = getObjSetter(colNames[i], objClassArray[j],
+//                            aliasArray[j]);
+//                    if (m != null) {
+//                        objMethod[i] = m;
+//                        fieldClass[i] = objMethod[i].getParameterTypes()[0];
+//                        objIds[i] = j;
+//                        break;
+//                    }
+                    Field f = getObjField(colNames[i], objClassArray[j], aliasArray[j]);
+                    fieldClass[i] = f.getType();
+                    if (f != null) {
+                        objField[i] = f;
                         objIds[i] = j;
                         break;
                     }
@@ -145,9 +156,9 @@ public final class CursorUtils {
                         obj = objClassArray[objIds[i]].newInstance();
                         objArray[objIds[i]] = obj;
                     }
-                    if (objMethod[i] != null) {
-                        objMethod[i].invoke(obj,
-                                getColumnValue(c, indices[i], fieldClass[i]));
+                    if (objField[i] != null) {
+                        objField[i].setAccessible(true);
+                        objField[i].set(obj, getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
                 list.add(objArray);
@@ -168,7 +179,7 @@ public final class CursorUtils {
         }
         String[] colNames = c.getColumnNames();
         int[] indices = new int[colNames.length];
-        Method[] objMethod = new Method[colNames.length];
+        Field[] objMethod = new Field[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
         int[] objIdxs = new int[colNames.length];
@@ -179,10 +190,10 @@ public final class CursorUtils {
                 indices[i] = i;// c.getColumnIndex(colNames[i]);
                 for (int k = 0; k < objClassArray.length; k++) {
                     if (i < separatorArray[k]) {
-                        objMethod[i] = getObjSetter(colNames[i],
+                        objMethod[i] = getObjField(colNames[i],
                                 objClassArray[k]);
                         if (objMethod[i] != null) {
-                            fieldClass[i] = objMethod[i].getParameterTypes()[0];
+                            fieldClass[i] = objMethod[i].getType();
                             objIdxs[i] = k;
                         }
                         break;
@@ -198,7 +209,8 @@ public final class CursorUtils {
                         objArray[objIdxs[i]] = obj;
                     }
                     if (objMethod[i] != null) {
-                        objMethod[i].invoke(obj,
+                        objMethod[i].setAccessible(true);
+                        objMethod[i].set(obj,
                                 getColumnValue(c, indices[i], fieldClass[i]));
                     }
                 }
@@ -211,6 +223,7 @@ public final class CursorUtils {
         return list;
     }
     
+    @Deprecated
     private static Method getObjSetter(String column, Class<?>[] objClassArray,
             String[] aliasArray) {
         Method method = null;
@@ -241,6 +254,7 @@ public final class CursorUtils {
         return method;
     }
     
+    @Deprecated
     private static Method getObjSetter(String column, Class<?> objClass,
             String alias) /*
                            * throws SecurityException, NoSuchFieldException,
@@ -263,6 +277,25 @@ public final class CursorUtils {
         return method;
     }
     
+    private static Field getObjField(String column, Class<?> objClass, String alias) {
+        Field f = null;
+        int pos = column.indexOf('.');
+        // has alias
+        if (pos > 0) {
+            String tempAlias = column.substring(0, pos);
+            // match
+            if (tempAlias.equals(alias)) {
+                f = Mapping.getInstance().getColumnField(
+                        column.substring(pos + 1), objClass);
+            }
+        }
+        else {
+            f = Mapping.getInstance().getColumnField(column, objClass);
+        }
+        return f;
+    }
+    
+    @Deprecated
     private static Method getObjSetter(String column, Class<?> objClass) /*
                                                                           * throws
                                                                           * SecurityException
@@ -284,6 +317,22 @@ public final class CursorUtils {
             method = Mapping.getInstance().getSetterByColumn(column, objClass);
         }
         return method;
+    }
+    
+    private static Field getObjField(String column, Class<?> objClass) {
+        Field f = null;
+        int pos = column.indexOf('.');
+        // has alias
+        if (pos > 0) {
+            String tempAlias = column.substring(0, pos);
+            // not match
+            f = Mapping.getInstance().getColumnField(
+                    column.substring(pos + 1), objClass);
+        }
+        else {
+            f = Mapping.getInstance().getColumnField(column, objClass);
+        }
+        return f;
     }
     
     // static Method getObjGetter(String column, Class<?> objClass, String
@@ -430,7 +479,7 @@ public final class CursorUtils {
                     cursor, (Object[]) null);
             int[] indcies = new int[colNames.length];
             Method[] cursorMethods = new Method[colNames.length];
-            Method[] objMethod = new Method[colNames.length];
+            Field[] objMethod = new Field[colNames.length];
             
             int[] objIdxs = new int[colNames.length];
             
@@ -442,11 +491,11 @@ public final class CursorUtils {
                 for (int j = 0; j < objClassArray.length; j++) {
                     String alias = aliasArray[j];
                     Class<?> objClass = objClassArray[j];
-                    Method m = getObjSetter(colNames[i], objClass, alias);
+                    Field m = getObjField(colNames[i], objClass, alias);
                     if (m != null) {
                         objMethod[i] = m;
                         cursorMethods[i] = CursorReflect.getMapping(m
-                                .getParameterTypes()[0].getSimpleName());
+                                .getType().getSimpleName());
                         objIdxs[i] = j;
                         break;
                     }
@@ -466,7 +515,8 @@ public final class CursorUtils {
                         objArray[objIdxs[i]] = obj;
                     }
                     if (objMethod[i] != null) {
-                        objMethod[i].invoke(obj,
+                        objMethod[i].setAccessible(true);
+                        objMethod[i].set(obj,
                                 cursorMethods[i].invoke(cursor, indcies[i]));
                     }
                 }
@@ -488,16 +538,16 @@ public final class CursorUtils {
                     cursor, (Object[]) null);
             int[] indices = new int[colNames.length];
             Method[] cursorMethods = new Method[colNames.length];
-            Method[] objMethod = new Method[colNames.length];
+            Field[] objMethod = new Field[colNames.length];
             
             for (int i = 0; i < colNames.length; i++) {
                 indices[i] = (Integer) CursorReflect.getColumnIndex.invoke(
                         cursor, colNames[i]);
-                Method m = getObjSetter(colNames[i], objClass, alias);
+                Field m = getObjField(colNames[i], objClass, alias);
                 if (m != null) {
                     objMethod[i] = m;
                     cursorMethods[i] = CursorReflect.getMapping(m
-                            .getParameterTypes()[0].getSimpleName());
+                            .getType().getSimpleName());
                 }
             }
             
@@ -507,7 +557,8 @@ public final class CursorUtils {
                 T obj = objClass.newInstance();
                 for (int i = 0; i < indices.length; i++) {
                     if (objMethod[i] != null) {
-                        objMethod[i].invoke(obj,
+                        objMethod[i].setAccessible(true);
+                        objMethod[i].set(obj,
                                 cursorMethods[i].invoke(cursor, indices[i]));
                     }
                 }

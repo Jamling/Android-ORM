@@ -15,6 +15,7 @@
  */
 package cn.ieclipse.aorm;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -100,11 +101,17 @@ public class Mapping {
         return getTableWrap(clazz).getColumnWraps();
     }
     
+    @Deprecated
     /* package */Method getGetterByColumn(String column, Class<?> clazz) {
         return getTableWrap(clazz).getGetterByColumn(column);
     }
     
+    @Deprecated
     /* package */Method getSetterByColumn(String column, Class<?> clazz) {
         return getTableWrap(clazz).getSetterByColumn(column);
+    }
+    
+    /* package */Field getColumnField(String column, Class<?> clazz) {
+        return getTableWrap(clazz).getColumnField(column);
     }
 }

@@ -99,6 +99,23 @@ public class TableWrap {
         return colName;
     }
     
+    public Field getColumnField(String column){
+        Field field = null;
+        for (ColumnWrap col : columns) {
+            if (col.getColumnName().equals(column)) {
+                try {
+                    field = col.getField();
+                } catch (SecurityException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        return field;
+    }
+    
+    @Deprecated
     public Method getGetterByColumn(String column) {
         Method getter = null;
         for (ColumnWrap col : columns) {
@@ -119,6 +136,7 @@ public class TableWrap {
         return getter;
     }
     
+    @Deprecated
     public Method getSetterByColumn(String column) {
         Method getter = null;
         for (ColumnWrap col : columns) {

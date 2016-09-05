@@ -11,7 +11,7 @@
 	<description>
             description
     </description>
-	<property name="version" value="1.0" />
+	<property name="version" value="1.1.0" />
 	<property name="source.src" value="src" />
 	<property name="source.test" value="test" />
 	<property name="bin.dir" value="bin" />
@@ -77,8 +77,8 @@
 
 	<path id="test.path">
 		<pathelement path="${bin.dir}" />
-		<pathelement location="D:\Android\eclipse\plugins\org.junit_4.11.0.v201303080030\junit.jar" />
-		<pathelement location="D:/Android/eclipse/plugins/org.hamcrest.core.source_1.3.0.v201303031735.jar" />
+		<pathelement location="E:\Android\eclipse\plugins\org.junit_4.12.0.v201504281640\junit.jar" />
+		<pathelement location="E:\Android\eclipse\plugins/org.hamcrest.core_1.3.0.v201303031735" />
 		<pathelement location="${libs.dir}/aorm.mock.jar" />
 	</path>
 	<!-- - - - - - - - - - - - - - - - - - 
