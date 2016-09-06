@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Jamling/Android-ORM.svg?branch=master)](https://travis-ci.org/Jamling/Android-ORM)
+
 # Introduction
 
 Did you used sqlite to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
@@ -21,7 +23,7 @@ Aorm has been published to jcenter, so you can just add dependence of aorm in yo
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.0'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.0'
 }
 ```
 

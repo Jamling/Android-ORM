@@ -18,10 +18,10 @@ package cn.ieclipse.aorm;
 import cn.ieclipse.aorm.bean.Student;
 
 /**
- * 类/接口描述
+ * Description
  * 
  * @author Jamling
- * @date 2016年1月18日
+ * @date 2016-01-18
  *
  */
 public class AormTest {
