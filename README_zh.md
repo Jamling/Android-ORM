@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Jamling/Android-ORM.svg?branch=master)](https://travis-ci.org/Jamling/Android-ORM)
+
 # 简介
 
 您是否在Android上使用sqlite来存储您的应用数据呢？如果是，或许您会对Android存取sqlite数据感觉有点小复杂。本人从2010年开始从事Android开发，对于Android的数据库操纵这一块，感觉还是比较复杂的，尤其是可维护性及或可扩展性方面，都是比较差的。
@@ -23,7 +25,7 @@ Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.0'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.0'
 }
 ```
 
