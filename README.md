@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Jamling/Android-ORM.svg?branch=master)](https://travis-ci.org/Jamling/Android-ORM)
+[![GitHub release](https://img.shields.io/github/release/jamling/Android-ORM.svg?maxAge=3600)](https://github.com/Jamling/Android-ORM)
 
 # Introduction
 
@@ -91,3 +92,5 @@ Refer: http://ieclipse.cn/p/Android-ORM/userguide.html
 
 # Author
 Jamling Jamling (li.jamling@gmail.com)
+
+[1]: https://img.shields.io/bintray/v/jamling/maven/Android-ORM.svg
