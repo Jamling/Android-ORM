@@ -15,6 +15,7 @@
  */
 package cn.ieclipse.aorm;
 
+import cn.ieclipse.aorm.bean.FullBean;
 import cn.ieclipse.aorm.bean.Student;
 
 /**
@@ -26,7 +27,7 @@ import cn.ieclipse.aorm.bean.Student;
  */
 public class AormTest {
     public static void main(String[] args) {
-        String sql = Aorm.generateCreateDDL(Student.class);
+        String sql = Aorm.generateCreateDDL(FullBean.class);
         System.out.println(sql);
     }
 }

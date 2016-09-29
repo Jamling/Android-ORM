@@ -36,10 +36,11 @@ public @interface Column {
      * 
      * @return name
      */
-    public String name();
+    public String name() default "";
     
-    public String type() default "java.lang.String";
+    public String type() default "";
     
+    @Deprecated
     public String defaultValue() default "";
     
     public boolean notNull() default false;

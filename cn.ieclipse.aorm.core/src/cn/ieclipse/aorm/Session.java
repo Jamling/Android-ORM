@@ -15,7 +15,7 @@
  */
 package cn.ieclipse.aorm;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -135,7 +135,7 @@ public class Session {
         ContentValues values = row.getContentValues();
         log("insert " + row.table + " values: " + values);
         long id = insert(row.table, nullColumnHack, values);
-        
+        setPkValue(obj, id);
         notifySessionListener(obj.getClass());
         return id;
     }
@@ -632,18 +632,26 @@ public class Session {
     }
     
     private long getPkValue(Object obj) {
-        String pk = Mapping.getInstance().getPK(obj.getClass());
         long id = 0;
         Object pkValue = null;
-        Method getter = Mapping.getInstance().getGetterByColumn(pk,
-                obj.getClass());
+        Field field = Mapping.getInstance().getPKField(obj.getClass());
         try {
-            pkValue = getter.invoke(obj, (Object[]) null);
+            pkValue = field.get(obj);
             id = Long.parseLong(pkValue.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return id;
+    }
+    
+    private void setPkValue(Object obj, long id) {
+        Field pkField = Mapping.getInstance().getPKField(obj.getClass());
+        try {
+            pkField.setAccessible(true);
+            pkField.set(obj, id);
+        } catch (Exception e) {
+            log("set id exception: " + e);
+        }
     }
     
     private static class Row {
@@ -669,10 +677,7 @@ public class Session {
                 try {
                     propName = current.getPropertyName();
                     colName = current.getColumnName();
-                    // Method getter = CursorUtils
-                    // .getObjGetter(colName, clz, null);
-                    Method getter = getMethod(clz, current);
-                    colValue = getter.invoke(obj, (Object[]) null);
+                    colValue = current.getField().get(obj);
                     if (colValue != null) {
                         if (pk.equals(colName)) {
                             pkValue = colValue;
@@ -691,12 +696,6 @@ public class Session {
         
         Object[] getArgsArray() {
             return args.toArray(new Object[args.size()]);
-        }
-        
-        private Method getMethod(Class<?> clz, ColumnWrap col)
-                throws Exception {
-            String getter = col.getGetter();
-            return clz.getDeclaredMethod(getter, (Class<?>[]) null);
         }
         
         long getId() {

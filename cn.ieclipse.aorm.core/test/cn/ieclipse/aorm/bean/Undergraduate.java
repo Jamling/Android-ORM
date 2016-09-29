@@ -24,7 +24,7 @@ public class Undergraduate extends Student {
     private static final long serialVersionUID = 7214955858913570025L;
     
     @Column(name = "_weight")
-    private float weight;
+    public float weight;
     
     private Float oweight;
     
@@ -36,53 +36,53 @@ public class Undergraduate extends Student {
     private byte[] photo;
     
     @Column(name = "_age")
-    private int age;
+    public int age;
     
-    public float getWeight() {
-        return weight;
-    }
-    
-    public void setWeight(float weight) {
-        this.weight = weight;
-    }
-    
-    public Float getOweight() {
-        return oweight;
-    }
-    
-    public void setOweight(Float oweight) {
-        this.oweight = oweight;
-    }
-    
-    public double getBalance() {
-        return balance;
-    }
-    
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-    
-    public Double getObalance() {
-        return obalance;
-    }
-    
-    public void setObalance(Double obalance) {
-        this.obalance = obalance;
-    }
-    
-    public byte[] getPhoto() {
-        return photo;
-    }
-    
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-    
-    public void setAge(int age) {
-        this.age = age;
-    }
+//    public float getWeight() {
+//        return weight;
+//    }
+//    
+//    public void setWeight(float weight) {
+//        this.weight = weight;
+//    }
+//    
+//    public Float getOweight() {
+//        return oweight;
+//    }
+//    
+//    public void setOweight(Float oweight) {
+//        this.oweight = oweight;
+//    }
+//    
+//    public double getBalance() {
+//        return balance;
+//    }
+//    
+//    public void setBalance(double balance) {
+//        this.balance = balance;
+//    }
+//    
+//    public Double getObalance() {
+//        return obalance;
+//    }
+//    
+//    public void setObalance(Double obalance) {
+//        this.obalance = obalance;
+//    }
+//    
+//    public byte[] getPhoto() {
+//        return photo;
+//    }
+//    
+//    public void setPhoto(byte[] photo) {
+//        this.photo = photo;
+//    }
+//    
+//    public int getAge() {
+//        return age;
+//    }
+//    
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
 }

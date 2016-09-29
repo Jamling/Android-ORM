@@ -19,11 +19,12 @@ import java.util.List;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import cn.ieclipse.aorm.annotation.Column;
 import cn.ieclipse.aorm.annotation.ColumnWrap;
 import cn.ieclipse.aorm.annotation.Table;
 
 /**
- * Aorm settings
+ * Aorm Utils class, e.g. settings, table creation
  * 
  * @author Jamling
  *         
@@ -34,6 +35,7 @@ public final class Aorm {
     private static boolean supportExtend = true;
     private static boolean exactInsertOrUpdate = false;
     private static final String TAG = "AORM";
+    private static String columnPrefix = null;
     
     private Aorm() {
         //
@@ -49,10 +51,43 @@ public final class Aorm {
         debug = enable;
     }
     
+    /**
+     * @deprecated use {@link #setSupportExtend(boolean)} instead
+     */
+    @Deprecated
     public static void allowExtend(boolean allow) {
         supportExtend = allow;
     }
     
+    /**
+     * Set whether support model been support extend or not, default is true.
+     * <p>
+     * If your model is simple and not extend any other model been, suggested to
+     * set <code>false</code> to improve performance.
+     * </p>
+     * 
+     * @param support
+     *            true to enable, false to disable
+     * @since 1.1.1
+     */
+    public static void setSupportExtend(boolean support) {
+        Aorm.supportExtend = support;
+    }
+    
+    /**
+     * Return whether support model been support extend
+     * 
+     * @return true is support
+     * @since 1.1.1
+     */
+    public static boolean isSupportExtend() {
+        return supportExtend;
+    }
+    
+    /**
+     * @deprecated use {@link #isSupportExtend()} instead
+     */
+    @Deprecated
     public static boolean allowExtend() {
         return supportExtend;
     }
@@ -76,6 +111,38 @@ public final class Aorm {
      */
     static boolean getExactInsertOrUpdate() {
         return Aorm.exactInsertOrUpdate;
+    }
+    
+    /**
+     * If use implicit mapping (empty name in {@link Column}), will use mapping
+     * field name width prefix as database column. Default the prefix is null,
+     * and the database column name is same as filed name.
+     * 
+     * <pre>
+     * <code>
+     * // the column name will be "age"
+     * &#64;Column()
+     * public int age;
+     * </code>
+     * </pre>
+     * 
+     * After you {@link #setColumnPrefix(String)}, for example the prefix is
+     * "_", the database column name will be <var>_age</var>.
+     * 
+     * @param prefix
+     * @since 1.1.1
+     */
+    public static void setColumnPrefix(String prefix) {
+        Aorm.columnPrefix = prefix;
+    }
+    
+    /**
+     * Return the set column prefix
+     * 
+     * @return column prefix of implicit mapping.
+     */
+    public static String getColumnPrefix() {
+        return columnPrefix;
     }
     
     /**
@@ -114,7 +181,7 @@ public final class Aorm {
         sb.append(LF);
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
         for (ColumnWrap cw : list) {
-            sb.append(new ColumnMeta(cw.getColumn()).toSQL()).toString();
+            sb.append(new ColumnMeta(cw).toSQL()).toString();
             sb.append(", ");
             sb.append(LF);
         }

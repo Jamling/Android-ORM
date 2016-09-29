@@ -16,6 +16,7 @@
 package cn.ieclipse.aorm;
 
 import cn.ieclipse.aorm.annotation.Column;
+import cn.ieclipse.aorm.annotation.ColumnWrap;
 
 /**
  * Column annotation meta-data
@@ -39,15 +40,13 @@ public class ColumnMeta {
     
     }
     
-    public ColumnMeta(Column c) {
+    public ColumnMeta(ColumnWrap wrap) {
+        Column c = wrap.getColumn();
         id = c.id();
         notNull = c.notNull();
         defaultValue = c.defaultValue();
-        type = c.type();
-        name = c.name();
-        if (type.startsWith("java.lang.")) {
-            type = type.substring("java.lang.".length());
-        }
+        type = getDbColType(wrap);
+        name = wrap.getColumnName();
     }
     
     public String toSQL() {
@@ -56,9 +55,9 @@ public class ColumnMeta {
         sb.append(' ');
         
         if (id) {
-            sb.append("Integer");
+            sb.append("INTEGER");
             sb.append(' ');
-            sb.append("Primary key autoincrement");
+            sb.append("PRIMARY KEY AUTOINCREMENT");
         }
         else {
             sb.append(type);
@@ -70,5 +69,35 @@ public class ColumnMeta {
         // sb.append("'");
         // }
         return sb.toString();
+    }
+    
+    String getDbColType(ColumnWrap wrap) {
+        String type = wrap.getColumn().type();
+        if (type == null || type.isEmpty()) {
+            Class<?> clz = wrap.getFieldType();
+            if (int.class == clz || java.lang.Integer.class.equals(clz)
+                    || long.class == clz || java.lang.Long.class.equals(clz)
+                    || short.class == clz || java.lang.Short.class == clz) {
+                type = "INTEGER";
+            }
+            else if (boolean.class == clz || java.lang.Boolean.class == clz) {
+                type = "INTEGER";
+            }
+            else if (float.class == clz || java.lang.Float.class == clz
+                    || double.class == clz || java.lang.Double.class == clz) {
+                type = "NUMERIC";
+            }
+            else if (byte[].class == clz) {
+                type = "BLOB";
+            }
+            else {
+                type = "TEXT";
+            }
+        }
+        
+        if (type.startsWith("java.lang.")) {
+            type = type.substring("java.lang.".length());
+        }
+        return type;
     }
 }
