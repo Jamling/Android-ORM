@@ -5,6 +5,8 @@
 
 # Introduction
 
+***for v1.1.0 your been still requires getter/setter for model been. next version v1.1.1 is under test, it used more simple. please waiting for release few days.***
+
 Did you used sqlite to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
 
 # Features
