@@ -17,34 +17,48 @@ package cn.ieclipse.aorm.annotation;
 
 import java.lang.reflect.Field;
 
+import cn.ieclipse.aorm.Aorm;
+
 /**
  * @author Jamling
  * 
  */
 public class ColumnWrap {
     private Column column;
+    private String columnName;
     private Field field;
+    private Class<?> fieldType;
     private String getter;
     private String setter;
-    private Class<?> fieldType;
     
     public ColumnWrap(Column column, Field field) {
         this.column = column;
         this.field = field;
-        fieldType = (Class<?>) field.getGenericType();
+        this.field.setAccessible(true);
+        this.fieldType = (Class<?>) field.getType();
         
-        String fieldName = field.getName();
-        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) {
-            if (fieldName.startsWith("is") && fieldName.length() > 2) {
-                fieldName = fieldName.substring(2);
+//        String fieldName = field.getName();
+//        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) {
+//            if (fieldName.startsWith("is") && fieldName.length() > 2) {
+//                fieldName = fieldName.substring(2);
+//            }
+//            getter = "is" + capitalize(fieldName);
+//        }
+//        else {
+//            getter = "get" + capitalize(fieldName);
+//        }
+//        
+//        setter = "set" + capitalize(fieldName);
+        
+        String name = column.name();
+        if (name == null || name.isEmpty()) {
+            name = getPropertyName();
+            String prefix = Aorm.getColumnPrefix();
+            if (prefix != null && !prefix.isEmpty()) {
+                name = prefix + name;
             }
-            getter = "is" + capitalize(fieldName);
         }
-        else {
-            getter = "get" + capitalize(fieldName);
-        }
-        
-        setter = "set" + capitalize(fieldName);
+        this.columnName = name;
     }
     
     public String getPropertyName() {
@@ -52,7 +66,7 @@ public class ColumnWrap {
     }
     
     public String getColumnName() {
-        return column.name();
+        return columnName;
     }
     
     public Field getField() {
@@ -63,17 +77,9 @@ public class ColumnWrap {
         return column;
     }
     
-    // public void setSetter(String setter) {
-    // this.setter = setter;
-    // }
-    
     public String getSetter() {
         return setter;
     }
-    
-    // public void setGetter(String getter) {
-    // this.getter = getter;
-    // }
     
     public String getGetter() {
         return getter;
@@ -85,7 +91,7 @@ public class ColumnWrap {
     
     @Override
     public String toString() {
-        return "Column(" + column.name() + ")";
+        return "Column(" + columnName + ")";
     }
     
     static String capitalize(String str) {

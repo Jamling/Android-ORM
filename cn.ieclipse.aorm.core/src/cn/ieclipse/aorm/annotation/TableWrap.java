@@ -32,6 +32,7 @@ public class TableWrap {
     private Table table;
     private String pkColName;
     private String pkProName;
+    private Field pkField;
     private ArrayList<ColumnWrap> columns = new ArrayList<ColumnWrap>();
     
     public TableWrap(Class<? extends Object> clazz) {
@@ -47,7 +48,8 @@ public class TableWrap {
                         ColumnWrap wrap = new ColumnWrap(c, field);
                         columns.add(wrap);
                         if (c.id()) {
-                            pkColName = c.name();
+                            pkField = field;
+                            pkColName = wrap.getColumnName();
                             pkProName = field.getName();
                         }
                     }
@@ -158,20 +160,15 @@ public class TableWrap {
     }
     
     public String getPK() {
-        // String colName = null;
-        // for (ColumnWrap col : columns) {
-        // if (col.getColumn().id()) {
-        // colName = col.getColumnName();
-        // break;
-        // }
-        // }
-        //
-        // return colName;
         return pkColName;
     }
     
     public String getPKProperty() {
         return pkProName;
+    }
+    
+    public Field getPKField() {
+        return pkField;
     }
     
     public ColumnWrap getColumnWrap(String property) {

@@ -122,7 +122,6 @@ public final class CursorUtils {
         }
         String[] colNames = c.getColumnNames();
         int[] indices = new int[colNames.length];
-        Method[] objMethod = new Method[colNames.length];
         Field[] objField = new Field[colNames.length];
         // field type class, used in getter invoked.
         Class<?>[] fieldClass = new Class<?>[colNames.length];
@@ -131,14 +130,6 @@ public final class CursorUtils {
             for (int i = 0; i < colNames.length; i++) {
                 indices[i] = c.getColumnIndex(colNames[i]);
                 for (int j = 0; j < objClassArray.length; j++) {
-//                    Method m = getObjSetter(colNames[i], objClassArray[j],
-//                            aliasArray[j]);
-//                    if (m != null) {
-//                        objMethod[i] = m;
-//                        fieldClass[i] = objMethod[i].getParameterTypes()[0];
-//                        objIds[i] = j;
-//                        break;
-//                    }
                     Field f = getObjField(colNames[i], objClassArray[j], aliasArray[j]);
                     fieldClass[i] = f.getType();
                     if (f != null) {
@@ -223,60 +214,6 @@ public final class CursorUtils {
         return list;
     }
     
-    @Deprecated
-    private static Method getObjSetter(String column, Class<?>[] objClassArray,
-            String[] aliasArray) {
-        Method method = null;
-        int pos = column.indexOf('.');
-        if (pos > 0) {
-            String alias = column.substring(0, pos);
-            for (int i = 0; i < aliasArray.length; i++) {
-                if (alias.equals(aliasArray[i])) {
-                    method = Mapping.getInstance().getSetterByColumn(
-                            column.substring(pos + 1), objClassArray[i]);
-                    break;
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < objClassArray.length; i++) {
-                try {
-                    method = Mapping.getInstance().getSetterByColumn(column,
-                            objClassArray[i]);
-                    if (method != null) {
-                        break;
-                    }
-                } catch (Exception e) {
-                    // if not found, find next class's method
-                }
-            }
-        }
-        return method;
-    }
-    
-    @Deprecated
-    private static Method getObjSetter(String column, Class<?> objClass,
-            String alias) /*
-                           * throws SecurityException, NoSuchFieldException,
-                           * NoSuchMethodException
-                           */{
-        Method method = null;
-        int pos = column.indexOf('.');
-        // has alias
-        if (pos > 0) {
-            String tempAlias = column.substring(0, pos);
-            // match
-            if (tempAlias.equals(alias)) {
-                method = Mapping.getInstance().getSetterByColumn(
-                        column.substring(pos + 1), objClass);
-            }
-        }
-        else {
-            method = Mapping.getInstance().getSetterByColumn(column, objClass);
-        }
-        return method;
-    }
-    
     private static Field getObjField(String column, Class<?> objClass, String alias) {
         Field f = null;
         int pos = column.indexOf('.');
@@ -295,30 +232,6 @@ public final class CursorUtils {
         return f;
     }
     
-    @Deprecated
-    private static Method getObjSetter(String column, Class<?> objClass) /*
-                                                                          * throws
-                                                                          * SecurityException
-                                                                          * ,
-                                                                          * NoSuchFieldException
-                                                                          * ,
-                                                                          * NoSuchMethodException
-                                                                          */{
-        Method method = null;
-        int pos = column.indexOf('.');
-        // has alias
-        if (pos > 0) {
-            String tempAlias = column.substring(0, pos);
-            // not match
-            method = Mapping.getInstance().getSetterByColumn(
-                    column.substring(pos + 1), objClass);
-        }
-        else {
-            method = Mapping.getInstance().getSetterByColumn(column, objClass);
-        }
-        return method;
-    }
-    
     private static Field getObjField(String column, Class<?> objClass) {
         Field f = null;
         int pos = column.indexOf('.');
@@ -334,22 +247,6 @@ public final class CursorUtils {
         }
         return f;
     }
-    
-    // static Method getObjGetter(String column, Class<?> objClass, String
-    // alias) {
-    // String prop = Cache.getInstance().getPropertyName(column, objClass);
-    // Method method = null;
-    //
-    // try {
-    // if (prop != null) {
-    // String get = "get" + capitalize(prop);
-    // method = objClass.getDeclaredMethod(get, (Class<?>[]) null);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return method;
-    // }
     
     static String capitalize(String str) {
         String ret = str;
@@ -398,7 +295,7 @@ public final class CursorUtils {
     
     // ///////////////
     
-    private static class CursorReflect {
+    static class CursorReflect {
         static Class<?> cursorClass;
         static Method moveToFirst;
         static Method isAfterLast;

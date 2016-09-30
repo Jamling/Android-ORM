@@ -38,12 +38,12 @@ public class CursorUtilsTest extends TestCase {
         cursor.addRow(new Object[] { 1, "lijm", 30, "139" });
         List<?> list = CursorUtils.getFromCursor(cursor, Student.class, null);
         Student s = (Student) list.get(0);
-        Assert.assertEquals("lijm", s.getName());
+        Assert.assertEquals("lijm", s.name);
         
         // use reflect
         list = CursorUtils.getFromCursorReflect(cursor, Student.class, null);
         s = (Student) list.get(0);
-        Assert.assertEquals("lijm", s.getName());
+        Assert.assertEquals("lijm", s.name);
         
         // sub class
         cursor = new MockCursor(new String[] { "_id", "_name", "_age",
@@ -53,9 +53,9 @@ public class CursorUtilsTest extends TestCase {
                 Criteria.create(Undergraduate.class));
         Assert.assertEquals(1, list.size());
         Undergraduate u = (Undergraduate) list.get(0);
-        Assert.assertEquals("lijm", u.getName());
-        Assert.assertEquals(1f, u.getWeight(), 0f);
-        Assert.assertEquals(30, u.getAge());
+        Assert.assertEquals("lijm", u.name);
+        Assert.assertEquals(1f, u.weight, 0f);
+        Assert.assertEquals(30, u.age);
         
     }
     
@@ -124,8 +124,20 @@ public class CursorUtilsTest extends TestCase {
         Student s = (Student) actuals[0];
         Grade g = (Grade) actuals[1];
         
-        Assert.assertEquals(s.getId(), 1);
-        Assert.assertEquals(s.getName(), "lijm");
-        Assert.assertEquals(g.getScore(), Float.valueOf(100), 0);
+        Assert.assertEquals(s.id, 1);
+        Assert.assertEquals(s.name, "lijm");
+        Assert.assertEquals(g.score, Float.valueOf(100), 0);
     }
+    
+    public void testMapping() {
+        String[] cursorTypes = {"getInt", "getShort", "getBlob", "getString"};
+        Class[] objectTypes = {int.class, short.class, byte[].class, String.class};
+        for (int i=0; i< cursorTypes.length; i++) {
+            String on = objectTypes[i].getSimpleName();
+            String mn = CursorUtils.CursorReflect.getMapping(on).getName();
+            Assert.assertEquals(mn, cursorTypes[i]);
+        }
+    }
+    
+    
 }

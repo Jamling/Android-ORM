@@ -93,6 +93,10 @@ public class Mapping {
         return getTableWrap(clazz).getPKProperty();
     }
     
+    public Field getPKField(Class<?> clazz) {
+        return getTableWrap(clazz).getPKField();
+    }
+    
     /* package */ColumnWrap getColumn(String property, Class<?> clazz) {
         return getTableWrap(clazz).getColumnWrap(property);
     }

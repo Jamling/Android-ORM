@@ -49,16 +49,16 @@ public class SessionTest extends TestCase {
     
     public void testInsert() {
         Person p = new Person();
-        p.setAge(10);
-        p.setName("ljm");
+        p.id = 10;
+        p.name = ("ljm");
         long id = session.insert(p);
         Assert.assertEquals(1, id);
         
         p = session.get(Person.class, id);
         Assert.assertNotNull(p);
         
-        Assert.assertEquals(1, p.getId());
-        Assert.assertEquals("ljm", p.getName());
-        Assert.assertEquals(10, p.getAge());
+        Assert.assertEquals(1, p.id);
+        Assert.assertEquals("ljm", p.name);
+        Assert.assertEquals(0, p.age);
     }
 }

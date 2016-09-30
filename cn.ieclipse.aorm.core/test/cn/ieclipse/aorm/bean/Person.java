@@ -26,35 +26,35 @@ import cn.ieclipse.aorm.annotation.Table;
 public class Person {
     
     @Column(id = true, name = "_id")
-    private long id;
+    public long id;
     
     @Column(name = "_name", notNull = true)
-    private String name;
+    public String name;
     
     @Column(name = "_age")
-    private int age;
-    
-    public long getId() {
-        return id;
-    }
-    
-    public void setId(long id) {
-        this.id = id;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-    
-    public void setAge(int age) {
-        this.age = age;
-    }
+    public int age;
+//    
+//    public long getId() {
+//        return id;
+//    }
+//    
+//    public void setId(long id) {
+//        this.id = id;
+//    }
+//    
+//    public String getName() {
+//        return name;
+//    }
+//    
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//    
+//    public int getAge() {
+//        return age;
+//    }
+//    
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
 }
