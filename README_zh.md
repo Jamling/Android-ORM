@@ -18,7 +18,7 @@
 # 使用
 ## Eclipse
 
-下载aorm-core-1.0.jar并放入libs/目录下
+下载aorm-core-1.1,1.jar并放入libs/目录下
 
 推荐安装[Android ADT-extensions](https://github.com/Jamling/adt-extensions/)插件
 
@@ -27,11 +27,114 @@ Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.0'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.1'
 }
 ```
 
 # 示例代码
+
+## 创建映射
+只需添加类`@Table`注解及`@Column`属性注解即可完成表与字段的映射。
+
+```java
+@Table(name = "student")
+public class Student implements Serializable {
+    
+    @Column(name = "_id", id = true)
+    public long id;
+    
+    @Column(name="_name")
+    public String name;
+    
+    @Column()
+    public int age;
+    
+    @Column()
+    public String phone;
+    
+    public String address;
+}
+```
+
+## Create database
+
+```java
+package cn.ieclipse.aorm.example;
+
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import cn.ieclipse.aorm.Aorm;
+import cn.ieclipse.aorm.Session;
+import cn.ieclipse.aorm.example.bean.Course;
+import cn.ieclipse.aorm.example.bean.Grade;
+import cn.ieclipse.aorm.example.bean.Student;
+
+/**
+ * @author Jamling
+ * 
+ */
+public class ExampleContentProvider extends ContentProvider {
+    
+    public static final String AUTH = "cn.ieclipse.aorm.example.provider";
+    public static final Uri URI = Uri.parse("content://" + AUTH);
+    private SQLiteOpenHelper mOpenHelper;
+    private static Session session;
+    
+    @Override
+    public int delete(Uri arg0, String arg1, String[] arg2) {
+        return 0;
+    }
+    
+    @Override
+    public String getType(Uri arg0) {
+        return null;
+    }
+    
+    @Override
+    public Uri insert(Uri arg0, ContentValues arg1) {
+        return null;
+    }
+    
+    @Override
+    public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
+            String arg4) {
+        return null;
+    }
+    
+    @Override
+    public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
+        return 0;
+    }
+    
+    public static Session getSession() {
+        return session;
+    }
+    
+    @Override
+    public boolean onCreate() {
+        mOpenHelper = new SQLiteOpenHelper(this.getContext(), "example.db",
+                null, 1) {
+            public void onCreate(SQLiteDatabase db) {
+                // method 3: use AORM to create table
+                Aorm.createTable(db, Grade.class);
+                Aorm.createTable(db, Student.class);
+                Aorm.createTable(db, Course.class);
+            }
+            
+            public void onUpgrade(SQLiteDatabase db, int oldVersion,
+                    int newVersion) {
+            }
+        };
+        session = new Session(mOpenHelper, getContext().getContentResolver());
+        return true;
+    }
+    
+}
+```
 
 ## 查询
 ```java
