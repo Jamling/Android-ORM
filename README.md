@@ -5,8 +5,6 @@
 
 # Introduction
 
-***for v1.1.0 your been still requires getter/setter for model been. next version v1.1.1 is under test, it used more simple. please waiting for release few days.***
-
 Did you used sqlite to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
 
 # Features
@@ -19,7 +17,7 @@ More feature, please experience it for your self.
 # Usage
 ## Use in Eclipse
 
-Put aorm-core-1.0.jar to libs/
+Put aorm-core-1.1.1.jar to libs/
 
 Recommended to install [Android ADT-extensions](https://github.com/Jamling/adt-extensions/) plugin, and add ORM capapility to enable Aorm.
 
@@ -28,11 +26,114 @@ Aorm has been published to jcenter, so you can just add dependence of aorm in yo
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.0'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.1'
 }
 ```
 
 # Code samples
+
+## Create mapping
+Simply add `@Table` class annotation and `@Column` field annotation to mapping.
+
+```java
+@Table(name = "student")
+public class Student implements Serializable {
+    
+    @Column(name = "_id", id = true)
+    public long id;
+    
+    @Column(name="_name")
+    public String name;
+    
+    @Column()
+    public int age;
+    
+    @Column()
+    public String phone;
+    
+    public String address;
+}
+```
+
+## Create database
+
+```java
+package cn.ieclipse.aorm.example;
+
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import cn.ieclipse.aorm.Aorm;
+import cn.ieclipse.aorm.Session;
+import cn.ieclipse.aorm.example.bean.Course;
+import cn.ieclipse.aorm.example.bean.Grade;
+import cn.ieclipse.aorm.example.bean.Student;
+
+/**
+ * @author Jamling
+ * 
+ */
+public class ExampleContentProvider extends ContentProvider {
+    
+    public static final String AUTH = "cn.ieclipse.aorm.example.provider";
+    public static final Uri URI = Uri.parse("content://" + AUTH);
+    private SQLiteOpenHelper mOpenHelper;
+    private static Session session;
+    
+    @Override
+    public int delete(Uri arg0, String arg1, String[] arg2) {
+        return 0;
+    }
+    
+    @Override
+    public String getType(Uri arg0) {
+        return null;
+    }
+    
+    @Override
+    public Uri insert(Uri arg0, ContentValues arg1) {
+        return null;
+    }
+    
+    @Override
+    public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
+            String arg4) {
+        return null;
+    }
+    
+    @Override
+    public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
+        return 0;
+    }
+    
+    public static Session getSession() {
+        return session;
+    }
+    
+    @Override
+    public boolean onCreate() {
+        mOpenHelper = new SQLiteOpenHelper(this.getContext(), "example.db",
+                null, 1) {
+            public void onCreate(SQLiteDatabase db) {
+                // method 3: use AORM to create table
+                Aorm.createTable(db, Grade.class);
+                Aorm.createTable(db, Student.class);
+                Aorm.createTable(db, Course.class);
+            }
+            
+            public void onUpgrade(SQLiteDatabase db, int oldVersion,
+                    int newVersion) {
+            }
+        };
+        session = new Session(mOpenHelper, getContext().getContentResolver());
+        return true;
+    }
+    
+}
+```
 
 ## Query
 ```java
