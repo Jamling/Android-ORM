@@ -745,6 +745,9 @@ public class Session {
             else if (byte[].class == colClass || Byte[].class == colClass) {
                 colValues.put(colName, (byte[]) colValue);
             }
+            else if (boolean.class == colClass || Boolean.class == colClass) {
+                colValues.put(colName, (Boolean) colValue);
+            }
             else if (String.class == colClass) {
                 colValues.put(colName, (String) colValue);
             }
