@@ -17,7 +17,7 @@ More feature, please experience it for your self.
 # Usage
 ## Use in Eclipse
 
-Put aorm-core-1.1.1.jar to libs/
+Put aorm-core-1.1.2.jar to libs/
 
 Recommended to install [Android ADT-extensions](https://github.com/Jamling/adt-extensions/) plugin, and add ORM capapility to enable Aorm.
 
@@ -26,7 +26,7 @@ Aorm has been published to jcenter, so you can just add dependence of aorm in yo
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.1'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.2'
 }
 ```
 

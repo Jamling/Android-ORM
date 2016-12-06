@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/Jamling/Android-ORM.svg?branch=master)](https://travis-ci.org/Jamling/Android-ORM)
 [![GitHub release](https://img.shields.io/github/release/jamling/Android-ORM.svg?maxAge=3600)](https://github.com/Jamling/Android-ORM)
+[![Bintray](https://img.shields.io/bintray/v/jamling/maven/Android-ORM.svg?maxAge=86400)](https://bintray.com/jamling/maven/Android-ORM)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android_ORM-green.svg?style=flat)](https://android-arsenal.com/details/1/4306)
 
 # 简介
@@ -18,7 +19,7 @@
 # 使用
 ## Eclipse
 
-下载aorm-core-1.1,1.jar并放入libs/目录下
+下载aorm-core-1.1.2.jar并放入libs/目录下
 
 推荐安装[Android ADT-extensions](https://github.com/Jamling/adt-extensions/)插件
 
@@ -27,7 +28,7 @@ Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.1'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.2'
 }
 ```
 
