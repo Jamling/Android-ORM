@@ -52,6 +52,8 @@ public final class Aorm {
     }
     
     /**
+     * @param allow
+     *            true to enable, false to disable
      * @deprecated use {@link #setSupportExtend(boolean)} instead
      */
     @Deprecated
@@ -86,6 +88,7 @@ public final class Aorm {
     
     /**
      * @deprecated use {@link #isSupportExtend()} instead
+     * @return allow Java been extend
      */
     @Deprecated
     public static boolean allowExtend() {
@@ -130,6 +133,7 @@ public final class Aorm {
      * "_", the database column name will be <var>_age</var>.
      * 
      * @param prefix
+     *            column prefix
      * @since 1.1.1
      */
     public static void setColumnPrefix(String prefix) {
