@@ -142,7 +142,7 @@ public class Restrictions {
     }
     
     public static Restrictions like(String property, Object value) {
-        return new PropertyRestrictions(LIKE, property, value);
+        return new LikeRestrictions(LIKE, property, value);
     }
     
     public static Restrictions between(String property, Object value,
@@ -216,13 +216,8 @@ public class Restrictions {
     }
     
     static class PropertyRestrictions extends Restrictions {
-        private PropertyRestrictions(String property, String op, Object value) {
-            super(property, op, value);
-        }
-        
-        @Override
-        public String toString() {
-            return property + op + value;
+        private PropertyRestrictions(String op, String property, Object value) {
+            super(op, property, value);
         }
         
         protected String toRightSQL(List<Object> args) {
@@ -230,9 +225,20 @@ public class Restrictions {
         }
     }
     
+    static class LikeRestrictions extends Restrictions {
+        private LikeRestrictions(String op, String property, Object value) {
+            super(op, property, value);
+        }
+        
+        protected String toRightSQL(List<Object> args) {
+            args.add(value);
+            return "?";
+        }
+    }
+    
     static class IsRestrictions extends Restrictions {
-        private IsRestrictions(String property, String op, Object value) {
-            super(property, op, value);
+        private IsRestrictions(String op, String property, Object value) {
+            super(op, property, value);
         }
         
         protected String toRightSQL(List<Object> args) {
@@ -243,9 +249,9 @@ public class Restrictions {
     static class BetweenRestrictions extends Restrictions {
         private Object rightValue;
         
-        private BetweenRestrictions(String property, String op, Object value,
+        private BetweenRestrictions(String op, String property, Object value,
                 Object rightValue) {
-            super(property, op, value);
+            super(op, property, value);
             this.rightValue = rightValue;
         }
         
