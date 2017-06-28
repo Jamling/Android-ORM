@@ -96,4 +96,13 @@ public class RestrictionsTest extends TestCase {
                 .toArray());
     }
     
+    public void testLike() {
+        Criteria criteria = Criteria.create(Student.class, "s")
+                .add(Restrictions.like("s.name", "ljm"));
+        String sql = criteria.toSQL();
+        String expected = "s._name LIKE ?";
+        Assert.assertEquals(expected, criteria.getWhere());
+        Assert.assertArrayEquals(new Object[] { "ljm" }, criteria.getArgs()
+                .toArray());
+    }
 }

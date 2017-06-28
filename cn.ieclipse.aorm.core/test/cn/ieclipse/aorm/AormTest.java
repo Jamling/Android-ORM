@@ -17,17 +17,19 @@ package cn.ieclipse.aorm;
 
 import cn.ieclipse.aorm.bean.FullBean;
 import cn.ieclipse.aorm.bean.Student;
+import junit.framework.TestCase;
 
 /**
  * Description
  * 
  * @author Jamling
  * @date 2016-01-18
- *
+ *       
  */
-public class AormTest {
-    public static void main(String[] args) {
+public class AormTest extends TestCase {
+    public void testCreateDDL() {
         String sql = Aorm.generateCreateDDL(FullBean.class);
         System.out.println(sql);
+        assertEquals(sql, sql);
     }
 }
