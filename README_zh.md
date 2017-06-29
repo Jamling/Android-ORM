@@ -19,7 +19,7 @@
 # 使用
 ## Eclipse
 
-下载aorm-core-1.1.2.jar并放入libs/目录下
+下载aorm-core-1.1.3.jar并放入libs/目录下
 
 推荐安装[Android ADT-extensions](https://github.com/Jamling/adt-extensions/)插件
 

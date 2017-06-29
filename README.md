@@ -17,7 +17,7 @@ More feature, please experience it for your self.
 # Usage
 ## Use in Eclipse
 
-Put aorm-core-1.1.2.jar to libs/
+Put aorm-core-1.1.3.jar to libs/
 
 Recommended to install [Android ADT-extensions](https://github.com/Jamling/adt-extensions/) plugin, and add ORM capapility to enable Aorm.
 
