@@ -28,7 +28,7 @@ Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.2'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.3'
 }
 ```
 

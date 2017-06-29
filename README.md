@@ -26,7 +26,7 @@ Aorm has been published to jcenter, so you can just add dependence of aorm in yo
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.2'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.3'
 }
 ```
 
