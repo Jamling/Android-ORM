@@ -88,7 +88,12 @@ public class Mapping {
     }
     
     public String getColumnName(String property, Class<?> clazz) {
-        return getTableWrap(clazz).getColumn(property);
+        String name = getTableWrap(clazz).getColumn(property);
+        if (name == null) {
+            throw new ORMException(
+                    "Mapping Error: no such column mapping to " + property);
+        }
+        return name;
     }
     
     public String getPropertyName(String column, Class<?> clazz) {

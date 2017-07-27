@@ -229,10 +229,7 @@ public class Criteria {
                 sub = property.substring(alias.length() + 1);
             }
             String colName = Mapping.getInstance().getColumnName(sub, clazz);
-            if (colName == null) {
-                throw new ORMException(
-                        "Mapping Error: no column mapping to " + property);
-            }
+            // colName throw ORMException();
             if (alias != null) {
                 this.projections.add(alias + "." + colName);
             }
@@ -466,11 +463,7 @@ public class Criteria {
                     String colName = Mapping.getInstance().getColumnName(str2,
                             current.clazz);
                     if (colName == null) {
-                        throw new ORMException(
-                                "Mapping Error: No such maping for " + property
-                                        + ", did you written Column annotation before "
-                                        + str2 + " in "
-                                        + current.clazz.getName());
+                        // throw ORMException();
                     }
                     str2 = colName;
                     break;
@@ -482,8 +475,13 @@ public class Criteria {
         else {
             boolean map = false;
             for (; current != null; current = current.child) {
-                String colName = Mapping.getInstance().getColumnName(str2,
-                        current.clazz);
+                String colName = null;
+                try {
+                    colName = Mapping.getInstance().getColumnName(str2,
+                            current.clazz);
+                } catch (ORMException e) {
+                    //
+                }
                 if (colName == null) {
                     continue;
                 }
@@ -496,7 +494,7 @@ public class Criteria {
             }
             if (!map) {
                 throw new ORMException(
-                        "Mapping Error: No such maping for " + property);
+                        "Mapping Error: no such column mapping to " + property);
             }
             ret = str2;
         }

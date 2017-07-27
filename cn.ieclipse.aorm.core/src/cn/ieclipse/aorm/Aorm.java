@@ -207,11 +207,7 @@ public final class Aorm {
     public static final String LF = System.getProperty("line.separator");
     
     public static String generateDropDDL(Class<?> tableClass) {
-        Table t = tableClass.getAnnotation(Table.class);
-        if (t == null) {
-            throw new ORMException("No mapping to " + tableClass
-                    + ", did you forget add @Table to your class?");
-        }
+        Table t = Mapping.getInstance().getTable(tableClass);
         return "DROP TABLE " + t.name() + " IF EXISTS";
     }
     
@@ -222,11 +218,7 @@ public final class Aorm {
     public static String generateCreateDDL(Class<?> tableClass,
             String tableName) {
         if (tableName == null || tableName.trim().length() == 0) {
-            Table t = tableClass.getAnnotation(Table.class);
-            if (t == null) {
-                throw new ORMException("No mapping to " + tableClass
-                        + ", did you forget add @Table to your class?");
-            }
+            Table t = Mapping.getInstance().getTable(tableClass);
             tableName = t.name();
         }
         StringBuilder sb = new StringBuilder();
@@ -300,11 +292,7 @@ public final class Aorm {
      * @since 1.1.4
      */
     public static void updateTable(SQLiteDatabase db, Class<?> tableClass) {
-        Table t = tableClass.getAnnotation(Table.class);
-        if (t == null) {
-            throw new ORMException("No mapping to " + tableClass
-                    + ", did you forget add @Table to your class?");
-        }
+        Table t = Mapping.getInstance().getTable(tableClass);
         // old table column
         List<ColumnInfo> older = Aorm.getColumnInfo(db, t.name());
         // new table column
@@ -415,94 +403,6 @@ public final class Aorm {
         // step 11
         // db.endTransaction();
         // step 12 TODO db.execSQL("PRAGMA foreign_keys=ON");
-    }
-    
-    /**
-     * Update table structure
-     * 
-     * @param db
-     *            the sqlite database
-     * @param tableClass
-     *            mapping class
-     * @since 1.1.4
-     */
-    private static void updateTableFully(SQLiteDatabase db,
-            Class<?> tableClass) {
-        Table t = tableClass.getAnnotation(Table.class);
-        if (t == null) {
-            throw new ORMException("No mapping to " + tableClass
-                    + ", did you forget add @Table to your class?");
-        }
-        // old table column
-        List<ColumnInfo> old = Aorm.getColumnInfo(db, t.name());
-        // new table column
-        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
-        
-        List<String> clist1 = new ArrayList<String>();
-        List<String> ddllist1 = new ArrayList<String>();
-        for (int i = 0; i < old.size(); i++) {
-            ColumnInfo c = old.get(i);
-            
-            boolean found = false;
-            for (int j = 0; j < list.size(); j++) {
-                ColumnWrap wrap = list.get(j);
-                if (c.name.equals(wrap.getColumnName())) {
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
-                clist1.add(c.name);
-                ddllist1.add(c.getDDL());
-            }
-        }
-        String oldPrj = Aorm.join(",", clist1.toArray());
-        String oldDdl = Aorm.join(",", ddllist1.toArray());
-        
-        List<String> clist2 = new ArrayList<String>();
-        Object[] newColumns = new Object[list.size()];
-        for (int i = 0; i < newColumns.length; i++) {
-            ColumnWrap wrap = list.get(i);
-            newColumns[i] = ColumnInfo.from(wrap).getDDL();
-            boolean found = false;
-            for (int j = 0; j < clist1.size(); j++) {
-                if (clist1.get(j).equalsIgnoreCase(wrap.getColumnName())) {
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
-                clist2.add(wrap.getColumnName());
-            }
-        }
-        // new insert projection = new table column - added column
-        String newPrj = Aorm.join(",", clist2.toArray());
-        String newDdl = Aorm.join(",", newColumns);
-        
-        String tempName = Aorm.getTempTableName(db, t.name());
-        String createTempTable = String.format("CREATE TEMPORARY TABLE %s(%s);",
-                tempName, oldDdl);
-        String insertTempTable = String.format(
-                "INSERT INTO %s SELECT %s FROM %s;", tempName, oldPrj,
-                t.name());
-        String dropTable = String.format("DROP TABLE  %s", t.name());
-        
-        String createTable = String.format("CREATE TABLE %s (%s);", t.name(),
-                newDdl);
-        String insertTable = String.format(
-                "INSERT INTO %s(%s) SELECT %s FROM %s;", t.name(), newPrj,
-                newPrj, tempName);
-        String dropTempTable = String.format("DROP TABLE %s;", tempName);
-        db.beginTransaction();
-        db.execSQL(createTempTable);
-        db.execSQL(insertTempTable);
-        db.execSQL(dropTable);
-        db.endTransaction();
-        db.beginTransaction();
-        db.execSQL(createTable);
-        db.execSQL(insertTable);
-        db.execSQL(dropTempTable);
-        db.endTransaction();
     }
     
     /**

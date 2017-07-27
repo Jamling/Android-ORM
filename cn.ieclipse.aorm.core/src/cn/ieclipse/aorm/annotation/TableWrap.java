@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.ieclipse.aorm.Aorm;
-import cn.ieclipse.aorm.ORMException;
+import cn.ieclipse.aorm.Mapping;
 
 /**
  * @author Jamling
@@ -36,7 +36,7 @@ public class TableWrap {
     private ArrayList<ColumnWrap> columns = new ArrayList<ColumnWrap>();
     
     public TableWrap(Class<? extends Object> clazz) {
-        Table t = clazz.getAnnotation(Table.class);
+        Table t = Mapping.getInstance().getTable(clazz);
         if (t != null) {
             table = t;
             this.clazz = clazz;
@@ -55,12 +55,6 @@ public class TableWrap {
                     }
                 }
             }
-        }
-        else {
-            throw new ORMException(
-                    "No mapping for "
-                            + clazz.getName()
-                            + ", did you written Table annotation before class declaration?");
         }
     }
     
