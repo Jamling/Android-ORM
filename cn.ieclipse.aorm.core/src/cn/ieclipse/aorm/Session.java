@@ -24,9 +24,11 @@ import java.util.Set;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import cn.ieclipse.aorm.annotation.ColumnWrap;
+import cn.ieclipse.aorm.db.ColumnInfo;
 
 /**
  * The session of communication with database. Provided all the GRUD operation
@@ -104,6 +106,46 @@ public class Session {
     
     protected void execSQL(String sql, Object[] args) {
         mHelper.getWritableDatabase().execSQL(sql, args);
+    }
+    
+    /**
+     * Get the table columns info
+     * 
+     * @param tableName
+     *            table name
+     * @return {@link ColumnInfo} collection
+     * @see Aorm#getColumnInfo(SQLiteDatabase, String)
+     * @since 1.1.4
+     */
+    public List<ColumnInfo> getTableInfo(String tableName) {
+        return Aorm.getColumnInfo(mHelper.getReadableDatabase(), tableName);
+    }
+    
+    /**
+     * Get the table columns info
+     * 
+     * @param clazz
+     *            mapping class
+     * @return {@link ColumnInfo} collection
+     * @see #getTableInfo(String)
+     * @since 1.1.4
+     */
+    public List<ColumnInfo> getTableInfo(Class<?> clazz) {
+        String table = Mapping.getInstance().getTableName(clazz);
+        return getTableInfo(table);
+    }
+    
+    /**
+     * Get the sqlite database
+     * 
+     * @param writable
+     *            is writable database
+     * @return sqlite database
+     * @since 1.1.4
+     */
+    public SQLiteDatabase getDatabase(boolean writable) {
+        return writable ? mHelper.getWritableDatabase()
+                : mHelper.getReadableDatabase();
     }
     
     public void beginTransaction() {

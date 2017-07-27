@@ -15,13 +15,17 @@
  */
 package cn.ieclipse.aorm;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import cn.ieclipse.aorm.annotation.Column;
 import cn.ieclipse.aorm.annotation.ColumnWrap;
 import cn.ieclipse.aorm.annotation.Table;
+import cn.ieclipse.aorm.db.ColumnInfo;
+import cn.ieclipse.aorm.db.TableInfo;
 
 /**
  * Aorm Utils class, e.g. settings, table creation
@@ -173,19 +177,27 @@ public final class Aorm {
     }
     
     public static String generateCreateDDL(Class<?> tableClass) {
-        Table t = tableClass.getAnnotation(Table.class);
-        if (t == null) {
-            throw new ORMException("No mapping to " + tableClass
-                    + ", did you forget add @Table to your class?");
+        return generateCreateDDL(tableClass, null);
+    }
+    
+    public static String generateCreateDDL(Class<?> tableClass,
+            String tableName) {
+        if (tableName == null || tableName.trim().length() == 0) {
+            Table t = tableClass.getAnnotation(Table.class);
+            if (t == null) {
+                throw new ORMException("No mapping to " + tableClass
+                        + ", did you forget add @Table to your class?");
+            }
+            tableName = t.name();
         }
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
-        sb.append(t.name());
+        sb.append(tableName);
         sb.append("(");
         sb.append(LF);
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
         for (ColumnWrap cw : list) {
-            sb.append(new ColumnMeta(cw).toSQL()).toString();
+            sb.append(new ColumnMeta(cw).toSQL());
             sb.append(", ");
             sb.append(LF);
         }
@@ -197,6 +209,38 @@ public final class Aorm {
         return (sb.toString());
     }
     
+    private static String generateColumnDDL(Class<?> tableClass,
+            String delimiter) {
+        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
+        String[] columns = new String[list.size()];
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = new ColumnMeta(list.get(i)).toSQL();
+        }
+        return Aorm.join(delimiter, columns);
+    }
+    
+    /**
+     * Get table column projection
+     * 
+     * @param tableClass
+     *            mapping class
+     * @param delimiter
+     *            delimiter default is ","
+     * @return projection (joined column with delimiter)
+     * @since 1.1.4
+     */
+    public static String getProjections(Class<?> tableClass, String delimiter) {
+        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
+        String[] columns = new String[list.size()];
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = list.get(i).getColumnName();
+        }
+        if (Aorm.empty(delimiter)) {
+            delimiter = ",";
+        }
+        return Aorm.join(delimiter, columns);
+    }
+    
     public static void createTable(SQLiteDatabase db, Class<?> tableClass) {
         String sql = generateCreateDDL(tableClass);
         db.execSQL(sql);
@@ -206,4 +250,215 @@ public final class Aorm {
         String sql = generateDropDDL(tableClass);
         db.execSQL(sql);
     }
+    
+    /**
+     * Update table structure
+     * 
+     * @param db
+     *            the sqlite database
+     * @param tableClass
+     *            mapping class
+     * @since 1.1.4
+     */
+    public static void updateTable(SQLiteDatabase db, Class<?> tableClass) {
+        Table t = tableClass.getAnnotation(Table.class);
+        if (t == null) {
+            throw new ORMException("No mapping to " + tableClass
+                    + ", did you forget add @Table to your class?");
+        }
+        // old table column
+        List<ColumnInfo> old = Aorm.getColumnInfo(db, t.name());
+        // new table column
+        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
+        // added columns
+        
+        for (int i = 0; i < old.size(); i++) {
+            ColumnInfo c = old.get(i);
+            
+            boolean found = false;
+            for (int j = 0; j < list.size(); j++) {
+                ColumnWrap wrap = list.get(j);
+                if (c.name.equals(wrap.getColumnName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                
+            }
+        }
+    }
+    
+    /**
+     * Update table structure
+     * 
+     * @param db
+     *            the sqlite database
+     * @param tableClass
+     *            mapping class
+     * @since 1.1.4
+     */
+    private static void updateTableFully(SQLiteDatabase db,
+            Class<?> tableClass) {
+        Table t = tableClass.getAnnotation(Table.class);
+        if (t == null) {
+            throw new ORMException("No mapping to " + tableClass
+                    + ", did you forget add @Table to your class?");
+        }
+        // old table column
+        List<ColumnInfo> old = Aorm.getColumnInfo(db, t.name());
+        // new table column
+        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
+        
+        List<String> clist1 = new ArrayList<String>();
+        List<String> ddllist1 = new ArrayList<String>();
+        for (int i = 0; i < old.size(); i++) {
+            ColumnInfo c = old.get(i);
+            
+            boolean found = false;
+            for (int j = 0; j < list.size(); j++) {
+                ColumnWrap wrap = list.get(j);
+                if (c.name.equals(wrap.getColumnName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                clist1.add(c.name);
+                ddllist1.add(c.getDDL());
+            }
+        }
+        String oldPrj = Aorm.join(",", clist1.toArray());
+        String oldDdl = Aorm.join(",", ddllist1.toArray());
+        
+        List<String> clist2 = new ArrayList<String>();
+        String[] newColumns = new String[list.size()];
+        for (int i = 0; i < newColumns.length; i++) {
+            ColumnWrap wrap = list.get(i);
+            newColumns[i] = new ColumnMeta(wrap).toSQL();
+            boolean found = false;
+            for (int j = 0; j < clist1.size(); j++) {
+                if (clist1.get(j).equalsIgnoreCase(wrap.getColumnName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                clist2.add(wrap.getColumnName());
+            }
+        }
+        // new insert projection = new table column - added column
+        String newPrj = Aorm.join(",", clist2.toArray());
+        String newDdl = Aorm.join(",", newColumns);
+        
+        String tempName = Aorm.getTempTableName(db, t.name());
+        String createTempTable = String.format("CREATE TEMPORARY TABLE %s(%s);",
+                tempName, oldDdl);
+        String insertTempTable = String.format(
+                "INSERT INTO %s SELECT %s FROM %s;", tempName, oldPrj,
+                t.name());
+        String dropTable = String.format("DROP TABLE  %s", t.name());
+        
+        String createTable = String.format("CREATE TABLE %s (%s);", t.name(),
+                newDdl);
+        String insertTable = String.format(
+                "INSERT INTO %s(%s) SELECT %s FROM %s;", t.name(), newPrj,
+                newPrj, tempName);
+        String dropTempTable = String.format("DROP TABLE %s;", tempName);
+        db.beginTransaction();
+        db.execSQL(createTempTable);
+        db.execSQL(insertTempTable);
+        db.execSQL(dropTable);
+        db.endTransaction();
+        db.beginTransaction();
+        db.execSQL(createTable);
+        db.execSQL(insertTable);
+        db.execSQL(dropTempTable);
+        db.endTransaction();
+    }
+    
+    /**
+     * Get the sqlite database table columns info
+     * 
+     * @param db
+     *            the sqlite database
+     * @param tableName
+     *            table name
+     * @return {@link ColumnInfo} collection
+     * @since 1.1.4
+     */
+    public static List<ColumnInfo> getColumnInfo(SQLiteDatabase db,
+            String tableName) {
+        String sql = String.format("PRAGMA TABLE_INFO(%s);", tableName);
+        Cursor c = db.rawQuery(sql, null);
+        List<ColumnInfo> columns = CursorUtils.getFromCursor(c,
+                ColumnInfo.class, null);
+        return columns;
+    }
+    
+    private static String getTempTableName(SQLiteDatabase db, String table) {
+        List<TableInfo> tables = Aorm.getTableInfos(db);
+        int index = 1;
+        String base = table + "_temp_";
+        while (true) {
+            boolean found = false;
+            for (TableInfo t : tables) {
+                if (t.same(base + index)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                index++;
+            }
+            else {
+                break;
+            }
+        }
+        return base + index;
+    }
+    
+    /**
+     * Get the sqlite database table info
+     * 
+     * @param db
+     *            the sqlite database
+     * @return {@link TableInfo} collection
+     * @since 1.1.4
+     */
+    public static List<TableInfo> getTableInfos(SQLiteDatabase db) {
+        String sql = "select name from sqlite_master where type='table' order by name;";
+        Cursor c = db.rawQuery(sql, null);
+        List<TableInfo> tables = CursorUtils.getFromCursor(c, TableInfo.class,
+                null);
+        return tables;
+    }
+    
+    private static boolean empty(CharSequence str) {
+        return str == null || str.toString().trim().length() == 0;
+    }
+    
+    /**
+     * @param delimiter
+     *            the delimiter
+     * @param elements
+     *            the source string
+     * @return joined string
+     * @since 1.1.4
+     */
+    public static String join(CharSequence delimiter, Object[] elements) {
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (Object element : elements) {
+            if (firstTime) {
+                firstTime = false;
+            }
+            else {
+                sb.append(delimiter);
+            }
+            sb.append(element);
+        }
+        return sb.toString();
+    }
+    
 }
