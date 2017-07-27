@@ -15,9 +15,12 @@ Did you used sqlite to save your data on Android? If you did, you may be puzzled
 More feature, please experience it for your self.
 
 # Usage
+
+The `$latest` is: [![latest release](https://img.shields.io/github/release/jamling/Android-ORM.svg?maxAge=3600)](https://github.com/Jamling/Android-ORM), **please replace the `$latest` to a concrete version**.
+
 ## Use in Eclipse
 
-Put aorm-core-1.1.3.jar to libs/
+Put aorm-core-`$latest`.jar to libs/
 
 Recommended to install [Android ADT-extensions](https://github.com/Jamling/adt-extensions/) plugin, and add ORM capapility to enable Aorm.
 
@@ -26,9 +29,11 @@ Aorm has been published to jcenter, so you can just add dependence of aorm in yo
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.3'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.4'
 }
 ```
+
+Recommended to install [Android ORM Tool](https://github.com/Jamling/Android-ORM-ASPlugin) plugin to generate code quickly.
 
 # Code samples
 
@@ -40,18 +45,18 @@ Simply add `@Table` class annotation and `@Column` field annotation to mapping.
 public class Student implements Serializable {
     
     @Column(name = "_id", id = true)
-    public long id;
+    public long id; //id is Primary key.
     
     @Column(name="_name")
-    public String name;
+    public String name; //mapping to _name and auto column type
     
     @Column()
-    public int age;
+    public int age; //auto column type and name
     
-    @Column()
-    public String phone;
+    @Column(defaultValue="''")
+    public String phone; // default value in empty
     
-    public String address;
+    public String address; // no mapping
 }
 ```
 
@@ -126,6 +131,10 @@ public class ExampleContentProvider extends ContentProvider {
             
             public void onUpgrade(SQLiteDatabase db, int oldVersion,
                     int newVersion) {
+                // update table, suggested to wrapper in if block
+                Aorm.updateTable(db, Grade.class);
+                Aorm.updateTable(db, Student.class);
+                Aorm.updateTable(db, Course.class);
             }
         };
         session = new Session(mOpenHelper, getContext().getContentResolver());
@@ -193,7 +202,7 @@ s = session.get(Student.class, 4);
 
 # Docs
 
-Refer: http://ieclipse.cn/p/Android-ORM/userguide.html
+Refer: http://www.ieclipse.cn/p/Android-ORM/userguide.html
 
 # Author
 Jamling Jamling (li.jamling@gmail.com)
