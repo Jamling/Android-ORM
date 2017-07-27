@@ -15,7 +15,12 @@
  */
 package cn.ieclipse.aorm.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.ieclipse.aorm.Aorm;
 import cn.ieclipse.aorm.annotation.Column;
+import cn.ieclipse.aorm.annotation.ColumnWrap;
 import cn.ieclipse.aorm.annotation.Table;
 
 /**
@@ -48,17 +53,25 @@ public class ColumnInfo {
         if (pk > 0) {
             sb.append("INTEGER");
             sb.append(' ');
-            sb.append("PRIMARY KEY AUTOINCREMENT");
+            sb.append("PRIMARY KEY");
         }
         else {
             sb.append(type);
         }
-        sb.append(notnull > 0 ? " NOT NULL " : "");
-        // if (dflt_value != null) {
-        // sb.append("DEFAULT '");
-        // sb.append(dflt_value);
-        // sb.append("'");
-        // }
+        
+        if (notnull > 0) {
+            sb.append(" NOT NULL");
+        }
+        if (dflt_value != null && !dflt_value.isEmpty()) {
+            if (dflt_value.startsWith("'") && dflt_value.endsWith("'")) {
+            
+            }
+            else {
+                dflt_value = "'" + dflt_value + "'";
+            }
+            sb.append(" DEFAULT ");
+            sb.append(dflt_value);
+        }
         return sb.toString();
     }
     
@@ -66,8 +79,46 @@ public class ColumnInfo {
         return this.name.equalsIgnoreCase(name);
     }
     
+    public static ColumnInfo from(ColumnWrap wrap) {
+        ColumnInfo info = new ColumnInfo();
+        Column c = wrap.getColumn();
+        info.pk = c.id() ? 1 : 0;
+        info.notnull = c.notNull() ? 1 : 0;
+        info.dflt_value = c.defaultValue();
+        String type = wrap.getColumn().type();
+        if (type == null || type.isEmpty()) {
+            type = Aorm.getMappingFactory()
+                    .propertyToColumnType(wrap.getFieldType());
+        }
+        if (type != null && type.startsWith("java.lang.")) {
+            type = type.substring("java.lang.".length());
+        }
+        info.type = type;
+        info.name = wrap.getColumnName();
+        return info;
+    }
+    
+    public static List<ColumnInfo> from(List<ColumnWrap> list) {
+        int size = list.size();
+        List<ColumnInfo> ret = new ArrayList<ColumnInfo>(size);
+        for (int i = 0; i < size; i++) {
+            ret.add(ColumnInfo.from(list.get(i)));
+        }
+        return ret;
+    }
+    
     @Override
     public String toString() {
         return getDDL();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ColumnInfo) {
+            ColumnInfo another = (ColumnInfo) obj;
+            boolean eq = this.getDDL().equals(another.getDDL());
+            return eq;
+        }
+        return super.equals(obj);
     }
 }

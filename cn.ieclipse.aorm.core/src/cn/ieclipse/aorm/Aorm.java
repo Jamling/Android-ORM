@@ -21,6 +21,7 @@ import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import cn.ieclipse.aorm.MappingFactory.DefaultMappingFactory;
 import cn.ieclipse.aorm.annotation.Column;
 import cn.ieclipse.aorm.annotation.ColumnWrap;
 import cn.ieclipse.aorm.annotation.Table;
@@ -40,6 +41,7 @@ public final class Aorm {
     private static boolean exactInsertOrUpdate = false;
     private static final String TAG = "AORM";
     private static String columnPrefix = null;
+    private static MappingFactory mappingFactory = null;
     
     private Aorm() {
         //
@@ -154,6 +156,31 @@ public final class Aorm {
     }
     
     /**
+     * Set {@link MappingFactory}
+     * 
+     * @param mappingFactory
+     *            {@link MappingFactory} instance
+     * @since 1.1.4
+     */
+    public static void setMappingFactory(MappingFactory mappingFactory) {
+        Aorm.mappingFactory = mappingFactory;
+    }
+    
+    /**
+     * Get {@link MappingFactory}, if no set, the {@link DefaultMappingFactory}
+     * instance will be returned.
+     * 
+     * @return current {@link MappingFactory}
+     * @since 1.1.4
+     */
+    public static MappingFactory getMappingFactory() {
+        if (mappingFactory == null) {
+            mappingFactory = MappingFactory.getInstance();
+        }
+        return mappingFactory;
+    }
+    
+    /**
      * Print log message on Android using {@link Log android.util.Log}
      * 
      * @param msg
@@ -163,6 +190,18 @@ public final class Aorm {
         if (debug) {
             android.util.Log.v(TAG, msg);
         }
+    }
+    
+    /**
+     * 
+     * see {@link android.util.Log#i(String, String)}
+     * 
+     * @param msg
+     *            message
+     * @since 1.1.4
+     */
+    public static void logi(String msg) {
+        android.util.Log.i(TAG, msg);
     }
     
     public static final String LF = System.getProperty("line.separator");
@@ -197,7 +236,7 @@ public final class Aorm {
         sb.append(LF);
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
         for (ColumnWrap cw : list) {
-            sb.append(new ColumnMeta(cw).toSQL());
+            sb.append(ColumnInfo.from(cw).getDDL());
             sb.append(", ");
             sb.append(LF);
         }
@@ -209,12 +248,11 @@ public final class Aorm {
         return (sb.toString());
     }
     
-    private static String generateColumnDDL(Class<?> tableClass,
+    private static String generateColumnDDL(List<ColumnInfo> list,
             String delimiter) {
-        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
-        String[] columns = new String[list.size()];
+        Object[] columns = new String[list.size()];
         for (int i = 0; i < columns.length; i++) {
-            columns[i] = new ColumnMeta(list.get(i)).toSQL();
+            columns[i] = list.get(i).getDDL();
         }
         return Aorm.join(delimiter, columns);
     }
@@ -229,9 +267,10 @@ public final class Aorm {
      * @return projection (joined column with delimiter)
      * @since 1.1.4
      */
-    public static String getProjections(Class<?> tableClass, String delimiter) {
+    private static String getProjections(Class<?> tableClass,
+            String delimiter) {
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
-        String[] columns = new String[list.size()];
+        Object[] columns = new Object[list.size()];
         for (int i = 0; i < columns.length; i++) {
             columns[i] = list.get(i).getColumnName();
         }
@@ -267,26 +306,115 @@ public final class Aorm {
                     + ", did you forget add @Table to your class?");
         }
         // old table column
-        List<ColumnInfo> old = Aorm.getColumnInfo(db, t.name());
+        List<ColumnInfo> older = Aorm.getColumnInfo(db, t.name());
         // new table column
-        List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
+        List<ColumnInfo> newer = ColumnInfo
+                .from(Mapping.getInstance().getColumns(tableClass));
         // added columns
+        List<ColumnInfo> added = new ArrayList<ColumnInfo>();
+        List<ColumnInfo> changed = new ArrayList<ColumnInfo>();
+        List<String> projections = new ArrayList<String>();
         
-        for (int i = 0; i < old.size(); i++) {
-            ColumnInfo c = old.get(i);
-            
-            boolean found = false;
-            for (int j = 0; j < list.size(); j++) {
-                ColumnWrap wrap = list.get(j);
-                if (c.name.equals(wrap.getColumnName())) {
-                    found = true;
-                    break;
-                }
+        for (int i = 0; i < older.size(); i++) {
+            ColumnInfo c = older.get(i);
+            ColumnInfo n = Aorm.find(c, newer);
+            if (n == null || !c.equals(n)) {
+                changed.add(c);
             }
-            if (found) {
-                
+            if (n != null) {
+                projections.add(c.name);
             }
         }
+        
+        for (int i = 0; i < newer.size(); i++) {
+            ColumnInfo c = newer.get(i);
+            ColumnInfo n = Aorm.find(c, older);
+            if (n == null) {
+                added.add(c);
+            }
+        }
+        
+        if (changed.isEmpty()) {
+            if (!added.isEmpty()) {
+                Aorm.logi("Add column to " + t.name());
+                for (ColumnInfo info : added) {
+                    String sql = String.format("ALTER TABLE %s ADD COLUMN %s",
+                            t.name(), info.getDDL());
+                    Aorm.logi(sql);
+                    db.execSQL(sql);
+                }
+            }
+        }
+        else {
+            Aorm.logi("Change schema of " + t.name());
+            Aorm.changeSchema(db, t.name(), older, newer, projections);
+        }
+    }
+    
+    private static ColumnInfo find(ColumnInfo src, List<ColumnInfo> dest) {
+        for (int i = 0; i < dest.size(); i++) {
+            ColumnInfo ret = dest.get(i);
+            if (src.name.equals(ret.name)) {
+                return ret;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * see <a href=
+     * "linkplain http://www.sqlite.org/lang_altertable.html" >http://www.sqlite
+     * .org/lang_altertable.html</a>
+     * 
+     * @param db
+     * @param tableName
+     * @param older
+     * @param newer
+     */
+    private static void changeSchema(SQLiteDatabase db, String tableName,
+            List<ColumnInfo> older, List<ColumnInfo> newer,
+            List<String> projections) {
+        // step 1 TODO
+        // db.execSQL("PRAGMA foreign_keys=OFF");
+        // step2 don't use transaction
+        // db.beginTransaction();
+        // step3
+        List<TableInfo> tableInfos = Aorm.getTableInfos(db, tableName, null);
+        
+        String ddl1 = Aorm.generateColumnDDL(older, ",");
+        String prj1 = Aorm.join(",", projections.toArray());
+        String ddl2 = Aorm.generateColumnDDL(newer, ",");
+        // step 4-7
+        String tempName = Aorm.getTempTableName(db, tableName);
+        String createTempTable = String.format("CREATE TABLE %s(%s)", tempName,
+                ddl2);
+        String insertTempTable = String.format(
+                "INSERT INTO %s(%s) SELECT %s FROM %s", tempName, prj1, prj1,
+                tableName);
+        String dropTable = String.format("DROP TABLE  %s", tableName);
+        
+        String renameTable = String.format("ALTER TABLE %s RENAME TO %s",
+                tempName, tableName);
+        Aorm.logi(createTempTable);
+        db.execSQL(createTempTable);
+        Aorm.logi(insertTempTable);
+        db.execSQL(insertTempTable);
+        Aorm.logi(dropTable);
+        db.execSQL(dropTable);
+        Aorm.logi(renameTable);
+        db.execSQL(renameTable);
+        
+        // step 8
+        for (TableInfo info : tableInfos) {
+            if (info.isIndex() || info.isTrigger()) {
+                db.execSQL(info.sql);
+            }
+        }
+        // step 9 TODO alter view from table
+        // step 10 TODO PRAGMA foreign_key_check
+        // step 11
+        // db.endTransaction();
+        // step 12 TODO db.execSQL("PRAGMA foreign_keys=ON");
     }
     
     /**
@@ -332,10 +460,10 @@ public final class Aorm {
         String oldDdl = Aorm.join(",", ddllist1.toArray());
         
         List<String> clist2 = new ArrayList<String>();
-        String[] newColumns = new String[list.size()];
+        Object[] newColumns = new Object[list.size()];
         for (int i = 0; i < newColumns.length; i++) {
             ColumnWrap wrap = list.get(i);
-            newColumns[i] = new ColumnMeta(wrap).toSQL();
+            newColumns[i] = ColumnInfo.from(wrap).getDDL();
             boolean found = false;
             for (int j = 0; j < clist1.size(); j++) {
                 if (clist1.get(j).equalsIgnoreCase(wrap.getColumnName())) {
@@ -397,13 +525,13 @@ public final class Aorm {
     }
     
     private static String getTempTableName(SQLiteDatabase db, String table) {
-        List<TableInfo> tables = Aorm.getTableInfos(db);
+        List<TableInfo> tables = Aorm.getTableInfos(db, null, "table");
         int index = 1;
         String base = table + "_temp_";
         while (true) {
             boolean found = false;
             for (TableInfo t : tables) {
-                if (t.same(base + index)) {
+                if (t.isTable() && t.name.equalsIgnoreCase((base + index))) {
                     found = true;
                     break;
                 }
@@ -423,11 +551,31 @@ public final class Aorm {
      * 
      * @param db
      *            the sqlite database
+     * @param tableName
+     *            table name
+     * @param type
+     *            type ["index"|"table"|"trigger"]
      * @return {@link TableInfo} collection
      * @since 1.1.4
      */
-    public static List<TableInfo> getTableInfos(SQLiteDatabase db) {
-        String sql = "select name from sqlite_master where type='table' order by name;";
+    public static List<TableInfo> getTableInfos(SQLiteDatabase db,
+            String tableName, String type) {
+        List<String> where = new ArrayList<String>(2);
+        List<String> args = new ArrayList<String>(2);
+        
+        String sql = "select * from sqlite_master";
+        if (!Aorm.empty(tableName)) {
+            where.add("tbl_name = '" + tableName + "'");
+            args.add(tableName);
+        }
+        if (!Aorm.empty(type)) {
+            where.add("type = '" + type + "'");
+            args.add(type);
+        }
+        if (!where.isEmpty()) {
+            sql += " where " + Aorm.join(" and ", where.toArray());
+        }
+        Aorm.logv(sql);
         Cursor c = db.rawQuery(sql, null);
         List<TableInfo> tables = CursorUtils.getFromCursor(c, TableInfo.class,
                 null);
@@ -446,7 +594,7 @@ public final class Aorm {
      * @return joined string
      * @since 1.1.4
      */
-    public static String join(CharSequence delimiter, Object[] elements) {
+    public static String join(CharSequence delimiter, Object... elements) {
         StringBuilder sb = new StringBuilder();
         boolean firstTime = true;
         for (Object element : elements) {

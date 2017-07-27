@@ -15,13 +15,16 @@
  */
 package cn.ieclipse.aorm;
 
-import cn.ieclipse.aorm.annotation.Column;
+import javax.jws.soap.SOAPBinding.Use;
+
 import cn.ieclipse.aorm.annotation.ColumnWrap;
+import cn.ieclipse.aorm.db.ColumnInfo;
 
 /**
  * Column annotation meta-data
  * 
  * @author Jamling
+ * @deprecated use {@link ColumnInfo} instead
  */
 public class ColumnMeta {
     String name;
@@ -36,68 +39,17 @@ public class ColumnMeta {
     boolean haveId;
     boolean id;
     
+    ColumnInfo columnInfo;
+    
     public ColumnMeta() {
     
     }
     
     public ColumnMeta(ColumnWrap wrap) {
-        Column c = wrap.getColumn();
-        id = c.id();
-        notNull = c.notNull();
-        defaultValue = c.defaultValue();
-        type = getDbColType(wrap);
-        name = wrap.getColumnName();
+        this.columnInfo = ColumnInfo.from(wrap);
     }
     
     public String toSQL() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(name);
-        sb.append(' ');
-        
-        if (id) {
-            sb.append("INTEGER");
-            sb.append(' ');
-            sb.append("PRIMARY KEY AUTOINCREMENT");
-        }
-        else {
-            sb.append(type);
-        }
-        sb.append(notNull ? " NOT NULL " : "");
-        // if (defaultValue != null) {
-        // sb.append("Default '");
-        // sb.append(defaultValue == null ? "" : defaultValue);
-        // sb.append("'");
-        // }
-        return sb.toString();
-    }
-    
-    String getDbColType(ColumnWrap wrap) {
-        String type = wrap.getColumn().type();
-        if (type == null || type.isEmpty()) {
-            Class<?> clz = wrap.getFieldType();
-            if (int.class == clz || java.lang.Integer.class.equals(clz)
-                    || long.class == clz || java.lang.Long.class.equals(clz)
-                    || short.class == clz || java.lang.Short.class == clz) {
-                type = "INTEGER";
-            }
-            else if (boolean.class == clz || java.lang.Boolean.class == clz) {
-                type = "INTEGER";
-            }
-            else if (float.class == clz || java.lang.Float.class == clz
-                    || double.class == clz || java.lang.Double.class == clz) {
-                type = "NUMERIC";
-            }
-            else if (byte[].class == clz) {
-                type = "BLOB";
-            }
-            else {
-                type = "TEXT";
-            }
-        }
-        
-        if (type.startsWith("java.lang.")) {
-            type = type.substring("java.lang.".length());
-        }
-        return type;
+        return columnInfo.getDDL();
     }
 }

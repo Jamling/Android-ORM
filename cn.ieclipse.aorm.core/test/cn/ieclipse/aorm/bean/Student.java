@@ -4,7 +4,9 @@
 package cn.ieclipse.aorm.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
+import cn.ieclipse.aorm.Mapping;
 import cn.ieclipse.aorm.annotation.Column;
 import cn.ieclipse.aorm.annotation.Table;
 
@@ -70,5 +72,8 @@ public class Student implements Serializable {
 //    public void setAddress(String address) {
 //        this.address = address;
 //    }
-    
+    public static void main(String[] args) {
+        List<String> cols = Mapping.getInstance().getColumns(null, Student.class);
+        System.out.println(cols);
+    }
 }

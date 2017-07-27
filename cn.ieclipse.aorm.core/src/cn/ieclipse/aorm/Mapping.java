@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.ieclipse.aorm.annotation.ColumnWrap;
+import cn.ieclipse.aorm.annotation.Table;
 import cn.ieclipse.aorm.annotation.TableWrap;
 
 /**
@@ -47,6 +48,15 @@ public class Mapping {
             tables.put(clazz, wrap);
         }
         return wrap;
+    }
+    
+    public Table getTable(Class<?> clazz) {
+        Table t = clazz.getAnnotation(Table.class);
+        if (t == null) {
+            throw new ORMException("No mapping to " + clazz
+                    + ", did you forget add @Table to your class?");
+        }
+        return t;
     }
     
     public String getTableName(Class<?> clazz) {

@@ -16,7 +16,6 @@
 package cn.ieclipse.aorm;
 
 import cn.ieclipse.aorm.bean.FullBean;
-import cn.ieclipse.aorm.bean.Student;
 import junit.framework.TestCase;
 
 /**

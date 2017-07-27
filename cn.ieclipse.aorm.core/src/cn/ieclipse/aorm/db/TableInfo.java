@@ -39,7 +39,15 @@ public class TableInfo {
     @Column
     public String sql;
     
-    public boolean same(String name) {
-        return this.name.equalsIgnoreCase(name);
+    public boolean isIndex() {
+        return "index".equalsIgnoreCase(type);
+    }
+    
+    public boolean isTrigger() {
+        return "trigger".equalsIgnoreCase(type);
+    }
+    
+    public boolean isTable() {
+        return "table".equalsIgnoreCase(type);
     }
 }
