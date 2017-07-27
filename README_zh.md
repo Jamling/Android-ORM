@@ -17,9 +17,12 @@
 更多特性，请自行体验.
 
 # 使用
+
+最新版本 `$latest` 为: [![latest release](https://img.shields.io/github/release/jamling/Android-ORM.svg?maxAge=3600)](https://github.com/Jamling/Android-ORM), **在使用中请将`$latest`替换为具体的版本**.
+
 ## Eclipse
 
-下载aorm-core-1.1.3.jar并放入libs/目录下
+下载aorm-core-`$latest`.jar并放入libs/目录下
 
 推荐安装[Android ADT-extensions](https://github.com/Jamling/adt-extensions/)插件
 
@@ -28,9 +31,11 @@ Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.3'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.4'
 }
 ```
+
+推荐安装Android Studio上的[Android ORM Tool](https://github.com/Jamling/Android-ORM-ASPlugin)插件，可以快速生成相关代码。
 
 # 示例代码
 
@@ -42,18 +47,18 @@ dependencies {
 public class Student implements Serializable {
     
     @Column(name = "_id", id = true)
-    public long id;
+    public long id; //id is Primary key.
     
     @Column(name="_name")
-    public String name;
+    public String name; //mapping to _name and auto column type
     
     @Column()
-    public int age;
+    public int age; //auto column type and name
     
-    @Column()
-    public String phone;
+    @Column(defaultValue="''")
+    public String phone; // default value in empty
     
-    public String address;
+    public String address; // no mapping
 }
 ```
 
@@ -128,6 +133,10 @@ public class ExampleContentProvider extends ContentProvider {
             
             public void onUpgrade(SQLiteDatabase db, int oldVersion,
                     int newVersion) {
+                // update table, suggested to wrapper in if block
+                Aorm.updateTable(db, Grade.class);
+                Aorm.updateTable(db, Student.class);
+                Aorm.updateTable(db, Course.class);
             }
         };
         session = new Session(mOpenHelper, getContext().getContentResolver());
