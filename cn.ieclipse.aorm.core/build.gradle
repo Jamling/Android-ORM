@@ -144,6 +144,12 @@ tasks.withType(Jar) {
 javadoc {
 	// destinationDir = new File('docs/api')
 	title PRJ_NAME + " " + ART_VER + " API"
+	options {
+        links "http://docs.oracle.com/javase/7/docs/api/"
+        encoding 'utf-8'
+        charSet 'utf-8'
+        tags 'date:t:Date:'
+    }
 }
 
 task sourcesJar(type: Jar) {
