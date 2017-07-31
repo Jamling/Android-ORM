@@ -160,6 +160,10 @@ public class Session {
         mHelper.getWritableDatabase().endTransaction();
     }
     
+    public void setTransactionSuccessful() {
+        mHelper.getWritableDatabase().setTransactionSuccessful();
+    }
+    
     /**
      * Insert the object as a row into your database
      * 

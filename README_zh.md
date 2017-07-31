@@ -31,7 +31,7 @@ Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.4'
+    compile 'cn.ieclipse.aorm:aorm-core:1.1.5'
 }
 ```
 
@@ -203,7 +203,7 @@ public class ExampleContentProvider extends ContentProvider {
 ```
 
 # 文档
-请参考http://ieclipse.cn/p/Android-ORM/userguide.html
+请参考 http://www.ieclipse.cn/p/Android-ORM/userguide.html
 
 # 作者
 Jamling (li.jamling@gmail.com)
