@@ -235,7 +235,8 @@ public class Session {
     }
     
     /**
-     * Batch insert objects to database
+     * Batch insert objects to database. The default value must be set
+     * explicitly.
      * 
      * @param list
      *            object collections
@@ -317,6 +318,28 @@ public class Session {
         }
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+    
+    /**
+     * select last_insert_rowid() from table
+     * 
+     * @param clazz
+     *            the mapping table class
+     *            
+     * @return last insert rowid
+     */
+    public long getLastInsertId(Class<?> clazz) {
+        String sql = "select  last_insert_rowid()";
+        if (clazz != null) {
+            String table = Mapping.getInstance().getTableName(clazz);
+            sql += " from " + table;
+        }
+        Cursor c = rawQuery(sql, null);
+        if (c != null) {
+            c.moveToFirst();
+            return c.getLong(0);
+        }
+        return 0;
     }
     
     /**
