@@ -34,7 +34,9 @@ public class ColumnWrap {
     public ColumnWrap(Column column, Field field) {
         this.column = column;
         this.field = field;
-        this.field.setAccessible(true);
+        if (!this.field.isAccessible()) {
+            this.field.setAccessible(true);
+        }
         this.fieldType = (Class<?>) field.getType();
         
 //        String fieldName = field.getName();

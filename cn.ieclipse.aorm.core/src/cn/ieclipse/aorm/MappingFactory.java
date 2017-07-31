@@ -15,6 +15,8 @@
  */
 package cn.ieclipse.aorm;
 
+import android.database.Cursor;
+
 /**
  * The mapping factory
  * 
@@ -24,6 +26,15 @@ package cn.ieclipse.aorm;
  * @since 1.1.4
  */
 public abstract class MappingFactory {
+    static final int COL_UNKNOWN = -1;
+    static final int COL_INT = 0;
+    static final int COL_LONG = 1;
+    static final int COL_SHORT = 2;
+    static final int COL_FLOAT = 4;
+    static final int COL_DOUBLE = 5;
+    static final int COL_BLOB = 17;
+    static final int COL_STRING = 16;
+    static final int COL_BOOLEAN = 18;
     private static MappingFactory instance;
     
     /**
@@ -75,5 +86,63 @@ public abstract class MappingFactory {
             }
             return type;
         }
+    }
+    
+    static int getColumnType(Class<?> paramClass) {
+        if (paramClass == int.class || paramClass == Integer.class) {
+            return MappingFactory.COL_INT;
+        }
+        else if (paramClass == short.class || paramClass == Short.class) {
+            return MappingFactory.COL_SHORT;
+        }
+        else if (paramClass == long.class || paramClass == Long.class) {
+            return MappingFactory.COL_LONG;
+        }
+        else if (paramClass == String.class) {
+            return MappingFactory.COL_STRING;
+        }
+        else if (paramClass == float.class || paramClass == Float.class) {
+            return MappingFactory.COL_FLOAT;
+        }
+        else if (paramClass == double.class || paramClass == Double.class) {
+            return MappingFactory.COL_DOUBLE;
+        }
+        else if (paramClass == boolean.class || paramClass == Boolean.class) {
+            return MappingFactory.COL_BOOLEAN;
+        }
+        else if (paramClass == byte[].class || paramClass == Byte[].class) {
+            return MappingFactory.COL_BLOB;
+        }
+        return MappingFactory.COL_UNKNOWN;
+    }
+    
+    static Object getColumnValue(Cursor c, int index, int colType) {
+        Object paramValue = null;
+        if (MappingFactory.COL_INT == colType) {
+            paramValue = c.getInt(index);
+        }
+        else if (MappingFactory.COL_LONG == colType) {
+            paramValue = c.getLong(index);
+        }
+        else if (MappingFactory.COL_SHORT == colType) {
+            paramValue = c.getShort(index);
+        }
+        else if (MappingFactory.COL_STRING == colType) {
+            paramValue = c.getString(index);
+        }
+        else if (MappingFactory.COL_FLOAT == colType) {
+            paramValue = c.getFloat(index);
+        }
+        else if (MappingFactory.COL_DOUBLE == colType) {
+            paramValue = c.getDouble(index);
+        }
+        else if (MappingFactory.COL_BOOLEAN == colType) {
+            int temp = c.getInt(index);
+            paramValue = temp == 0 ? false : true;
+        }
+        else if (MappingFactory.COL_BLOB == colType) {
+            paramValue = c.getBlob(index);
+        }
+        return paramValue;
     }
 }

@@ -15,7 +15,8 @@
  */
 package cn.ieclipse.aorm;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 
@@ -25,10 +26,11 @@ import cn.ieclipse.aorm.bean.Person;
 import cn.ieclipse.aorm.bean.Student;
 import cn.ieclipse.aorm.test.MockDatabase;
 import cn.ieclipse.aorm.test.MockOpenHelper;
+import junit.framework.TestCase;
 
 /**
  * @author Jamling
- * 
+ *         
  */
 public class SessionTest extends TestCase {
     private Session session;
@@ -60,5 +62,20 @@ public class SessionTest extends TestCase {
         Assert.assertEquals(1, p.id);
         Assert.assertEquals("ljm", p.name);
         Assert.assertEquals(0, p.age);
+    }
+    
+    public void testBatchInsert() {
+        
+        List<Person> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Person p = new Person();
+            p.id = i + 1;
+            p.name = ("ljm" + p.id);
+        }
+        try {
+            session.batchInsert(list);
+        } catch (Exception e) {
+            Assert.fail(e.toString());
+        }
     }
 }
