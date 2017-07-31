@@ -16,8 +16,11 @@
 package cn.ieclipse.aorm;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +29,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import cn.ieclipse.aorm.annotation.ColumnWrap;
 import cn.ieclipse.aorm.db.ColumnInfo;
@@ -228,6 +232,91 @@ public class Session {
         log("insertNative sql: " + sql + "; args: " + row.args);
         execSQL(sql, row.getArgsArray());
         notifySessionListener(obj.getClass());
+    }
+    
+    /**
+     * Batch insert objects to database
+     * 
+     * @param list
+     *            object collections
+     * @param <T>
+     *            the class type parameter
+     * @since 1.1.5
+     * @throws SQLException
+     *             if insert statement create failed
+     */
+    public <T> void batchInsert(Collection<T> list) throws SQLException {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        Class<?> clazz = list.iterator().next().getClass();
+        String table = Mapping.getInstance().getTableName(clazz);
+        List<ColumnWrap> cols = Mapping.getInstance().getColumns(clazz);
+        List<Field> fields = new ArrayList<Field>();
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ");
+        sb.append(table);
+        sb.append(" (");
+        
+        StringBuilder sb2 = new StringBuilder();
+        String colName;
+        int size = cols.size();
+        ColumnWrap current;
+        boolean firstTime = true;
+        for (int i = 0; i < size; i++) {
+            current = cols.get(i);
+            if (current.getColumn().id()) {
+                continue;
+            }
+            if (firstTime) {
+                firstTime = false;
+            }
+            else {
+                sb.append(",");
+                sb2.append(',');
+            }
+            colName = current.getColumnName();
+            sb.append(colName);
+            sb2.append('?');
+            fields.add(current.getField());
+        }
+        
+        sb.append(") VALUES (");
+        sb.append(sb2);
+        sb.append(")");
+        String sql = sb.toString();
+        log("batch insert sql: " + sql);
+        
+        SQLiteDatabase db = getDatabase(true);
+        SQLiteStatement stmt = db.compileStatement(sql);
+        // Row row;
+        Iterator<T> iterator = list.iterator();
+        db.beginTransaction();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            int t = fields.size();
+            for (int j = 0; j < t; j++) {
+                Field f = fields.get(j);
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                Object v = null;
+                try {
+                    v = f.get(obj);
+                } catch (IllegalArgumentException e) {
+                    throw e;
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("IllegalAccess", e);
+                }
+                Row.bindStatement(stmt, j, v);
+            }
+            // row.bindStatement(stmt);
+            stmt.execute();
+            stmt.clearBindings();
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
     
     /**
@@ -689,7 +778,9 @@ public class Session {
     private void setPkValue(Object obj, long id) {
         Field pkField = Mapping.getInstance().getPKField(obj.getClass());
         try {
-            pkField.setAccessible(true);
+            if (!pkField.isAccessible()) {
+                pkField.setAccessible(true);
+            }
             pkField.set(obj, id);
         } catch (Exception e) {
             log("set id exception: " + e);
@@ -742,10 +833,15 @@ public class Session {
         
         long getId() {
             long id = 0;
-            try {
-                id = Long.parseLong(pkValue.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (pkValue instanceof Long || pkValue instanceof Integer) {
+                id = (Long) pkValue;
+            }
+            else {
+                try {
+                    id = Long.parseLong(pkValue.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return id;
         }
@@ -792,6 +888,50 @@ public class Session {
             }
             else if (String.class == colClass) {
                 colValues.put(colName, (String) colValue);
+            }
+        }
+        
+        static void bindStatement(SQLiteStatement stmt, int index,
+                Object colValue) {
+            Class<?> colClass = colValue.getClass();
+            int i = index + 1;
+            if (int.class == colClass || Integer.class == colClass) {
+                stmt.bindLong(i, (Long) colValue);
+            }
+            else if (short.class == colClass || Short.class == colClass) {
+                stmt.bindLong(i, (Long) colValue);
+            }
+            else if (long.class == colClass || Long.class == colClass) {
+                stmt.bindLong(i, (Long) colValue);
+            }
+            else if (byte.class == colClass || Byte.class == colClass) {
+                stmt.bindLong(i, (Long) colValue);
+            }
+            else if (float.class == colClass || Float.class == colClass) {
+                stmt.bindDouble(i, (Double) colValue);
+            }
+            else if (double.class == colClass || Double.class == colClass) {
+                stmt.bindDouble(i, (Double) colValue);
+            }
+            else if (byte[].class == colClass || Byte[].class == colClass) {
+                stmt.bindBlob(i, (byte[]) colValue);
+            }
+            else if (boolean.class == colClass || Boolean.class == colClass) {
+                stmt.bindLong(i, ((Boolean) colValue) ? 1 : 0);
+            }
+            else if (String.class == colClass) {
+                stmt.bindString(i, (String) colValue);
+            }
+            else {
+                stmt.bindString(i, (String) colValue);
+            }
+        }
+        
+        void bindStatement(SQLiteStatement stmt) {
+            int size = args.size();
+            for (int i = 0; i < size; i++) {
+                Object colValue = args.get(i);
+                Row.bindStatement(stmt, i, colValue);
             }
         }
     }

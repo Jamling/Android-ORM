@@ -103,6 +103,19 @@ public abstract class SQLiteDatabase {
     }
     
     /**
+     * Marks the current transaction as successful. Do not do any more database work between
+     * calling this and calling endTransaction. Do as little non-database work as possible in that
+     * situation too. If any errors are encountered between this and endTransaction the transaction
+     * will still be committed.
+     *
+     * @throws IllegalStateException if the current thread is not in a transaction or the
+     * transaction is already marked as successful.
+     */
+    public void setTransactionSuccessful() {
+        
+    }
+    
+    /**
      * End a transaction. See beginTransaction for notes about how to use this
      * and when transactions are committed and rolled back.
      */
@@ -400,5 +413,23 @@ public abstract class SQLiteDatabase {
      */
     public void execSQL(String sql, Object[] bindArgs) {
         
+    }
+    
+    /**
+     * Compiles an SQL statement into a reusable pre-compiled statement object.
+     * The parameters are identical to {@link #execSQL(String)}. You may put ?s in the
+     * statement and fill in those values with {@link SQLiteProgram#bindString}
+     * and {@link SQLiteProgram#bindLong} each time you want to run the
+     * statement. Statements may not return result sets larger than 1x1.
+     *<p>
+     * No two threads should be using the same {@link SQLiteStatement} at the same time.
+     *
+     * @param sql The raw SQL statement, may contain ? for unknown values to be
+     *            bound later.
+     * @return A pre-compiled {@link SQLiteStatement} object. Note that
+     * {@link SQLiteStatement}s are not synchronized, see the documentation for more details.
+     */
+    public SQLiteStatement compileStatement(String sql) throws SQLException {
+        return new SQLiteStatement(this, sql, null);
     }
 }
