@@ -22,7 +22,7 @@ import cn.ieclipse.aorm.annotation.Table;
  * 类/接口描述
  * 
  * @author Jamling
- * @date 2016年9月29日
+ * @date 2016/09/29
  *       
  */
 @Table(name = "test")

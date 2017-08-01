@@ -66,7 +66,7 @@ public class SessionTest extends TestCase {
     
     public void testBatchInsert() {
         
-        List<Person> list = new ArrayList<>();
+        List<Person> list = new ArrayList<Person>();
         for (int i = 0; i < 3; i++) {
             Person p = new Person();
             p.id = i + 1;
