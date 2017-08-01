@@ -37,6 +37,19 @@ dependencies {
 
 推荐安装Android Studio上的[Android ORM Tool](https://github.com/Jamling/Android-ORM-ASPlugin)插件，可以快速生成相关代码。
 
+# 类似orm库比较
+
+简单试验结果:
+
+![Simple Trial](screenshot/simpletrial.png "Simple Trial")
+
+复杂试验结果:
+
+![Complex Trial](screenshot/complextrial.png "Complex Trial")
+
+测试工程代码请参考: https://github.com/Raizlabs/AndroidDatabaseLibraryComparison
+
+
 # 示例代码
 
 ## 创建映射

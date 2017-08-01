@@ -35,6 +35,18 @@ dependencies {
 
 Recommended to install [Android ORM Tool](https://github.com/Jamling/Android-ORM-ASPlugin) plugin to generate code quickly.
 
+# Comparision Results
+
+These are the results for the Simple trial:
+
+![Simple Trial](screenshot/simpletrial.png "Simple Trial")
+
+And these are the results for the Complex trial:
+
+![Complex Trial](screenshot/complextrial.png "Complex Trial")
+
+More detail please see https://github.com/Raizlabs/AndroidDatabaseLibraryComparison
+
 # Code samples
 
 ## Create mapping
