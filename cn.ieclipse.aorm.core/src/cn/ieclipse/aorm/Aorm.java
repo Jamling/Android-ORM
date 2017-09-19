@@ -212,11 +212,11 @@ public final class Aorm {
     }
     
     public static String generateCreateDDL(Class<?> tableClass) {
-        return generateCreateDDL(tableClass, null);
+        return generateCreateDDL(tableClass, null, false);
     }
     
     public static String generateCreateDDL(Class<?> tableClass,
-            String tableName) {
+            String tableName, boolean ifNotExist) {
         if (tableName == null || tableName.trim().length() == 0) {
             Table t = Mapping.getInstance().getTable(tableClass);
             tableName = t.name();
@@ -224,6 +224,9 @@ public final class Aorm {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
         sb.append(tableName);
+        if (ifNotExist) {
+            sb.append(" IF NOT EXIST");
+        }
         sb.append("(");
         sb.append(LF);
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
@@ -293,6 +296,12 @@ public final class Aorm {
      */
     public static void updateTable(SQLiteDatabase db, Class<?> tableClass) {
         Table t = Mapping.getInstance().getTable(tableClass);
+        List<TableInfo> list = getTableInfos(db, t.name(), "table");
+        if (list == null || list.isEmpty()) {
+            String sql = Aorm.generateCreateDDL(tableClass, t.name(), true);
+            db.execSQL(sql);
+            return;
+        }
         // old table column
         List<ColumnInfo> older = Aorm.getColumnInfo(db, t.name());
         // new table column
