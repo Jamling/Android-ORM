@@ -357,7 +357,7 @@ public class Session {
      *         affected when updated
      */
     public long insertOrUpdate(Object obj) {
-        return insert(obj, null);
+        return insertOrUpdate(obj, null);
     }
     
     /**
