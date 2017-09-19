@@ -360,6 +360,10 @@ public class Session {
         return insertOrUpdate(obj, null);
     }
     
+    public long insertOrUpdate(Object obj, String nullColumnHack) {
+        return insertOrUpdate(obj, nullColumnHack, null);
+    }
+    
     /**
      * Insert or update the object to database. If your object PK value more
      * than 0, will execute the update, otherwise insert the object to database.
@@ -370,10 +374,14 @@ public class Session {
      *            the object instance
      * @param nullColumnHack
      *            nullColumnHack
+     * @param intercepter
+     *            UpdateIntercepter
      * @return the row ID of the newly inserted row or the number of rows
      *         affected when updated
+     * @since 1.2.0
      */
-    public long insertOrUpdate(Object obj, String nullColumnHack) {
+    public long insertOrUpdate(Object obj, String nullColumnHack,
+            UpdateIntercepter intercepter) {
         long ret = -1;
         Row row = new Row(obj);
         ContentValues values = row.getContentValues();
@@ -383,6 +391,9 @@ public class Session {
                 : pkLong > 0;
         String str = update ? "update" : "insert";
         log("insertOrUpdate(" + str + ") " + row.table + " values: " + values);
+        if (intercepter != null) {
+            intercepter.beforeUpdate(update, values);
+        }
         if (update) {
             ret = update(row.table, values, row.pk + "=?",
                     new String[] { String.valueOf(row.pkValue) });
