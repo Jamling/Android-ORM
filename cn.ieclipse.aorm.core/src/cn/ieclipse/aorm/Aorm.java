@@ -224,7 +224,7 @@ public final class Aorm {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
         if (ifNotExist) {
-            sb.append("IF NOT EXIST ");
+            sb.append("IF NOT EXISTS ");
         }
         sb.append(tableName);
         sb.append("(");
