@@ -223,10 +223,10 @@ public final class Aorm {
         }
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
-        sb.append(tableName);
         if (ifNotExist) {
-            sb.append(" IF NOT EXIST");
+            sb.append("IF NOT EXIST ");
         }
+        sb.append(tableName);
         sb.append("(");
         sb.append(LF);
         List<ColumnWrap> list = Mapping.getInstance().getColumns(tableClass);
