@@ -622,11 +622,11 @@ public class Session {
      * @param criteria
      *            the criteria query instance.
      *            
-     * @return the number of rows deleted
+     * @return count
      */
     public int count(Criteria criteria) {
         String sql = criteria.toSQL();
-        String sql2 = "SELECT COUNT(_id) " + sql.substring(sql.indexOf("FROM"));
+        String sql2 = "SELECT COUNT(*) " + sql.substring(sql.indexOf("FROM"));
         log("count sql: " + sql2);
         Cursor c = rawQuery(sql2, criteria.getStringArgs());
         if (c != null) {
