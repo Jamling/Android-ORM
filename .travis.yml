@@ -2,6 +2,11 @@ language: java
 jdk: 
  - openjdk7
 sudo: false
+
+before_install:
+ dpkg --purge --force-depends ca-certificates-java
+ apt-get install ca-certificates-java
+
   
 script: 
  - cd cn.ieclipse.aorm.core
