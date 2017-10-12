@@ -76,8 +76,8 @@ public final class CursorUtils {
     }
     
     @SuppressWarnings("unchecked")
-    public static List getFromCursor(Cursor c, Criteria criteria) {
-        ArrayList list = new ArrayList();
+    public static <T> List<T> getFromCursor(Cursor c, Criteria criteria) {
+        ArrayList<T> list = new ArrayList();
         if (c == null) {
             return list;
         }
@@ -112,7 +112,7 @@ public final class CursorUtils {
                                 getColumnValue(c, indices[i], types[i]));
                     }
                 }
-                list.add(obj);
+                list.add((T)obj);
             }
         } catch (Exception e) {
             e.printStackTrace();

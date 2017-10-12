@@ -695,7 +695,7 @@ public class Session {
      *            the criteria query instance.
      * @return converted objects list
      */
-    public List list(Criteria criteria) {
+    public <T> List<T> list(Criteria criteria) {
         Cursor c = query(criteria);
         return CursorUtils.getFromCursor(c, criteria);
     }
@@ -734,8 +734,8 @@ public class Session {
      *            the criteria query instance.
      * @return converted object
      */
-    public Object get(Criteria criteria) {
-        List list = list(criteria);
+    public <T> T get(Criteria criteria) {
+        List<T> list = list(criteria);
         if (!list.isEmpty()) {
             return list.get(0);
         }
