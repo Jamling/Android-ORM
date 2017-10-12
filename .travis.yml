@@ -1,11 +1,11 @@
 language: java
 jdk: 
  - openjdk7
-sudo: false
+sudo: true
 
 before_install:
- dpkg --purge --force-depends ca-certificates-java
- apt-get install ca-certificates-java
+ sudo dpkg --purge --force-depends ca-certificates-java
+ sudo apt-get install ca-certificates-java
 
   
 script: 
