@@ -5,5 +5,5 @@ sudo: false
   
 script: 
  - cd cn.ieclipse.aorm.core
- - ./gradlew -b build.gradle test assemble
+ - ./gradlew -b build.gradle clean test assemble
 

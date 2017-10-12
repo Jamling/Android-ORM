@@ -850,7 +850,8 @@ public class Session {
                     colName = current.getColumnName();
                     colValue = current.getField().get(obj);
                     if (colValue != null) {
-                        if (pk.equals(colName)) {
+                        // fix #16 pk NPE
+                        if (pk != null && pk.equals(colName)) {
                             pkValue = colValue;
                         }
                         else {
