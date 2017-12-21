@@ -39,6 +39,7 @@ public final class Aorm {
     private static boolean debug = false;
     private static boolean supportExtend = true;
     private static boolean exactInsertOrUpdate = false;
+    private static boolean insertPrimaryKey = false;
     private static final String TAG = "AORM";
     private static String columnPrefix = null;
     private static MappingFactory mappingFactory = null;
@@ -120,6 +121,27 @@ public final class Aorm {
      */
     static boolean getExactInsertOrUpdate() {
         return Aorm.exactInsertOrUpdate;
+    }
+    
+    /**
+     * Set allow to insert primary key value to database, default is false
+     * 
+     * @param insertPrimaryKey
+     *            true to set primary key value
+     * @since 1.1.7
+     */
+    public static void setInsertPrimaryKey(boolean insertPrimaryKey) {
+        Aorm.insertPrimaryKey = insertPrimaryKey;
+    }
+    
+    /**
+     * Get where insert primary key enable or not
+     * 
+     * @return enable or not, default is false
+     * @since 1.1.7
+     */
+    public static boolean isInsertPrimaryKey() {
+        return insertPrimaryKey;
     }
     
     /**

@@ -864,6 +864,11 @@ public class Session {
                     throw new ORMException(e);
                 }
             }
+            // since 1.1.7
+            if (Aorm.isInsertPrimaryKey() && pk!= null) {
+                colNames.add(pk);
+                args.add(pkValue);
+            }
         }
         
         Object[] getArgsArray() {
