@@ -693,9 +693,14 @@ public class Session {
      * 
      * @param criteria
      *            the criteria query instance.
+     * @param <T>
+     *            the class type parameter
      * @return converted objects list
      */
     public <T> List<T> list(Criteria criteria) {
+        if (!criteria.hasLimit()) {
+            criteria.setLimit(0, 1);
+        }
         Cursor c = query(criteria);
         return CursorUtils.getFromCursor(c, criteria);
     }
@@ -732,6 +737,8 @@ public class Session {
      * 
      * @param criteria
      *            the criteria query instance.
+     * @param <T>
+     *            the class type parameter
      * @return converted object
      */
     public <T> T get(Criteria criteria) {
@@ -865,7 +872,7 @@ public class Session {
                 }
             }
             // since 1.1.7
-            if (Aorm.isInsertPrimaryKey() && pk!= null) {
+            if (Aorm.isInsertPrimaryKey() && pk != null) {
                 colNames.add(pk);
                 args.add(pkValue);
             }

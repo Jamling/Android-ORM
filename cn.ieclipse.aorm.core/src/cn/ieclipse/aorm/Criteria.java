@@ -268,6 +268,10 @@ public class Criteria {
         return this;
     }
     
+    /*package*/ boolean hasLimit() {
+        return root.hasLimit;
+    }
+    
     public String toSQL() {
         Criteria root = getRoot();
         StringBuilder sb = new StringBuilder();
