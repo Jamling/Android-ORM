@@ -36,9 +36,12 @@ public class CursorUtilsTest extends TestCase {
         MockCursor cursor = new MockCursor(new String[] { "_id", "_name",
                 "_age", "_phone" });
         cursor.addRow(new Object[] { 1, "lijm", 30, "139" });
-        List<?> list = CursorUtils.getFromCursor(cursor, Student.class, null);
-        Student s = (Student) list.get(0);
+        cursor.addRow(new Object[] { 2, "lijm2", 31, "138" });
+        List<Student> list = CursorUtils.getFromCursor(cursor, Student.class, null);
+        Student s = list.get(0);
         Assert.assertEquals("lijm", s.name);
+        s = list.get(1);
+        Assert.assertEquals("lijm2", s.name);
         
         // use reflect
         list = CursorUtils.getFromCursorReflect(cursor, Student.class, null);

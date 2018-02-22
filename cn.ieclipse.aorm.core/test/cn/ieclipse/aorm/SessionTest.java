@@ -71,11 +71,35 @@ public class SessionTest extends TestCase {
             Person p = new Person();
             p.id = i + 1;
             p.name = ("ljm" + p.id);
+            // list.add(p);
         }
         try {
             session.batchInsert(list);
+            Assert.assertEquals(0, session.count(Criteria.create(Person.class)));
         } catch (Exception e) {
             Assert.fail(e.toString());
         }
+    }
+    
+    public void testList() {
+        Person p = new Person();
+        p.id = 10;
+        p.name = ("ljm1");
+        long id = session.insert(p);
+        Assert.assertEquals(1, id);
+        p.name = "ljm2";
+        id = session.insert(p);
+        Assert.assertEquals(2, id);
+        List<Person> list = session.list(Person.class);
+        Assert.assertEquals(2, list.size());
+        Assert.assertEquals("ljm1", list.get(0).name);
+        Assert.assertEquals("ljm2", list.get(1).name);
+        
+        p = session.get(Criteria.create(Person.class));
+        Assert.assertEquals("ljm1", p.name);
+        
+        list = session.list(Criteria.create(Person.class).setLimit(1, 1));
+        Assert.assertEquals(1, list.size());
+        Assert.assertEquals("ljm2", list.get(0).name);
     }
 }

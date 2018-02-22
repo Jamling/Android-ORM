@@ -16,9 +16,12 @@
 package cn.ieclipse.aorm.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -27,7 +30,7 @@ import cn.ieclipse.aorm.Mapping;
 
 /**
  * @author Jamling
- * 
+ *         
  */
 public class MockDatabase extends SQLiteDatabase {
     
@@ -49,7 +52,8 @@ public class MockDatabase extends SQLiteDatabase {
         }
     }
     
-    public long insert(String table, String nullColumnHack, ContentValues values) {
+    public long insert(String table, String nullColumnHack,
+            ContentValues values) {
         MockCursor c = tables.get(table);
         String[] cols = c.getColumnNames();
         Object[] args = new Object[cols.length];
@@ -86,7 +90,7 @@ public class MockDatabase extends SQLiteDatabase {
     public Cursor query(boolean distinct, String table, String[] columns,
             String selection, String[] selectionArgs, String groupBy,
             String having, String orderBy, String limit) {
-        
+            
         MockCursor sub = new MockCursor(columns);
         MockCursor full = tables.get(table);
         // make full rows;
@@ -135,6 +139,16 @@ public class MockDatabase extends SQLiteDatabase {
     }
     
     public Cursor rawQuery(String sql, String[] args) {
+        Matcher m = Pattern.compile("(.*)LIMIT (\\d+) OFFSET (\\d+)")
+                .matcher(sql);
+        int offset = 0;
+        int limit = 0;
+        if (m.find()) {
+            String[] limitStr = m.replaceAll("$2-$3").split("-");
+            limit = Integer.parseInt(limitStr[0]);
+            offset = Integer.parseInt(limitStr[1]);
+            sql = m.replaceAll("$1");
+        }
         String key = "SELECT DISTINCT ";
         int pos = sql.indexOf(key);
         int start = 0;
@@ -155,7 +169,7 @@ public class MockDatabase extends SQLiteDatabase {
         sql = sql.substring(end + key.length());
         start = 0;
         end = sql.indexOf(" ");
-        String table = sql.substring(start, end);
+        String table = end > 0 ? sql.substring(start, end) : sql;
         
         key = "WHERE ";
         start = sql.indexOf(key);
@@ -164,6 +178,7 @@ public class MockDatabase extends SQLiteDatabase {
         
         ArrayList<Object[]> rows = new ArrayList<Object[]>();
         for (int j = 0; j < full.getCount(); j++) {
+            full.setRowIndex(j);
             ArrayList<Object> list = new ArrayList<Object>();
             for (int i = 0; i < sub.getColumnCount(); i++) {
                 String c = sub.getColumnName(i);
@@ -185,22 +200,35 @@ public class MockDatabase extends SQLiteDatabase {
             }
             
             ArrayList<Object[]> dest = new ArrayList<Object[]>();
+            int tmp = 0;
             for (int i = 0; i < rows.size(); i++) {
                 Object[] row = rows.get(i);
                 int idx = sub.getColumnIndex(c);
                 if (idx >= 0) {
                     Object o = row[idx];
                     if (v.equals(o)) {
+                        if (tmp < offset) {
+                            tmp++;
+                            continue;
+                        }
+                        if (limit > 0 && sub.getRowSize() >= limit) {
+                            break;
+                        }
                         dest.add(row);
                         sub.addRow(row);
                     }
                 }
             }
-            
         }
         else {
-            for (Object[] objects : rows) {
-                sub.addRow(objects);
+            for (int i = 0; i < rows.size(); i++) {
+                if (i < offset) {
+                    continue;
+                }
+                if (limit > 0 && sub.getRowSize() >= limit) {
+                    break;
+                }
+                sub.addRow(rows.get(i));
             }
         }
         
@@ -211,10 +239,10 @@ public class MockDatabase extends SQLiteDatabase {
     }
     
     public void execSQL(String sql, Object[] args) {
-        
+    
     }
     
     private void updateRow(MockCursor c) {
-        
+    
     }
 }

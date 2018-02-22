@@ -24,7 +24,7 @@ import android.net.Uri;
 
 /**
  * @author Jamling
- * 
+ *         
  */
 public class MockCursor implements Cursor {
     private String[] mColumns;
@@ -39,13 +39,19 @@ public class MockCursor implements Cursor {
         data.add(rowData);
     }
     
+    public void setRowIndex(int j) {
+        if (j >= 0 && j < getRowSize()) {
+            this.rowIdx = j;
+        }
+    }
+    
     // public void insertRow(Object[] rowData) {
     // int pkv = getCount();
     //
     // }
     
     public int getRowSize() {
-        return data.size();
+        return data == null ? 0 : data.size();
     }
     
     public int getColumnCount() {
@@ -67,7 +73,12 @@ public class MockCursor implements Cursor {
     
     public boolean moveToFirst() {
         rowIdx = 0;
-        return true;
+        if (getRowSize() > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     public boolean isAfterLast() {

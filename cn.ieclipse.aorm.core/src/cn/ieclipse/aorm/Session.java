@@ -698,9 +698,6 @@ public class Session {
      * @return converted objects list
      */
     public <T> List<T> list(Criteria criteria) {
-        if (!criteria.hasLimit()) {
-            criteria.setLimit(0, 1);
-        }
         Cursor c = query(criteria);
         return CursorUtils.getFromCursor(c, criteria);
     }
@@ -742,6 +739,9 @@ public class Session {
      * @return converted object
      */
     public <T> T get(Criteria criteria) {
+        if (!criteria.hasLimit()) {
+            criteria.setLimit(0, 1);
+        }
         List<T> list = list(criteria);
         if (!list.isEmpty()) {
             return list.get(0);
