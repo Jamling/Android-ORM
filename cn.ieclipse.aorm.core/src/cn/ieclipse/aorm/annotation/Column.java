@@ -47,4 +47,5 @@ public @interface Column {
     
     public boolean id() default false;
     
+    public int order() default 0;
 }

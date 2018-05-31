@@ -15,8 +15,6 @@
  */
 package cn.ieclipse.aorm;
 
-import javax.jws.soap.SOAPBinding.Use;
-
 import cn.ieclipse.aorm.annotation.ColumnWrap;
 import cn.ieclipse.aorm.db.ColumnInfo;
 

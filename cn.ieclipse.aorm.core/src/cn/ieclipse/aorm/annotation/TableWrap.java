@@ -72,7 +72,7 @@ public class TableWrap {
                     list.add(field);
                 }
             }
-            if (Aorm.allowExtend()) {
+            if (Aorm.isSupportExtend()) {
                 getParentClassField(clazz.getSuperclass(), list);
             }
         }

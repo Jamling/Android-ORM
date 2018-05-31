@@ -77,7 +77,7 @@ public final class CursorUtils {
     
     @SuppressWarnings("unchecked")
     public static <T> List<T> getFromCursor(Cursor c, Criteria criteria) {
-        ArrayList<T> list = new ArrayList();
+        ArrayList<T> list = new ArrayList<>();
         if (c == null) {
             return list;
         }
@@ -143,7 +143,8 @@ public final class CursorUtils {
                             aliasArray[j]);
                     // fieldClass[i] = f.getType();
                     types[i] = getColumnType(f.getType());
-                    if (f != null) {
+                    // if (f != null) 
+                    {
                         objField[i] = f;
                         objIds[i] = j;
                         break;
@@ -254,7 +255,7 @@ public final class CursorUtils {
         int pos = column.indexOf('.');
         // has alias
         if (pos > 0) {
-            String tempAlias = column.substring(0, pos);
+            // String tempAlias = column.substring(0, pos);
             // not match
             f = Mapping.getInstance().getColumnField(column.substring(pos + 1),
                     objClass);

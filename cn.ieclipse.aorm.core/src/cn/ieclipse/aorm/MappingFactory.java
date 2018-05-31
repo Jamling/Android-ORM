@@ -51,11 +51,9 @@ public abstract class MappingFactory {
      * 
      * @return {@link MappingFactory}
      */
-    public static MappingFactory getInstance() {
+    public synchronized static MappingFactory getInstance() {
         if (instance == null) {
-            synchronized (MappingFactory.class) {
-                instance = new DefaultMappingFactory();
-            }
+            instance = new DefaultMappingFactory();
         }
         return instance;
     }

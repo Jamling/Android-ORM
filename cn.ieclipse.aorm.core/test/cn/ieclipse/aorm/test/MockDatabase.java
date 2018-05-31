@@ -74,10 +74,10 @@ public class MockDatabase extends SQLiteDatabase {
         String query = where;
         if (args != null) {
             for (String a : args) {
-                query = query.replaceFirst("?", a);
+                query = query.replaceFirst("\\?", a);
             }
         }
-        HashMap<String, Object> vs = new HashMap<String, Object>();
+        // HashMap<String, Object> vs = new HashMap<String, Object>();
         
         return 0;
     }

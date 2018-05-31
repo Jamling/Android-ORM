@@ -73,7 +73,9 @@ public class Session {
             ContentValues values) {
         long id = mHelper.getWritableDatabase().insert(table, nullColumnHack,
                 values);
-        log("insert rowID : " + id);
+        if (Aorm.isDebug()) {
+            log("insert rowID : " + id);
+        }
         notifyChange(table);
         return id;
     }
@@ -82,14 +84,18 @@ public class Session {
             String[] args) {
         int count = mHelper.getWritableDatabase().update(table, values, where,
                 args);
-        log("update counts : " + count);
+        if (Aorm.isDebug()) {
+            log("update counts : " + count);
+        }
         notifyChange(table);
         return count;
     }
     
     protected int delete(String table, String where, String[] args) {
         int count = mHelper.getWritableDatabase().delete(table, where, args);
-        log("delete counts : " + count);
+        if (Aorm.isDebug()) {
+            log("delete counts : " + count);
+        }
         notifyChange(table);
         return count;
     }
@@ -183,7 +189,9 @@ public class Session {
     public long insert(Object obj, String nullColumnHack) {
         Row row = new Row(obj);
         ContentValues values = row.getContentValues();
-        log("insert " + row.table + " values: " + values);
+        if (Aorm.isDebug()) {
+            log("insert " + row.table + " values: " + values);
+        }
         long id = insert(row.table, nullColumnHack, values);
         setPkValue(obj, id);
         notifySessionListener(obj.getClass());
@@ -233,7 +241,9 @@ public class Session {
         sb.append(sb2);
         sb.append(")");
         String sql = sb.toString();
-        log("insertNative sql: " + sql + "; args: " + row.args);
+        if (Aorm.isDebug()) {
+            log("insertNative sql: " + sql + "; args: " + row.args);
+        }
         execSQL(sql, row.getArgsArray());
         notifySessionListener(obj.getClass());
     }
@@ -291,7 +301,9 @@ public class Session {
         sb.append(sb2);
         sb.append(")");
         String sql = sb.toString();
-        log("batch insert sql: " + sql);
+        if (Aorm.isDebug()) {
+            log("batch insert sql: " + sql);
+        }
         
         SQLiteDatabase db = getDatabase(true);
         SQLiteStatement stmt = db.compileStatement(sql);
@@ -390,7 +402,10 @@ public class Session {
         boolean update = Aorm.getExactInsertOrUpdate() ? get(obj) != null
                 : pkLong > 0;
         String str = update ? "update" : "insert";
-        log("insertOrUpdate(" + str + ") " + row.table + " values: " + values);
+        if (Aorm.isDebug()) {
+            log("insertOrUpdate(" + str + ") " + row.table + " values: "
+                    + values);
+        }
         if (intercepter != null) {
             intercepter.beforeUpdate(update, values);
         }
@@ -416,7 +431,9 @@ public class Session {
         Row row = new Row(obj);
         ContentValues values = row.getContentValues();
         String where = row.pk + "=" + row.pkValue;
-        log("update " + row.table + " values: " + values);
+        if (Aorm.isDebug()) {
+            log("update " + row.table + " values: " + values);
+        }
         int count = update(row.table, values, where, null);
         notifySessionListener(obj.getClass());
         return count;
@@ -436,7 +453,6 @@ public class Session {
     public int update(Criteria criteria, ContentValues values) {
         String table = Mapping.getInstance()
                 .getTableName(criteria.getRoot().getClazz());
-        String sql = criteria.toSQL();
         String where = criteria.getWhere();
         String[] args = criteria.getStringArgs();
         ContentValues colValues = new ContentValues(values.size());
@@ -444,8 +460,10 @@ public class Session {
             Row.putColumnValues(colValues, criteria.property2Column(key),
                     values.get(key));
         }
-        log("update " + table + " values: " + colValues + ", where = " + where
-                + ", args = " + criteria.getArgs());
+        if (Aorm.isDebug()) {
+            log("update " + table + " values: " + colValues + ", where = "
+                    + where + ", args = " + criteria.getArgs());
+        }
         int count = update(table, colValues, where, args);
         notifySessionListener(criteria.getRoot().getClazz());
         return count;
@@ -484,7 +502,9 @@ public class Session {
         }
         
         String sql = sb.toString();
-        log("updateNative sql: " + sql + " ,args:" + row.args);
+        if (Aorm.isDebug()) {
+            log("updateNative sql: " + sql + " ,args:" + row.args);
+        }
         execSQL(sql, row.getArgsArray());
         notifySessionListener(obj.getClass());
     }
@@ -516,7 +536,9 @@ public class Session {
         String table = Mapping.getInstance().getTableName(clazz);
         String pk = Mapping.getInstance().getPK(clazz);
         String where = pk + "=" + id;
-        log("deleteById " + table + " where: " + where);
+        if (Aorm.isDebug()) {
+            log("deleteById " + table + " where: " + where);
+        }
         int count = delete(table, where, null);
         notifySessionListener(clazz);
         return count;
@@ -541,7 +563,9 @@ public class Session {
         sb.append('=');
         sb.append(id);
         String sql = sb.toString();
-        log("deleteByIdNative sql: " + sql);
+        if (Aorm.isDebug()) {
+            log("deleteByIdNative sql: " + sql);
+        }
         execSQL(sql);
         notifySessionListener(clazz);
     }
@@ -559,7 +583,9 @@ public class Session {
             sb.append("DELETE FROM ");
             sb.append(table);
             String sql = sb.toString();
-            log("deleteAll sql: " + sql);
+            if (Aorm.isDebug()) {
+                log("deleteAll sql: " + sql);
+            }
             execSQL(sql);
             notifySessionListener(clazz);
         }
@@ -574,10 +600,11 @@ public class Session {
      * @return the number of rows deleted
      */
     public int delete(Criteria criteria) {
-        String sql = criteria.toSQL();
         String table = Mapping.getInstance()
                 .getTableName(criteria.getRoot().getClazz());
-        log("delete " + table + " where: " + criteria.getWhere());
+        if (Aorm.isDebug()) {
+            log("delete " + table + " where: " + criteria.getWhere());
+        }
         int count = delete(table, criteria.getWhere(),
                 criteria.getStringArgs());
         notifySessionListener(criteria.getRoot().getClass());
@@ -608,7 +635,9 @@ public class Session {
      */
     public Cursor query(Criteria criteria, Uri uri) {
         String sql = criteria.toSQL();
-        log("query sql: " + sql);
+        if (Aorm.isDebug()) {
+            log("query sql: " + sql);
+        }
         Cursor c = rawQuery(sql, criteria.getStringArgs());
         if (uri != null && mResolver != null && c != null) {
             c.setNotificationUri(mResolver, uri);
@@ -627,7 +656,9 @@ public class Session {
     public int count(Criteria criteria) {
         String sql = criteria.toSQL();
         String sql2 = "SELECT COUNT(*) " + sql.substring(sql.indexOf("FROM"));
-        log("count sql: " + sql2);
+        if (Aorm.isDebug()) {
+            log("count sql: " + sql2);
+        }
         Cursor c = rawQuery(sql2, criteria.getStringArgs());
         if (c != null) {
             if (c.moveToFirst()) {
@@ -653,7 +684,9 @@ public class Session {
         String column = criteria.property2Column(property);
         String sql2 = "SELECT SUM(" + column + ") "
                 + sql.substring(sql.indexOf("FROM"));
-        log("sum sql: " + sql2);
+        if (Aorm.isDebug()) {
+            log("sum sql: " + sql2);
+        }
         Cursor c = rawQuery(sql2, criteria.getStringArgs());
         if (c != null) {
             if (c.moveToFirst()) {
@@ -828,7 +861,9 @@ public class Session {
             }
             pkField.set(obj, id);
         } catch (Exception e) {
-            log("set id exception: " + e);
+            if (Aorm.isDebug()) {
+                Aorm.logw(String.format("Can't set %d to %s", id, obj), e);
+            }
         }
     }
     

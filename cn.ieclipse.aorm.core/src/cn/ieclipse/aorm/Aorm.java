@@ -59,6 +59,15 @@ public final class Aorm {
     }
     
     /**
+     * Return whether aorm enabled debug (detail log)
+     * 
+     * @return Whether aorm enable debug
+     */
+    public static boolean isDebug() {
+        return debug;
+    }
+    
+    /**
      * @param allow
      *            true to enable, false to disable
      * @deprecated use {@link #setSupportExtend(boolean)} instead
@@ -224,6 +233,18 @@ public final class Aorm {
      */
     public static void logi(String msg) {
         android.util.Log.i(TAG, msg);
+    }
+    
+    /**
+     * 
+     * see {@link android.util.Log#w(String, String, Throwable)}
+     * 
+     * @param msg
+     *            message
+     * @since 1.2.0
+     */
+    public static void logw(String msg, Throwable e) {
+        android.util.Log.w(TAG, msg, e);
     }
     
     public static final String LF = System.getProperty("line.separator");

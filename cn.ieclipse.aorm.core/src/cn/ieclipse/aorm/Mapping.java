@@ -30,11 +30,9 @@ import cn.ieclipse.aorm.annotation.TableWrap;
 public class Mapping {
     private static Mapping instance = null;
     
-    public static Mapping getInstance() {
+    public synchronized static Mapping getInstance() {
         if (instance == null) {
-            synchronized (Mapping.class) {
-                instance = new Mapping();
-            }
+            instance = new Mapping();
         }
         return instance;
     }
