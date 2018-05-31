@@ -127,8 +127,9 @@ sourceSets {
 }
 
 tasks.withType(JavaCompile) { 
-    sourceCompatibility = "1.6"
-    targetCompatibility = "1.6" //JavaVersion.VERSION_1_5
+    sourceCompatibility = "1.7"
+    targetCompatibility = "1.7" //JavaVersion.VERSION_1_5
+    options.encoding = "UTF-8"
 }
 
 tasks.withType(Jar) {

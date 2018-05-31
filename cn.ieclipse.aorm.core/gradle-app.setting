@@ -17,7 +17,7 @@
     <setting name="current-tab" value="Task Tree"/> 
   </setting>  
   <setting name="Application_window-id"> 
-    <setting name="window_x" value="504"/>  
+    <setting name="window_x" value="401"/>  
     <setting name="window_y" value="0"/>  
     <setting name="window_width" value="800"/>  
     <setting name="window_height" value="800"/>  

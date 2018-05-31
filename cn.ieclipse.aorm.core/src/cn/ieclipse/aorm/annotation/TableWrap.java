@@ -18,6 +18,7 @@ package cn.ieclipse.aorm.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.ieclipse.aorm.Aorm;
@@ -25,7 +26,7 @@ import cn.ieclipse.aorm.Mapping;
 
 /**
  * @author Jamling
- * 
+ *         
  */
 public class TableWrap {
     private Class<?> clazz;
@@ -55,6 +56,7 @@ public class TableWrap {
                     }
                 }
             }
+            Collections.sort(columns);
         }
     }
     
@@ -95,7 +97,7 @@ public class TableWrap {
         return colName;
     }
     
-    public Field getColumnField(String column){
+    public Field getColumnField(String column) {
         Field field = null;
         for (ColumnWrap col : columns) {
             if (col.getColumnName().equals(column)) {
@@ -117,8 +119,8 @@ public class TableWrap {
         for (ColumnWrap col : columns) {
             if (col.getColumnName().equals(column)) {
                 try {
-                    getter = clazz
-                            .getMethod(col.getGetter(), (Class<?>[]) null);
+                    getter = clazz.getMethod(col.getGetter(),
+                            (Class<?>[]) null);
                 } catch (SecurityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

@@ -5,13 +5,21 @@
 
 # Introduction
 
-Did you used sqlite to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
+Did you used `sqlite` to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Android ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
 
 # Features
-* Brief ORM mapping, just write an annotation for the field of Java beans. e.g. @Column(name="_name") to mapping _name columnn of database to name property.
-* Powerful Forward Engineering supporting, generating DDL and ContentProvider automaticlly.
-* Useful Assist feature, create your Activity/Service/BroadcastReceiver with a wizard and configurat them in AndroidManifest.xml automatically.
+
+* Brief ORM mapping, only add a `@Column` annotation for the property of Java beans to enable mapping to sqlite table field.
+
+* Native and `ConntentProvider` support, easy to share content, initialize/upgrade database
+using Android `ContentProvider`.
+
+* Powerful Forward Engineering supporting, both Eclipse [Android ADT-extensions] and Android Studio [Android ORM Tool] plugin to generate DDL and ContentProvider automatically.
+
+* Useful Assist feature, create your Activity/Service/BroadcastReceiver with a wizard and configure them in AndroidManifest.xml automatically.
+
 * ...
+
 More feature, please experience it for your self.
 
 # Usage
@@ -22,18 +30,19 @@ The `$latest` is: [![latest release](https://img.shields.io/github/release/jamli
 
 Put aorm-core-`$latest`.jar to libs/
 
-Recommended to install [Android ADT-extensions](https://github.com/Jamling/adt-extensions/) plugin, and add ORM capapility to enable Aorm.
+Recommended to install [Android ADT-extensions] plugin, and add ORM capapility to enable Aorm.
 
 ## Use in Android Studio
+
 Aorm has been published to jcenter, so you can just add dependence of aorm in your build.gradle.
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.5'
+    compile 'cn.ieclipse.aorm:aorm-core:$latest'
 }
 ```
 
-Recommended to install [Android ORM Tool](https://github.com/Jamling/Android-ORM-ASPlugin) plugin to generate code quickly.
+Recommended to install [Android ORM Tool] plugin to generate code quickly.
 
 # Comparision Results
 
@@ -50,6 +59,7 @@ More detail please see https://github.com/Raizlabs/AndroidDatabaseLibraryCompari
 # Code samples
 
 ## Create mapping
+
 Simply add `@Table` class annotation and `@Column` field annotation to mapping.
 
 ```java
@@ -59,7 +69,7 @@ public class Student implements Serializable {
     @Column(name = "_id", id = true)
     public long id; //id is Primary key.
     
-    @Column(name="_name")
+    @Column(name="_name", order = 1)
     public String name; //mapping to _name and auto column type
     
     @Column()
@@ -157,6 +167,7 @@ public class ExampleContentProvider extends ContentProvider {
 ```
 
 ## Query
+
 ```java
 Session session = ExampleContentProvider.getSession();
 // simplest query, query all student table.
@@ -195,7 +206,9 @@ Student s = (Student) item[0];
 StudentMore m = (StudentMore) item[1];
 //
 ```
+
 ## Other
+
 ```java
 Session session = ExampleContentProvider.getSession();
 // insert
@@ -220,3 +233,5 @@ Refer: http://www.ieclipse.cn/p/Android-ORM/userguide.html
 Jamling Jamling (li.jamling@gmail.com)
 
 [1]: https://img.shields.io/bintray/v/jamling/maven/Android-ORM.svg
+[Android ADT-extensions]: https://github.com/Jamling/adt-extensions
+[Android ORM Tool]: https://github.com/Jamling/Android-ORM-ASPlugin

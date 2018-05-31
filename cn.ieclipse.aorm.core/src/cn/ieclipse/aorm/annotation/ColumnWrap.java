@@ -16,14 +16,15 @@
 package cn.ieclipse.aorm.annotation;
 
 import java.lang.reflect.Field;
+import java.util.Comparator;
 
 import cn.ieclipse.aorm.Aorm;
 
 /**
  * @author Jamling
- * 
+ *         
  */
-public class ColumnWrap {
+public class ColumnWrap implements Comparable<ColumnWrap> {
     private Column column;
     private String columnName;
     private Field field;
@@ -39,18 +40,19 @@ public class ColumnWrap {
         }
         this.fieldType = (Class<?>) field.getType();
         
-//        String fieldName = field.getName();
-//        if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) {
-//            if (fieldName.startsWith("is") && fieldName.length() > 2) {
-//                fieldName = fieldName.substring(2);
-//            }
-//            getter = "is" + capitalize(fieldName);
-//        }
-//        else {
-//            getter = "get" + capitalize(fieldName);
-//        }
-//        
-//        setter = "set" + capitalize(fieldName);
+        // String fieldName = field.getName();
+        // if (boolean.class.equals(fieldType) ||
+        // Boolean.class.equals(fieldType)) {
+        // if (fieldName.startsWith("is") && fieldName.length() > 2) {
+        // fieldName = fieldName.substring(2);
+        // }
+        // getter = "is" + capitalize(fieldName);
+        // }
+        // else {
+        // getter = "get" + capitalize(fieldName);
+        // }
+        //
+        // setter = "set" + capitalize(fieldName);
         
         String name = column.name();
         if (name == null || name.isEmpty()) {
@@ -94,6 +96,14 @@ public class ColumnWrap {
     @Override
     public String toString() {
         return "Column(" + columnName + ")";
+    }
+    
+    @Override
+    public int compareTo(ColumnWrap o) {
+        if (column.id()) {
+            return -1;
+        }
+        return column.order() - o.column.order();
     }
     
     static String capitalize(String str) {

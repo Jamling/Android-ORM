@@ -241,6 +241,8 @@ public final class Aorm {
      * 
      * @param msg
      *            message
+     * @param e
+     *            {@link Throwable}
      * @since 1.2.0
      */
     public static void logw(String msg, Throwable e) {
@@ -249,15 +251,41 @@ public final class Aorm {
     
     public static final String LF = System.getProperty("line.separator");
     
+    /**
+     * Generate drop table DDL. e.g. DROP TABLE tbl_xxx IF EXISTS
+     * 
+     * @param tableClass
+     *            mapping class
+     * @return a drop table DDL
+     */
     public static String generateDropDDL(Class<?> tableClass) {
         Table t = Mapping.getInstance().getTable(tableClass);
         return "DROP TABLE " + t.name() + " IF EXISTS";
     }
     
+    /**
+     * Generate create table DDL from mapping class
+     * 
+     * @param tableClass
+     *            mapping class
+     * @return create table DDL string
+     * @see Aorm#generateCreateDDL(Class, String, boolean)
+     */
     public static String generateCreateDDL(Class<?> tableClass) {
         return generateCreateDDL(tableClass, null, false);
     }
     
+    /**
+     * Generate create table DDL
+     * 
+     * @param tableClass
+     *            mapping class
+     * @param tableName
+     *            if empty, use mapping class @Table name
+     * @param ifNotExist
+     *            whether append IF NOT EXISTS
+     * @return create table DDL string
+     */
     public static String generateCreateDDL(Class<?> tableClass,
             String tableName, boolean ifNotExist) {
         if (tableName == null || tableName.trim().length() == 0) {
@@ -318,11 +346,27 @@ public final class Aorm {
         return Aorm.join(delimiter, columns);
     }
     
+    /**
+     * Create table with mapping class
+     * 
+     * @param db
+     *            SQLiteDatabase
+     * @param tableClass
+     *            mapping class
+     */
     public static void createTable(SQLiteDatabase db, Class<?> tableClass) {
         String sql = generateCreateDDL(tableClass);
         db.execSQL(sql);
     }
     
+    /**
+     * Drop table with mapping class
+     * 
+     * @param db
+     *            SQLiteDatabase
+     * @param tableClass
+     *            mapping class
+     */
     public static void dropTable(SQLiteDatabase db, Class<?> tableClass) {
         String sql = generateDropDDL(tableClass);
         db.execSQL(sql);
@@ -421,7 +465,7 @@ public final class Aorm {
         // step3
         List<TableInfo> tableInfos = Aorm.getTableInfos(db, tableName, null);
         
-        String ddl1 = Aorm.generateColumnDDL(older, ",");
+        // String ddl1 = Aorm.generateColumnDDL(older, ",");
         String prj1 = Aorm.join(",", projections.toArray());
         String ddl2 = Aorm.generateColumnDDL(newer, ",");
         // step 4-7

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Jamling
- * 
+ *         
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -47,5 +47,16 @@ public @interface Column {
     
     public boolean id() default false;
     
+    /**
+     * The aorm will re-order column based on {@link #order()}. On Android, the
+     * {@link Class#getFields()} returns the disordered fields, so the pretty
+     * order id, name, age in java bean, may be chaotic name, age, id field
+     * order in database. So the {@link #order()} imported to manual order the
+     * database field. The smaller {@link #order()} the ahead field order. The
+     * {@link #id()} is true column always at the front of other fields.
+     * 
+     * @return assigned order
+     * @since 1.2.0
+     */
     public int order() default 0;
 }

@@ -79,6 +79,7 @@ public class ColumnInfo {
         return this.name.equalsIgnoreCase(name);
     }
     
+    @SuppressWarnings("deprecation")
     public static ColumnInfo from(ColumnWrap wrap) {
         ColumnInfo info = new ColumnInfo();
         Column c = wrap.getColumn();
