@@ -260,7 +260,7 @@ public final class Aorm {
      */
     public static String generateDropDDL(Class<?> tableClass) {
         Table t = Mapping.getInstance().getTable(tableClass);
-        return "DROP TABLE " + t.name() + " IF EXISTS";
+        return "DROP TABLE IF EXISTS " + t.name();
     }
     
     /**
@@ -272,7 +272,7 @@ public final class Aorm {
      * @see Aorm#generateCreateDDL(Class, String, boolean)
      */
     public static String generateCreateDDL(Class<?> tableClass) {
-        return generateCreateDDL(tableClass, null, false);
+        return generateCreateDDL(tableClass, null, true);
     }
     
     /**
