@@ -10,8 +10,10 @@
 如果您对此项目感兴趣，欢迎您的加入！
 
 # 特性
-* 简洁的ORM映射配置, 只需在Java Bean的属性中添加类似@Column(name="_name")的注解即可完成到数据库字段的映射配置.
-* 强大的正向工程支持, 自动生成DDL和ContentProvider.
+
+* 简洁的ORM映射配置, 只需在Java Bean的属性中添加`@Column`的注解即可完成到数据库字段的映射配置.
+* 支持原生`ConntentProvider`，可以方便的使用Android `ContentProvider`机制来共享数据，初始化/升级/降级数据库
+* 强大的正向工程支持, 有Eclipse [Android ADT-extensions]和Android Studio [Android ORM Tool]插件来自动生成DDL和ContentProvider.
 * 给力的辅助工具, 向导式新建Activity/Service/BroadcastReceiver并且自动配置到AndroidManifest.xml.
 * ...
 更多特性，请自行体验.
@@ -24,18 +26,18 @@
 
 下载aorm-core-`$latest`.jar并放入libs/目录下
 
-推荐安装[Android ADT-extensions](https://github.com/Jamling/adt-extensions/)插件
+推荐安装[Android ADT-extensions]插件
 
 ## Android Studio
 Aorm已经发布到jcenter，在您的app/build.gradle中添加以下依赖。
 
 ```gradle
 dependencies {
-    compile 'cn.ieclipse.aorm:aorm-core:1.1.5'
+    compile 'cn.ieclipse.aorm:aorm-core:$latest'
 }
 ```
 
-推荐安装Android Studio上的[Android ORM Tool](https://github.com/Jamling/Android-ORM-ASPlugin)插件，可以快速生成相关代码。
+推荐安装Android Studio上的[Android ORM Tool]插件，可以快速生成相关代码。
 
 # 类似orm库比较
 
@@ -220,3 +222,8 @@ public class ExampleContentProvider extends ContentProvider {
 
 # 作者
 Jamling (li.jamling@gmail.com)
+
+
+[1]: https://img.shields.io/bintray/v/jamling/maven/Android-ORM.svg
+[Android ADT-extensions]: https://github.com/Jamling/adt-extensions
+[Android ORM Tool]: https://github.com/Jamling/Android-ORM-ASPlugin

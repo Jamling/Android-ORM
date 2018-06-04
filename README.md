@@ -5,6 +5,8 @@
 
 # Introduction
 
+[简体中文](./README_zh.md)
+
 Did you used `sqlite` to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Android ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.
 
 # Features
