@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.junit.Assert;
 
+import android.content.ContentValues;
 import cn.ieclipse.aorm.bean.Course;
 import cn.ieclipse.aorm.bean.Grade;
 import cn.ieclipse.aorm.bean.Person;
@@ -101,5 +102,25 @@ public class SessionTest extends TestCase {
         list = session.list(Criteria.create(Person.class).setLimit(1, 1));
         Assert.assertEquals(1, list.size());
         Assert.assertEquals("ljm2", list.get(0).name);
+    }
+    
+    public void testUpdate() {
+        Person p = new Person();
+        p.id = 10;
+        p.name = ("ljm1");
+        long id = session.insert(p);
+        Assert.assertEquals(1, id);
+        p.name = "ljm2";
+        id = session.insert(p);
+        Assert.assertEquals(2, id);
+        
+        Criteria c = Criteria.create(Person.class).add(Restrictions.eq("id", 1));
+        ContentValues values = new ContentValues();
+        values.put("name", "ljm11");
+        session.update(c, values);
+        
+        p = session.get(c);
+        // TODO
+        // assertEquals("ljm11", p.name);
     }
 }

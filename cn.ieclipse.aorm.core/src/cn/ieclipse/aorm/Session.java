@@ -451,6 +451,7 @@ public class Session {
      * @return the number of rows affected
      */
     public int update(Criteria criteria, ContentValues values) {
+        String sql = criteria.toSQL();
         String table = Mapping.getInstance()
                 .getTableName(criteria.getRoot().getClazz());
         String where = criteria.getWhere();
@@ -600,6 +601,7 @@ public class Session {
      * @return the number of rows deleted
      */
     public int delete(Criteria criteria) {
+        String sql = criteria.toSQL();
         String table = Mapping.getInstance()
                 .getTableName(criteria.getRoot().getClazz());
         if (Aorm.isDebug()) {
