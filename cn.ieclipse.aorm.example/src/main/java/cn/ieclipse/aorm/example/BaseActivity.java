@@ -5,15 +5,16 @@ package cn.ieclipse.aorm.example;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * @author Jamling
  * 
  */
-public abstract class BaseActivity extends ActionBarActivity implements
+public abstract class BaseActivity extends AppCompatActivity implements
         OnClickListener {
     
     @Override

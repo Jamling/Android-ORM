@@ -28,3 +28,6 @@ proguard/
 ## eclipse
 *.metadata
 *.settings
+
+## idea
+.idea/

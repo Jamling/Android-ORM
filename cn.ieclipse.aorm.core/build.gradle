@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 // apply plugin: 'maven'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
@@ -167,11 +167,9 @@ artifacts {
     archives sourcesJar
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.3'
-}
-
 dependencies {
-	compile fileTree(include: ['*.jar'], dir: 'libs')
-	testCompile 'junit:junit:4.4'
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //implementation project(":cn.ieclipse.aorm.mock")
+    testImplementation fileTree(include: ['*.jar'], dir: "$rootProject.rootDir/cn.ieclipse.aorm.mock/build/libs")
+	testImplementation 'junit:junit:4.13.1'
 }

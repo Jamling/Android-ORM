@@ -1,0 +1,4 @@
+rootProject.name='Aorm'
+include ':cn.ieclipse.aorm.core'
+include ':cn.ieclipse.aorm.mock'
+include ':cn.ieclipse.aorm.example'
